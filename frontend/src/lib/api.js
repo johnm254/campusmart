@@ -279,7 +279,7 @@ export const api = {
         const token = localStorage.getItem('token');
         const headers = { 'Authorization': `Bearer ${token}` };
         if (sessionStorage.getItem('admin_access_unlocked') === 'true') {
-            headers['X-Admin-Secret'] = 'CAMPUS_ADMIN_2026';
+            headers['X-Admin-Secret'] = import.meta.env.VITE_ADMIN_SECRET || 'CAMPUS_ADMIN_2026';
         }
         return headers;
     },

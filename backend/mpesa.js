@@ -98,9 +98,9 @@ const stkPush = async (req, res) => {
             return res.status(400).json({ message: 'amount, phone and plan are required.' });
         }
 
-        // Sandbox credentials
-        const shortCode = 174379;
-        const passkey = 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919';
+        // M-Pesa credentials from environment variables
+        const shortCode = process.env.MPESA_SHORTCODE || 174379;
+        const passkey = process.env.MPESA_PASSKEY;
 
         const timestamp = getTimestamp();
         const password = Buffer.from(`${shortCode}${passkey}${timestamp}`).toString('base64');

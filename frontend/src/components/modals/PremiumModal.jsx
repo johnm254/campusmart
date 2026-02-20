@@ -40,7 +40,7 @@ const PremiumModal = ({ isOpen, onClose }) => {
             color: '#FFD700', // Gold
             icon: <Zap size={24} />,
             badge: '🥈 Power',
-            isPopular: true,
+            isPopular: false,
             features: [
                 'EVERYTHING in Starter + extra power',
                 'Top placement in category',
@@ -49,6 +49,26 @@ const PremiumModal = ({ isOpen, onClose }) => {
                 'Up to 10 photos per listing',
                 'Featured on homepage',
                 'Auto-repost once during boost'
+            ]
+        },
+        {
+            id: 'premium_verification',
+            name: 'Premium Verification',
+            price: 480,
+            duration: 30,
+            power: 'Supreme (15x Views)',
+            color: '#1d3d6e', // Dark Blue
+            icon: <Shield size={24} />,
+            badge: '🥇 Premium',
+            isPopular: true,
+            features: [
+                'EVERYTHING in Power + Verification',
+                'Verified blue checkmark on profile',
+                '15x accelerated views for all listings',
+                'Exclusive "Verified Seller" badge',
+                'Unrestricted photos per listing',
+                'Direct premium support channel',
+                'Trust signal for all buyers'
             ]
         }
     ];

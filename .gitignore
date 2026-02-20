@@ -1,6 +1,8 @@
 node_modules/
-dist/
-.env
-*.exe
-*.zip
+.env*
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 *.log
+.DS_Store

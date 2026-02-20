@@ -53,7 +53,7 @@ const verifyToken = (req, res, next) => {
 
 const verifyAdminToken = (req, res, next) => {
     const adminSecret = req.headers['x-admin-secret'];
-    const isSecretValid = adminSecret === 'CAMPUS_ADMIN_2026';
+    const isSecretValid = adminSecret === (process.env.ADMIN_SECRET || 'CAMPUS_ADMIN_2026');
 
     if (isSecretValid) {
         req.user = { is_admin: true, id: null };
@@ -905,6 +905,10 @@ app.post('/api/user/verify', verifyToken, async (req, res) => {
             boostUntil.setDate(boostUntil.getDate() + 28);
             amount = 220;
             boostType = 'power';
+        } else if (plan === 'premium_verification') {
+            boostUntil.setDate(boostUntil.getDate() + 30);
+            amount = 480;
+            boostType = 'premium_verification';
         } else {
             return res.status(400).json({ message: 'Invalid boost plan' });
         }
@@ -932,76 +936,7 @@ app.post('/api/user/verify', verifyToken, async (req, res) => {
     }
 });
 
-// ─── Review Routes ──────────────────────────────────────────────────────────
 
-// Submit a review for a user (trader or buyer)
-app.post('/api/reviews', verifyToken, async (req, res) => {
-    try {
-        const { reviewee_id, rating, comment } = req.body;
-        const reviewer_id = req.user.id;
-
-        if (!reviewee_id || !rating) {
-            return res.status(400).json({ message: 'Reviewee ID and rating are required' });
-        }
-
-        if (parseInt(reviewee_id) === reviewer_id) {
-            return res.status(400).json({ message: 'You cannot review yourself' });
-        }
-
-        // Upsert review
-        await db.query(`
-            INSERT INTO user_reviews (reviewer_id, reviewee_id, rating, comment)
-            VALUES ($1, $2, $3, $4)
-            ON CONFLICT (reviewer_id, reviewee_id) 
-            DO UPDATE SET rating = $3, comment = $4, created_at = NOW()
-        `, [reviewer_id, reviewee_id, rating, comment]);
-
-        logActivity(reviewer_id, 'user_review_submit', { targetUserId: reviewee_id, rating });
-        res.json({ message: 'Review submitted successfully' });
-    } catch (error) {
-        console.error('Review error:', error);
-        res.status(500).json({ message: 'Error submitting review' });
-    }
-});
-
-// Get reviews for a user
-app.get('/api/reviews/:userId', async (req, res) => {
-    try {
-        const { userId } = req.params;
-        const result = await db.query(`
-            SELECT r.*, u.full_name as reviewer_name, u.avatar_url as reviewer_avatar
-            FROM user_reviews r
-            JOIN users u ON r.reviewer_id = u.id
-            WHERE r.reviewee_id = $1
-            ORDER BY r.created_at DESC
-        `, [userId]);
-        res.json(result.rows);
-    } catch (error) {
-        console.error('Fetch reviews error:', error);
-        res.status(500).json({ message: 'Error fetching reviews' });
-    }
-});
-
-// Get user's average rating
-app.get('/api/user/:userId/rating', async (req, res) => {
-    try {
-        const { userId } = req.params;
-        const result = await db.query(`
-            SELECT 
-                COALESCE(AVG(rating), 0) as average_rating,
-                COUNT(*) as review_count
-            FROM user_reviews
-            WHERE reviewee_id = $1
-        `, [userId]);
-        res.json({
-            average_rating: parseFloat(result.rows[0].average_rating),
-            review_count: parseInt(result.rows[0].review_count)
-        });
-    } catch (error) {
-        console.error('Average rating error:', error);
-        res.status(500).json({ message: 'Error fetching rating stats' });
-    }
-});
 
 // ─── M-Pesa Routes ────────────────────────────────────────────────────────
 const mpesaController = require('./mpesa');
@@ -1068,6 +1003,7 @@ app.post('/api/mpesa/callback', async (req, res) => {
                 let boostType = plan;
                 if (plan === 'starter') boostUntil.setDate(boostUntil.getDate() + 14);
                 else if (plan === 'power') boostUntil.setDate(boostUntil.getDate() + 28);
+                else if (plan === 'premium_verification') boostUntil.setDate(boostUntil.getDate() + 30);
 
                 await db.query(`
                     UPDATE users 
@@ -1107,6 +1043,7 @@ app.post('/api/mpesa/simulate-success', async (req, res) => {
         const boostUntil = new Date();
         if (plan === 'starter') boostUntil.setDate(boostUntil.getDate() + 14);
         else if (plan === 'power') boostUntil.setDate(boostUntil.getDate() + 28);
+        else if (plan === 'premium_verification') boostUntil.setDate(boostUntil.getDate() + 30);
 
         await db.query(`
             UPDATE users SET is_verified = TRUE, boost_type = $1, verified_until = $2 WHERE id = $3
