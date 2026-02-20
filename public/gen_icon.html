@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+    <!-- Use the existing logo -->
+    <img id="source" src="logo.png" style="display:none">
+
+    <!-- Canvas for 512x512 icon -->
+    <canvas id="c512" width="512" height="512"></canvas>
+
+    <!-- Canvas for 192x192 icon -->
+    <canvas id="c192" width="192" height="192"></canvas>
+
+    <script>
+        window.onload = function () {
+            const img = document.getElementById('source');
+
+            // Draw 512x512
+            const c512 = document.getElementById('c512');
+            const ctx512 = c512.getContext('2d');
+
+            // White background
+            ctx512.fillStyle = '#ffffff';
+            ctx512.fillRect(0, 0, 512, 512);
+
+            // Calculate scaling to fit with padding (e.g. 10% padding)
+            const padding = 51; // ~10% of 512
+            const availableSize = 512 - (padding * 2);
+
+            // Maintain aspect ratio
+            const scale = Math.min(availableSize / img.naturalWidth, availableSize / img.naturalHeight);
+
+            const w = img.naturalWidth * scale;
+            const h = img.naturalHeight * scale;
+            const x = (512 - w) / 2;
+            const y = (512 - h) / 2;
+
+            ctx512.drawImage(img, x, y, w, h);
+
+            // Draw 192x192 (scaled down from 512)
+            const c192 = document.getElementById('c192');
+            const ctx192 = c192.getContext('2d');
+            ctx192.drawImage(c512, 0, 0, 192, 192); // Easy downscale
+
+            // Expose as global variables for easy access via browser tool
+            window.icon512 = c512.toDataURL('image/png');
+            window.icon192 = c192.toDataURL('image/png');
+
+            document.body.innerHTML += '<h1>Icons Ready</h1>';
+        };
+    </script>
+</body>
+
+</html>

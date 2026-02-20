@@ -1,0 +1,22 @@
+{
+    "short_name": "CampusMart",
+    "name": "CampusMart - JKUAT Marketplace",
+    "icons": [
+        {
+            "src": "logo.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "logo.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ],
+    "start_url": ".",
+    "display": "standalone",
+    "theme_color": "#1d3d6e",
+    "background_color": "#ffffff"
+}
