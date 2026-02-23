@@ -3,7 +3,7 @@
 ## Your GitHub Details ✅
 - **Username:** AliHamisi911
 - **Email:** gakwelihamisi5@gmail.com
-- **Repository:** https://github.com/AliHamisi911/campus-mart
+- **Repository:** https://github.com/AliHamisi911/campusmart
 
 ## Before You Push - Security Check
 
@@ -17,7 +17,7 @@ If it says "✅ No secrets detected", you're good to go!
 ## Step 1: Create Repository on GitHub
 
 1. Go to: https://github.com/new
-2. Repository name: `campus-mart`
+2. Repository name: `campusmart` (already created ✅)
 3. Description: `Student marketplace and accommodation platform`
 4. Choose **Public** or **Private**
 5. **DO NOT** check "Add a README file"
@@ -95,7 +95,7 @@ git push -u origin main
 ## After Successful Push
 
 Your repository will be at:
-**https://github.com/AliHamisi911/campus-mart**
+**https://github.com/AliHamisi911/campusmart**
 
 ### Recommended Settings:
 
