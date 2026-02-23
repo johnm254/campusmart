@@ -1,7 +1,7 @@
 {
     "short_name": "CampusMart",
-    "name": "CampusMart - JKUAT Marketplace",
-    "description": "The #1 student marketplace at JKUAT for buying and selling textbooks, electronics, and more.",
+    "name": "CampusMart - Student Marketplace",
+    "description": "The #1 student marketplace for buying and selling textbooks, electronics, and more.",
     "id": "/",
     "icons": [
         {

@@ -47,7 +47,7 @@ const Community = () => {
                 list.innerHTML = comments.map(c => `
                     <div style="background: #f8f9fa; padding: 0.75rem; border-radius: 12px; font-size: 0.85rem;">
                         <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
-                            <span style="font-weight: 700; color: var(--campus-blue);">${c.author_name} ${c.is_verified ? '✨' : ''}</span>
+                            <span style="font-weight: 700; color: var(--campus-blue);">${c.author_name}</span>
                             <span style="color: #999; font-size: 0.75rem;">${new Date(c.created_at).toLocaleDateString()}</span>
                         </div>
                         <div style="color: #4a5568;">${c.content}</div>
@@ -268,21 +268,6 @@ const Community = () => {
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                                             <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{post.author_name}</span>
                                             {post.is_admin && <ShieldCheck size={16} color="var(--campus-blue)" />}
-                                            {post.is_verified && !post.is_admin && (
-                                                <div style={{
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                    width: '18px',
-                                                    height: '18px',
-                                                    background: 'radial-gradient(circle at 30% 30%, #FFD700 0%, #B8860B 100%)',
-                                                    borderRadius: '50%',
-                                                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                                                    border: '1px solid rgba(255,255,255,0.5)'
-                                                }}>
-                                                    <ShieldCheck size={11} color="white" strokeWidth={3} />
-                                                </div>
-                                            )}
                                         </div>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                             <span style={{ fontSize: '0.75rem', color: '#999', display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
@@ -294,8 +279,8 @@ const Community = () => {
                                                 )}
                                                 {formatTime(post.created_at)} • {getTypeLabel(post.type)}
                                             </span>
-                                            <span style={{ fontSize: '0.7rem', padding: '0.1rem 0.5rem', background: post.is_admin ? 'var(--campus-blue)' : post.is_verified ? '#fff8e1' : '#f0f0f0', color: post.is_admin ? 'white' : post.is_verified ? '#b8860b' : '#666', borderRadius: '4px', fontWeight: 600 }}>
-                                                {post.is_admin ? 'Admin' : post.is_verified ? 'Premium' : 'Student'}
+                                            <span style={{ fontSize: '0.7rem', padding: '0.1rem 0.5rem', background: post.is_admin ? 'var(--campus-blue)' : '#f0f0f0', color: post.is_admin ? 'white' : '#666', borderRadius: '4px', fontWeight: 600 }}>
+                                                {post.is_admin ? 'Admin' : 'Student'}
                                             </span>
                                         </div>
                                     </div>

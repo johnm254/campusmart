@@ -91,17 +91,7 @@ const FilterSidebar = ({ filters, setFilters, availableCategories = [], availabl
                 </div>
             )}
 
-            <div style={{ marginBottom: '2rem' }}>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer', fontWeight: 600 }}>
-                    <input
-                        type="checkbox"
-                        checked={filters.verifiedOnly}
-                        onChange={(e) => setFilters({ ...filters, verifiedOnly: e.target.checked })}
-                        style={{ width: '18px', height: '18px', accentColor: 'var(--jiji-green)' }}
-                    />
-                    Verified Sellers Only
-                </label>
-            </div>
+            {/* Removed Verified Filter */}
 
             <button
                 className="btn btn-secondary"
@@ -112,8 +102,7 @@ const FilterSidebar = ({ filters, setFilters, availableCategories = [], availabl
                     maxPrice: '',
                     search: '',
                     location: [],
-                    condition: [],
-                    verifiedOnly: false
+                    condition: []
                 })}
             >
                 Reset Filters

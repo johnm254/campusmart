@@ -4,9 +4,54 @@ const nodemailer = require('nodemailer');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const db = require('./db');
+const axios = require('axios');
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
+const { Pool } = require('pg');
+
+// ─── Database Configuration ──────────────────────────────────────────────
+const pool = process.env.DATABASE_URL
+    ? new Pool({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } })
+    : new Pool({
+        host: process.env.DB_HOST,
+        user: process.env.DB_USER,
+        password: process.env.DB_PASS,
+        database: process.env.DB_NAME,
+        port: process.env.DB_PORT || 5432,
+    });
+
+const db = {
+    query: (text, params) => pool.query(text, params),
+    pool
+};
+
+// ─── Auto-Initialize Schema ──────────────────────────────────────────────
+const initSchema = async () => {
+    try {
+        console.log('Ensuring database schema is up to date...');
+        await db.query(`CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY, full_name VARCHAR(255), email VARCHAR(255) UNIQUE, password VARCHAR(255), whatsapp VARCHAR(20), avatar_url TEXT, is_admin BOOLEAN DEFAULT FALSE, is_banned BOOLEAN DEFAULT FALSE, is_verified BOOLEAN DEFAULT FALSE, verified_until TIMESTAMP, boost_type VARCHAR(50), last_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)`);
+        await db.query(`CREATE TABLE IF NOT EXISTS products (id SERIAL PRIMARY KEY, title VARCHAR(255) NOT NULL, category VARCHAR(100), price DECIMAL(10, 2), location VARCHAR(255), latitude DECIMAL(10, 8), longitude DECIMAL(11, 8), metadata JSONB, contact_phone VARCHAR(20), security_features TEXT, image_url TEXT, images JSONB, seller_id INTEGER REFERENCES users(id) ON DELETE CASCADE, condition_text VARCHAR(50) DEFAULT 'second-hand', description TEXT, views INTEGER DEFAULT 0, is_approved BOOLEAN DEFAULT TRUE, is_featured BOOLEAN DEFAULT FALSE, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)`);
+        await db.query(`CREATE TABLE IF NOT EXISTS messages (id SERIAL PRIMARY KEY, sender_id INTEGER REFERENCES users(id) ON DELETE CASCADE, receiver_id INTEGER REFERENCES users(id) ON DELETE CASCADE, product_id INTEGER REFERENCES products(id) ON DELETE SET NULL, content TEXT NOT NULL, is_delivered BOOLEAN DEFAULT FALSE, is_read BOOLEAN DEFAULT FALSE, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)`);
+        await db.query(`CREATE TABLE IF NOT EXISTS wishlist (id SERIAL PRIMARY KEY, user_id INTEGER REFERENCES users(id) ON DELETE CASCADE, product_id INTEGER REFERENCES products(id) ON DELETE CASCADE, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, UNIQUE(user_id, product_id))`);
+        await db.query(`CREATE TABLE IF NOT EXISTS user_reviews (id SERIAL PRIMARY KEY, reviewer_id INTEGER REFERENCES users(id) ON DELETE CASCADE, reviewee_id INTEGER REFERENCES users(id) ON DELETE CASCADE, rating INTEGER CHECK (rating >= 1 AND rating <= 5), comment TEXT, parent_id INTEGER REFERENCES user_reviews(id) ON DELETE CASCADE, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)`);
+        await db.query(`CREATE TABLE IF NOT EXISTS community_posts (id SERIAL PRIMARY KEY, author_id INTEGER REFERENCES users(id) ON DELETE CASCADE, content TEXT NOT NULL, type VARCHAR(50) DEFAULT 'general', image_url TEXT, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)`);
+        await db.query(`CREATE TABLE IF NOT EXISTS post_likes (id SERIAL PRIMARY KEY, user_id INTEGER REFERENCES users(id) ON DELETE CASCADE, post_id INTEGER REFERENCES community_posts(id) ON DELETE CASCADE, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, UNIQUE(user_id, post_id))`);
+        await db.query(`CREATE TABLE IF NOT EXISTS post_comments (id SERIAL PRIMARY KEY, user_id INTEGER REFERENCES users(id) ON DELETE CASCADE, post_id INTEGER REFERENCES community_posts(id) ON DELETE CASCADE, content TEXT NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)`);
+        await db.query(`CREATE TABLE IF NOT EXISTS transactions (id SERIAL PRIMARY KEY, user_id INTEGER REFERENCES users(id) ON DELETE CASCADE, amount DECIMAL(10, 2) NOT NULL, type VARCHAR(100), status VARCHAR(50) DEFAULT 'pending', checkout_request_id VARCHAR(100), plan VARCHAR(50), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)`);
+        await db.query(`CREATE TABLE IF NOT EXISTS activity_logs (id SERIAL PRIMARY KEY, user_id INTEGER REFERENCES users(id) ON DELETE SET NULL, action VARCHAR(100) NOT NULL, metadata JSONB, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)`);
+        await db.query(`CREATE TABLE IF NOT EXISTS password_resets (id SERIAL PRIMARY KEY, email VARCHAR(255) NOT NULL, token TEXT NOT NULL, expires_at TIMESTAMP NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)`);
+        await db.query(`CREATE TABLE IF NOT EXISTS site_settings (key VARCHAR(100) PRIMARY KEY, value TEXT, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)`);
+        await db.query(`INSERT INTO site_settings (key, value) VALUES ('site_name', 'CampusMart'), ('maintenance_mode', 'false'), ('announcement', 'Welcome to CampusMart!') ON CONFLICT (key) DO NOTHING`);
+        await db.query(`ALTER TABLE products ADD COLUMN IF NOT EXISTS metadata JSONB`);
+        await db.query(`ALTER TABLE products ADD COLUMN IF NOT EXISTS contact_phone VARCHAR(20)`);
+        await db.query(`ALTER TABLE products ADD COLUMN IF NOT EXISTS security_features TEXT`);
+        await db.query(`ALTER TABLE products ADD COLUMN IF NOT EXISTS latitude DECIMAL(10, 8), ADD COLUMN IF NOT EXISTS longitude DECIMAL(11, 8)`);
+        console.log('✅ Database schema verified.');
+    } catch (err) {
+        console.error('❌ Schema initialization error:', err.message);
+    }
+};
+initSchema();
 
 const app = express();
 app.use(cors());
@@ -103,7 +148,7 @@ app.post('/api/auth/signup', async (req, res) => {
         const newUser = result.rows[0];
 
         // Create JWT
-        const token = jwt.sign({ id: newUser.id, email: newUser.email, is_admin: newUser.is_admin }, JWT_SECRET, { expiresIn: '24h' });
+        const token = jwt.sign({ id: newUser.id, email: newUser.email, is_admin: newUser.is_admin }, JWT_SECRET, { expiresIn: '7d' });
 
         logActivity(newUser.id, 'user_signup');
 
@@ -144,7 +189,7 @@ app.post('/api/auth/login', async (req, res) => {
         }
 
         // Create JWT
-        const token = jwt.sign({ id: user.id, email: user.email, is_admin: user.is_admin, is_verified: user.is_verified }, JWT_SECRET, { expiresIn: '24h' });
+        const token = jwt.sign({ id: user.id, email: user.email, is_admin: user.is_admin, is_verified: user.is_verified }, JWT_SECRET, { expiresIn: '7d' });
 
         // Remove password from response
         const { password: _, ...userData } = user;
@@ -199,7 +244,7 @@ app.post('/api/auth/forgot-password', async (req, res) => {
                     <p>This link will expire in 1 hour.</p>
                     <p>If you didn't request this, please ignore this email.</p>
                     <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
-                    <p style="font-size: 0.8rem; color: #888;">© ${new Date().getFullYear()} CampusMart. JKUAT Student Marketplace.</p>
+                    <p style="font-size: 0.8rem; color: #888;">© ${new Date().getFullYear()} CampusMart. Student Marketplace.</p>
                 </div>
             `
         };
@@ -283,7 +328,8 @@ app.get('/api/products', async (req, res) => {
                    CASE 
                      WHEN u.is_verified = TRUE AND (u.verified_until IS NULL OR u.verified_until >= NOW()) THEN TRUE 
                      ELSE FALSE 
-                   END as seller_is_verified
+                   END as seller_is_verified,
+                   p.latitude, p.longitude, p.metadata, p.contact_phone, p.security_features
             FROM products p 
             LEFT JOIN users u ON p.seller_id = u.id 
             ORDER BY 
@@ -321,12 +367,28 @@ app.get('/api/products/me', verifyToken, async (req, res) => {
 
 app.post('/api/products', verifyToken, async (req, res) => {
     try {
-        const { title, category, price, location, image_url, images, condition, description } = req.body;
+        const { title, category, price, location, image_url, images, condition, description, latitude, longitude, metadata, contact_phone, security_features } = req.body;
         const seller_id = req.user.id;
 
+        console.log(`Creating product: ${title} with lat: ${latitude}, lng: ${longitude}`);
         await db.query(
-            'INSERT INTO products (title, category, price, location, image_url, images, seller_id, condition_text, description) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)',
-            [title, category, price, location, image_url, images || null, seller_id, condition || 'second-hand', description || '']
+            'INSERT INTO products (title, category, price, location, image_url, images, seller_id, condition_text, description, latitude, longitude, metadata, contact_phone, security_features) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)',
+            [
+                title,
+                category,
+                price,
+                location,
+                image_url,
+                images || null,
+                seller_id,
+                condition || 'second-hand',
+                description || '',
+                latitude === undefined ? null : latitude,
+                longitude === undefined ? null : longitude,
+                metadata || null,
+                contact_phone || null,
+                security_features || null
+            ]
         );
         logActivity(seller_id, 'product_create', { title });
         res.status(201).json({ message: 'Product added successfully' });
@@ -938,8 +1000,86 @@ app.post('/api/user/verify', verifyToken, async (req, res) => {
 
 
 
+// ─── M-Pesa Logic ─────────────────────────────────────────────────────────
+const getTimestamp = () => {
+    const date = new Date();
+    const YYYY = date.getFullYear();
+    const MM = String(date.getMonth() + 1).padStart(2, '0');
+    const DD = String(date.getDate()).padStart(2, '0');
+    const HH = String(date.getHours()).padStart(2, '0');
+    const mm = String(date.getMinutes()).padStart(2, '0');
+    const ss = String(date.getSeconds()).padStart(2, '0');
+    return `${YYYY}${MM}${DD}${HH}${mm}${ss}`;
+};
+
+const mpesaController = {
+    getAccessToken: async (req, res, next) => {
+        const consumer_key = process.env.MPESA_CONSUMER_KEY;
+        const consumer_secret = process.env.MPESA_CONSUMER_SECRET;
+        if (!consumer_key || !consumer_secret) {
+            return res.status(500).json({ message: 'M-Pesa credentials not configured.' });
+        }
+        const url = 'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials';
+        const encodedCredentials = Buffer.from(`${consumer_key}:${consumer_secret}`).toString('base64');
+        try {
+            const response = await axios.get(url, {
+                headers: { 'Authorization': `Basic ${encodedCredentials}`, 'Content-Type': 'application/json' },
+                timeout: 15000
+            });
+            if (!response.data || !response.data.access_token) return res.status(502).json({ message: 'Safaricom error.' });
+            req.mpesaToken = response.data.access_token;
+            next();
+        } catch (error) {
+            res.status(500).json({ message: 'Error generating M-Pesa token.' });
+        }
+    },
+    stkPush: async (req, res) => {
+        try {
+            const { amount, phone, accountReference, plan } = req.body;
+            const userId = req.user.id;
+            const token = req.mpesaToken;
+            const shortCode = process.env.MPESA_SHORTCODE || 174379;
+            const passkey = process.env.MPESA_PASSKEY;
+            const timestamp = getTimestamp();
+            const password = Buffer.from(`${shortCode}${passkey}${timestamp}`).toString('base64');
+            const url = 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest';
+            const requestBody = {
+                BusinessShortCode: shortCode, Password: password, Timestamp: timestamp,
+                TransactionType: 'CustomerPayBillOnline', Amount: Math.ceil(amount),
+                PartyA: phone, PartyB: shortCode, PhoneNumber: phone,
+                CallBackURL: `${process.env.APP_URL || 'https://campusmart.example.com'}/api/mpesa/callback`,
+                AccountReference: accountReference || `Plan: ${plan}`,
+                TransactionDesc: `CampusMart ${plan} Boost`
+            };
+            const response = await axios.post(url, requestBody, {
+                headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                timeout: 15000
+            });
+            if (response.data.ResponseCode === '0') {
+                await db.query(
+                    'INSERT INTO transactions (user_id, amount, type, status, checkout_request_id, plan) VALUES ($1, $2, $3, $4, $5, $6)',
+                    [userId, amount, `${plan}_boost`, 'pending', response.data.CheckoutRequestID, plan]
+                );
+                return res.status(200).json({ message: 'STK Push sent!', checkoutRequestID: response.data.CheckoutRequestID });
+            }
+            res.status(400).json({ message: 'STK Push failed.' });
+        } catch (error) {
+            res.status(500).json({ message: 'Unexpected STK Push error.' });
+        }
+    },
+    queryStatus: async (req, res) => {
+        try {
+            const { checkoutRequestId } = req.params;
+            const result = await db.query('SELECT * FROM transactions WHERE checkout_request_id = $1', [checkoutRequestId]);
+            if (result.rows.length === 0) return res.status(404).json({ message: 'Transaction not found' });
+            res.json({ status: result.rows[0].status, plan: result.rows[0].plan });
+        } catch (error) {
+            res.status(500).json({ message: 'Error checking status' });
+        }
+    }
+};
+
 // ─── M-Pesa Routes ────────────────────────────────────────────────────────
-const mpesaController = require('./mpesa');
 
 // Route: POST /api/mpesa/stkpush
 // Flow: verifyToken → getAccessToken (fetches Safaricom token) → stkPush

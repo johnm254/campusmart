@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../AppContext';
 import { api } from '../lib/api';
-import { Package, Eye, Heart, MessageCircle, ArrowUpRight, Clock, Plus, Check, Star } from 'lucide-react';
+import { Package, Eye, Heart, MessageCircle, ArrowUpRight, Clock, Plus, Check, Star, Zap } from 'lucide-react';
 
 const Dashboard = () => {
-    const { user, wishlist, setCurrentPage, setIsSellModalOpen, addNotification, setIsPremiumModalOpen } = useApp();
+    const { user, wishlist, setCurrentPage, setIsSellModalOpen, addNotification } = useApp();
     const [myProducts, setMyProducts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [realStats, setRealStats] = useState({
@@ -66,7 +66,7 @@ const Dashboard = () => {
 
     const stats = [
         { label: 'Active Listings', value: (realStats?.active_listings || 0).toString(), icon: Package, color: 'var(--jiji-green)' },
-        { label: 'Total Views', value: (realStats?.total_views || 0).toString(), icon: Eye, color: 'var(--jkuat-blue)' },
+        { label: 'Total Views', value: (realStats?.total_views || 0).toString(), icon: Eye, color: 'var(--campus-blue)' },
         { label: 'Saved Items', value: (realStats?.saved_items || 0).toString(), icon: Heart, color: 'var(--jiji-orange)' },
         { label: 'Avg Rating', value: (realStats?.average_rating || 0).toFixed(1) + ' (' + (realStats?.review_count || 0) + ')', icon: Star, color: '#FFD700' },
     ];
@@ -212,28 +212,31 @@ const Dashboard = () => {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-                    <div style={{ background: 'var(--campus-blue)', color: 'white', padding: '2.5rem 2rem', borderRadius: '24px', boxShadow: '0 10px 30px rgba(29, 61, 110, 0.2)', textAlign: 'center', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                        <div style={{ background: 'rgba(255,255,255,0.1)', width: '64px', height: '64px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem' }}>
-                            {user?.is_verified ? <Check size={32} color="white" /> : <Package size={32} color="white" />}
+                    <div style={{ background: 'linear-gradient(135deg, var(--campus-blue), #1e4d8c)', color: 'white', padding: '2.5rem 2rem', borderRadius: '24px', boxShadow: '0 10px 30px rgba(29, 61, 110, 0.2)', textAlign: 'center', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '1rem' }}>
+                        <div style={{ background: 'rgba(255,255,255,0.12)', width: '64px', height: '64px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto' }}>
+                            <Zap size={32} color="#fbbf24" />
                         </div>
-                        <h3 style={{ marginBottom: '1rem', fontSize: '1.5rem' }}>
-                            {user?.is_verified ? 'You are Verified!' : 'Sell 15x Faster!'}
-                        </h3>
-                        <p style={{ opacity: 0.8, fontSize: '0.95rem', marginBottom: '2rem', lineHeight: 1.6 }}>
-                            {user?.is_verified
-                                ? 'Your listings are currently boosted. Enjoy the extra visibility!'
-                                : 'Verified listings get 15x more views from fellow students.'
-                            }
+                        <h3 style={{ marginBottom: '0.25rem', fontSize: '1.4rem' }}>You're on CampusMart!</h3>
+                        <p style={{ opacity: 0.85, fontSize: '0.9rem', lineHeight: 1.6, margin: 0 }}>
+                            Everything is <strong>100% free</strong> — list goods, find houses, and connect with traders & landlords near your campus.
                         </p>
-                        {!user?.is_verified && (
-                            <button
-                                onClick={() => setIsPremiumModalOpen(true)}
-                                className="btn btn-secondary"
-                                style={{ width: '100%', borderRadius: '12px', padding: '1rem', fontWeight: 700 }}
-                            >
-                                Get Verified
-                            </button>
-                        )}
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginTop: '0.5rem' }}>
+                            <div style={{ background: 'rgba(255,255,255,0.1)', borderRadius: '12px', padding: '0.75rem' }}>
+                                <div style={{ fontSize: '1.5rem', fontWeight: 900, color: '#fbbf24' }}>{realStats.active_listings}</div>
+                                <div style={{ fontSize: '0.7rem', opacity: 0.8, fontWeight: 600 }}>Active Listings</div>
+                            </div>
+                            <div style={{ background: 'rgba(255,255,255,0.1)', borderRadius: '12px', padding: '0.75rem' }}>
+                                <div style={{ fontSize: '1.5rem', fontWeight: 900, color: '#fbbf24' }}>{realStats.total_views}</div>
+                                <div style={{ fontSize: '0.7rem', opacity: 0.8, fontWeight: 600 }}>Total Views</div>
+                            </div>
+                        </div>
+                        <button
+                            onClick={() => setIsSellModalOpen(true)}
+                            className="btn btn-secondary"
+                            style={{ width: '100%', borderRadius: '12px', padding: '0.9rem', fontWeight: 700, marginTop: '0.25rem' }}
+                        >
+                            + Post New Listing
+                        </button>
                     </div>
 
                     <div style={{ background: 'white', padding: '2rem', borderRadius: '24px', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }}>

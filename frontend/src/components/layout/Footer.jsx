@@ -56,8 +56,8 @@ const Footer = () => {
                     <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.4rem', fontSize: '0.95rem', padding: 0 }}>
                         <li><span style={{ cursor: 'pointer', opacity: 0.8 }} onClick={() => showInfo('About CampusMart', (
                             <div>
-                                <p><strong>CampusMart</strong> is the #1 student-to-student marketplace at JKUAT. Our mission is to make campus life affordable by providing a safe platform for comrades to buy and sell pre-loved items.</p>
-                                <p>Founded by students, for students, we understand the hustle. Whether you're moving out and need to sell your bed, or looking for cheap engineering drawing sets, we've got you covered.</p>
+                                <p><strong>CampusMart</strong> is the #1 student-to-student marketplace. Our mission is to make campus life affordable by providing a safe platform for comrades to buy and sell pre-loved items.</p>
+                                <p>Founded by students, for students, we understand the hustle. Whether you're moving out and need to sell your bed, or looking for cheap study materials, we've got you covered.</p>
                             </div>
                         ))}>About Us</span></li>
                         <li><span style={{ cursor: 'pointer', opacity: 0.8 }} onClick={() => showInfo('Stay Safe Comrades!', (
@@ -98,7 +98,7 @@ const Footer = () => {
                 <div>
                     <h3 style={{ color: 'var(--jiji-green)', fontSize: '1.15rem', marginBottom: '0.6rem', marginTop: 0 }}>Support</h3>
                     <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.4rem', fontSize: '0.95rem', padding: 0 }}>
-                        <li><span style={{ cursor: 'default', opacity: 0.8, display: 'flex', alignItems: 'center', gap: '5px' }}><MapPin size={16} /> Juja, JKUAT Main Campus</span></li>
+                        <li><span style={{ cursor: 'default', opacity: 0.8, display: 'flex', alignItems: 'center', gap: '5px' }}><MapPin size={16} /> All University Campuses</span></li>
                         <li><span style={{ cursor: 'default', opacity: 0.8, display: 'flex', alignItems: 'center', gap: '5px' }}><Mail size={16} /> campusmart.care@gmail.com</span></li>
                         <li><span style={{ cursor: 'pointer', opacity: 0.8, display: 'flex', alignItems: 'center', gap: '5px' }} onClick={() => showInfo('Contact Support', (
                             <div>
@@ -132,7 +132,7 @@ const Footer = () => {
                                 }
                             }}
                         >
-                            © 2026 JKUAT Comrades Marketplace. All rights reserved.
+                            © 2026 Campus Student Marketplace. All rights reserved.
                         </p>
 
                         <div style={{ display: 'flex', gap: '0.8rem', alignItems: 'center' }}>

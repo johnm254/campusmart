@@ -10,9 +10,9 @@ import Settings from './pages/Settings'
 import Messages from './pages/Messages'
 import ResetPassword from './pages/ResetPassword'
 import Community from './pages/Community'
+import Accommodation from './pages/Accommodation'
 import AuthModal from './components/modals/AuthModal'
 import SellModal from './components/modals/SellModal'
-import PremiumModal from './components/modals/PremiumModal'
 import NotificationContainer from './components/ui/NotificationContainer'
 import Feedback from './components/feedback/Feedback'
 import Chatbot from './components/support/Chatbot'
@@ -31,9 +31,7 @@ const AppContent = () => {
         isAuthModalOpen,
         setIsAuthModalOpen,
         isSellModalOpen,
-        setIsSellModalOpen,
-        isPremiumModalOpen,
-        setIsPremiumModalOpen
+        setIsSellModalOpen
     } = useApp();
 
     React.useEffect(() => {
@@ -74,6 +72,7 @@ const AppContent = () => {
             case 'settings': return <Settings />;
             case 'messages': return <Messages />;
             case 'community': return <Community />;
+            case 'accommodation': return <Accommodation />;
             case 'reset-password': return <ResetPassword />;
             default: return <Home />;
         }
@@ -92,7 +91,6 @@ const AppContent = () => {
             </main>
             <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
             <SellModal isOpen={isSellModalOpen} onClose={() => setIsSellModalOpen(false)} />
-            <PremiumModal isOpen={isPremiumModalOpen} onClose={() => setIsPremiumModalOpen(false)} />
             <InfoModal
                 isOpen={infoModal.isOpen}
                 onClose={closeInfo}

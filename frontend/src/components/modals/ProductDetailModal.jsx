@@ -199,14 +199,159 @@ const ProductDetailModal = ({ product, onClose }) => {
                             <div style={{ background: 'white', borderRadius: '8px', padding: '1.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
                                 <h1 style={{ fontSize: '1.75rem', fontWeight: 800, marginBottom: '0.75rem', color: '#1a1a1a' }}>{product.title}</h1>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', color: '#666', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
-                                    <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}><MapPin size={16} color="#888" /> {product.location || 'Juja'}</span>
+                                    <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}><MapPin size={16} color="#888" /> {product.location || 'On Campus'}</span>
                                     <span>•</span>
                                     <span>{new Date(product.created_at || Date.now()).toLocaleDateString()}</span>
                                     <span>•</span>
-                                    <span style={{ color: 'var(--jiji-green)', fontWeight: 600 }}>{product.condition || 'Used'}</span>
+                                    <span style={{
+                                        color: 'var(--jiji-green)',
+                                        fontWeight: 700,
+                                        background: 'rgba(61, 184, 58, 0.1)',
+                                        padding: '0.2rem 0.6rem',
+                                        borderRadius: '6px',
+                                        fontSize: '0.8rem'
+                                    }}>
+                                        {product.category === 'housing' ? `${product.condition}` : product.condition || 'Used'}
+                                    </span>
                                 </div>
                                 <div style={{ borderTop: '1px solid #eee', paddingTop: '1.5rem', marginBottom: '1.5rem' }}>
-                                    <h3 style={{ fontSize: '1.1rem', marginBottom: '0.75rem', color: '#333', fontWeight: 800 }}>Description</h3>
+                                    <h3 style={{ fontSize: '1.1rem', marginBottom: '0.75rem', color: '#333', fontWeight: 800 }}>
+                                        {product.category === 'housing' ? 'House Details & Amenities' : 'Description'}
+                                    </h3>
+
+                                    {product.category?.toLowerCase() === 'housing' && (
+                                        <div style={{ marginBottom: '1.5rem' }}>
+                                            {/* Landmark Section */}
+                                            {(() => {
+                                                try {
+                                                    const meta = typeof product.metadata === 'string' ? JSON.parse(product.metadata) : product.metadata;
+                                                    if (!meta?.landmarks) return null;
+                                                    return (
+                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#64748b', fontSize: '0.75rem', fontWeight: 600, marginBottom: '0.75rem' }}>
+                                                            <MapPin size={12} color="var(--jiji-orange)" /> {meta.landmarks}
+                                                        </div>
+                                                    );
+                                                } catch (e) { return null; }
+                                            })()}
+
+                                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.75rem', marginBottom: '1.25rem', background: '#f8fafc', padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+                                                {(() => {
+                                                    try {
+                                                        const meta = typeof product.metadata === 'string' ? JSON.parse(product.metadata) : product.metadata;
+                                                        return (
+                                                            <>
+                                                                <div>
+                                                                    <div style={{ fontSize: '0.6rem', color: '#64748b', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.25rem' }}>Rooms</div>
+                                                                    <div style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--campus-blue)' }}>{meta?.room_count || '1'}</div>
+                                                                </div>
+                                                                <div style={{ borderLeft: '1px solid #e2e8f0', paddingLeft: '0.75rem' }}>
+                                                                    <div style={{ fontSize: '0.6rem', color: '#64748b', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.25rem' }}>Facility</div>
+                                                                    <div style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--jiji-green)', textTransform: 'capitalize' }}>{meta?.facility_type || 'Private'}</div>
+                                                                </div>
+                                                                <div style={{ borderLeft: '1px solid #e2e8f0', paddingLeft: '0.75rem' }}>
+                                                                    <div style={{ fontSize: '0.6rem', color: '#64748b', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.25rem' }}>Distance</div>
+                                                                    <div style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--jiji-orange)' }}>{meta?.distance || 'Nearby'}</div>
+                                                                </div>
+                                                            </>
+                                                        );
+                                                    } catch (e) { return null; }
+                                                })()}
+                                            </div>
+
+                                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '1.25rem' }}>
+                                                {(() => {
+                                                    try {
+                                                        const meta = typeof product.metadata === 'string' ? JSON.parse(product.metadata) : product.metadata;
+                                                        const amenities = meta?.amenities || [];
+                                                        if (amenities.length === 0) return null;
+                                                        return amenities.map(amenity => (
+                                                            <span
+                                                                key={amenity}
+                                                                style={{
+                                                                    background: 'rgba(61, 184, 58, 0.1)',
+                                                                    color: '#3db83a',
+                                                                    padding: '0.35rem 0.75rem',
+                                                                    borderRadius: '20px',
+                                                                    fontSize: '0.75rem',
+                                                                    fontWeight: 700,
+                                                                    border: '1px solid rgba(61, 184, 58, 0.2)'
+                                                                }}
+                                                            >
+                                                                ✓ {amenity}
+                                                            </span>
+                                                        ));
+                                                    } catch (e) { return null; }
+                                                })()}
+                                            </div>
+
+                                            {product.security_features && (
+                                                <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0', marginBottom: '1.25rem' }}>
+                                                    <h4 style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--campus-blue)', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                                                        <ShieldCheck size={16} /> Security & Safety
+                                                    </h4>
+                                                    <p style={{ fontSize: '0.85rem', color: '#475569', margin: 0 }}>{product.security_features}</p>
+                                                </div>
+                                            )}
+
+                                            {product.contact_phone && (
+                                                <div style={{ background: '#f0fdf4', padding: '1rem', borderRadius: '12px', border: '1px solid #dcfce7', marginBottom: '1.25rem' }}>
+                                                    <h4 style={{ fontSize: '0.85rem', fontWeight: 800, color: '#166534', marginBottom: '0.4rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                                                        <Phone size={16} /> Property Contact
+                                                    </h4>
+                                                    <p style={{ fontSize: '1rem', fontWeight: 700, color: '#15803d', margin: 0 }}>{product.contact_phone}</p>
+                                                </div>
+                                            )}
+
+                                            {(() => {
+                                                const lat = parseFloat(product.latitude);
+                                                const lng = parseFloat(product.longitude);
+                                                const hasCoords = !isNaN(lat) && !isNaN(lng) && product.latitude !== null;
+
+                                                if (hasCoords) {
+                                                    return (
+                                                        <div style={{ background: '#f0f9ff', padding: '1rem', borderRadius: '12px', border: '1px solid #e0f2fe', marginBottom: '1.25rem' }}>
+                                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                                <div>
+                                                                    <h4 style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--campus-blue)', marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                                                                        <MapPin size={16} /> Live Map Location
+                                                                    </h4>
+                                                                    <p style={{ fontSize: '0.75rem', color: '#0369a1', margin: 0 }}>Pinpointed by Landlord</p>
+                                                                </div>
+                                                                <button
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        window.open(`https://www.google.com/maps?q=${lat},${lng}`, '_blank');
+                                                                    }}
+                                                                    style={{
+                                                                        background: 'var(--campus-blue)',
+                                                                        color: 'white',
+                                                                        border: 'none',
+                                                                        padding: '0.5rem 1rem',
+                                                                        borderRadius: '8px',
+                                                                        fontWeight: 800,
+                                                                        fontSize: '0.75rem',
+                                                                        cursor: 'pointer',
+                                                                        display: 'flex',
+                                                                        alignItems: 'center',
+                                                                        gap: '0.4rem'
+                                                                    }}
+                                                                >
+                                                                    VIEW LIVE MAP
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                } else {
+                                                    return (
+                                                        <div style={{ background: '#f8fafc', padding: '0.75rem', borderRadius: '10px', border: '1px solid #e2e8f0', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#64748b', fontSize: '0.75rem', fontWeight: 600 }}>
+                                                            <Info size={14} /> Location PIN not shared for this property.
+                                                        </div>
+                                                    );
+                                                }
+                                            })()}
+                                        </div>
+                                    )}
+
                                     <p style={{ color: '#444', lineHeight: 1.6, whiteSpace: 'pre-line' }}>{product.description || 'No description provided.'}</p>
                                 </div>
 
@@ -331,24 +476,6 @@ const ProductDetailModal = ({ product, onClose }) => {
                                     <div style={{ flex: 1 }}>
                                         <div style={{ fontWeight: 700, fontSize: '1.2rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                                             {product.seller_name || 'Comrade Seller'}
-                                            {product.seller_is_verified && (
-                                                <div style={{
-                                                    marginLeft: 'auto',
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                    width: '32px',
-                                                    height: '32px',
-                                                    background: product.boost_type === 'power'
-                                                        ? 'radial-gradient(circle at 30% 30%, #FFD700 0%, #B8860B 100%)' // Gold
-                                                        : 'radial-gradient(circle at 30% 30%, #00aeef 0%, #1d3d6e 100%)', // Blue
-                                                    borderRadius: '50%',
-                                                    boxShadow: '0 4px 10px rgba(0,0,0,0.2)',
-                                                    border: '2px solid rgba(255,255,255,0.7)'
-                                                }}>
-                                                    <ShieldCheck size={20} color="white" strokeWidth={3} />
-                                                </div>
-                                            )}
                                         </div>
                                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', marginTop: '0.25rem', alignItems: 'center' }}>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', marginRight: '0.5rem' }}>
@@ -424,10 +551,42 @@ const ProductDetailModal = ({ product, onClose }) => {
                                 )}
                             </div>
 
-                            <div style={{ background: 'white', borderRadius: '8px', padding: '1rem 1.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', textAlign: 'center' }}>
+                            <div style={{ background: 'white', borderRadius: '8px', padding: '1.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', textAlign: 'center' }}>
                                 <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--jiji-green)', letterSpacing: '-0.5px' }}>
                                     KSh {Number(product.price || 0).toLocaleString()}
                                 </div>
+
+                                {product.category === 'housing' && product.latitude && product.longitude && (
+                                    <div style={{ marginTop: '1rem', borderTop: '1px solid #eee', paddingTop: '1rem' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', color: 'var(--jiji-green)', fontSize: '0.75rem', fontWeight: 800, marginBottom: '0.75rem' }}>
+                                            <ShieldCheck size={14} /> LIVE LOCATION VERIFIED
+                                        </div>
+                                        <button
+                                            onClick={() => window.open(`https://www.google.com/maps?q=${product.latitude},${product.longitude}`, '_blank')}
+                                            style={{
+                                                width: '100%',
+                                                background: '#4285F4',
+                                                color: 'white',
+                                                border: 'none',
+                                                height: '42px',
+                                                borderRadius: '4px',
+                                                fontWeight: 800,
+                                                fontSize: '0.85rem',
+                                                cursor: 'pointer',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                gap: '0.5rem',
+                                                boxShadow: '0 4px 10px rgba(66, 133, 244, 0.3)'
+                                            }}
+                                        >
+                                            <MapPin size={18} /> VIEW LIVE MAP
+                                        </button>
+                                        <p style={{ fontSize: '0.65rem', color: '#888', marginTop: '0.5rem' }}>
+                                            Coordinates: {parseFloat(product.latitude).toFixed(4)}, {parseFloat(product.longitude).toFixed(4)}
+                                        </p>
+                                    </div>
+                                )}
                             </div>
 
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>

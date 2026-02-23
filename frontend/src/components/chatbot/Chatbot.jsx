@@ -2,10 +2,10 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Bot, Send, X, MessageSquare } from 'lucide-react';
 
 const responses = {
-    greetings: ["Hello Comrade! I'm MartBot, your JKUAT marketplace assistant. How can I help you today?", "Habari! Ready to find some great deals on campus?"],
-    safety: ["Safety First! NEVER pay before seeing the item. Meet in public campus areas like Juja Stage or Gate B."],
+    greetings: ["Hello Comrade! I'm MartBot, your campus marketplace assistant. How can I help you today?", "Habari! Ready to find some great deals on campus?"],
+    safety: ["Safety First! NEVER pay before seeing the item. Meet in public campus areas or at well-lit spots near the gate."],
     selling: ["To sell, click the SELL button. Pro tip: Good photos help items sell faster!"],
-    default: ["I'm not sure about that. Try asking about safety, selling, or locations in Juja!"]
+    default: ["I'm not sure about that. Try asking about safety, selling, or locations!"]
 };
 
 const Chatbot = () => {
@@ -84,7 +84,7 @@ const Chatbot = () => {
             ) : (
                 <div
                     onClick={() => setIsOpen(true)}
-                    style={{ width: '60px', height: '60px', background: 'linear-gradient(135deg, var(--campus-blue), var(--jkuat-blue))', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', cursor: 'pointer', boxShadow: '0 10px 25px rgba(29, 61, 110, 0.3)' }}
+                    style={{ width: '60px', height: '60px', background: 'linear-gradient(135deg, var(--campus-blue), #00aeef)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', cursor: 'pointer', boxShadow: '0 10px 25px rgba(29, 61, 110, 0.3)' }}
                 >
                     <MessageSquare size={24} />
                 </div>

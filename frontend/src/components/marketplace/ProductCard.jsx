@@ -15,18 +15,12 @@ const ProductCard = ({ product, onClick }) => {
         }
     };
 
-    const isVerified = product.seller_is_verified;
+    // Removed verification tiers — all users are equal
 
     return (
         <div
             className="product-card"
             onClick={() => onClick?.()}
-            style={isVerified ? {
-                border: '2px solid #1d3d6e', // Professional blue border for verified sellers
-                boxShadow: '0 8px 16px rgba(29, 61, 110, 0.15)',
-                transform: 'translateY(-2px)',
-                position: 'relative'
-            } : {}}
         >
             <div className="product-image-container">
                 <img
@@ -68,24 +62,7 @@ const ProductCard = ({ product, onClick }) => {
                     <span style={{ fontSize: '0.75rem', fontWeight: 500, color: '#666', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100px' }}>
                         {product.seller_name || 'Seller'}
                     </span>
-                    {product.seller_is_verified && (
-                        <div style={{
-                            marginLeft: 'auto',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            width: '22px',
-                            height: '22px',
-                            background: product.boost_type === 'power'
-                                ? 'radial-gradient(circle at 30% 30%, #FFD700 0%, #B8860B 100%)' // Gold
-                                : 'radial-gradient(circle at 30% 30%, #00aeef 0%, #1d3d6e 100%)', // Blue
-                            borderRadius: '50%',
-                            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                            border: '1px solid rgba(255,255,255,0.5)'
-                        }}>
-                            <ShieldCheck size={12} color="white" strokeWidth={3} />
-                        </div>
-                    )}
+                    {/* Removed Verified Badge */}
                 </div>
             </div>
 

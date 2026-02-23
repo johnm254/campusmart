@@ -39,14 +39,14 @@ const Chatbot = () => {
             { cat: 'account', q: 'Can I log in with my student ID?', a: 'Currently, you log in using your registered email and password. Your student ID is used for verification purposes to ensure a safe community.' },
             { cat: 'account', q: 'I forgot my password, how do I reset it?', a: 'On the Sign In screen, click "Forgot Password?". We will send a reset link to your registered email.' },
             { cat: 'account', q: 'Can I change my profile photo or name?', a: 'Yes! Go to "Settings" from your profile menu. You can update your full name and upload a new profile picture there.' },
-            { cat: 'account', q: 'How do I verify my student status?', a: 'Simply purchase any Boost package (Starter or Power). This automatically marks you as a verified student trader!' },
+            { cat: 'account', q: 'How do I verify my student status?', a: 'CampusMart is built exclusively for the student community. Simply use your student email or provide campus details during registration to join our free network!' },
             { cat: 'account', q: 'How do I deactivate my account?', a: 'Contact our support team via the Feedback button or email us at support@campusmart.co.ke' },
 
             // Listings & Selling
-            { cat: 'selling', q: 'How do I post an item for sale?', a: 'Click the "Sell" button in the navigation bar. Fill in the details, upload photos, and click "Post Product".' },
-            { cat: 'selling', q: 'How many photos can I upload per listing?', a: 'Free: 2 photos | Starter Boost: 5 photos | Power Boost: 10 photos.' },
+            { cat: 'selling', q: 'How do I post an item for sale?', a: 'Click the "Sell" button in the navigation bar. Fill in the details, upload up to 5 photos, and click "Post Product". It’s 100% free!' },
+            { cat: 'selling', q: 'How many photos can I upload per listing?', a: 'All users can upload up to 5 clear photos per listing at no cost.' },
             { cat: 'selling', q: 'Can I edit or delete a listing?', a: 'Yes, go to your Dashboard. You' + "'" + 'll see all your listings with options to Edit or Delete them.' },
-            { cat: 'selling', q: 'What is the difference between Starter and Power Boost?', a: 'Starter (KSh 149): 14 days, 5 photos, blue badge. Power (KSh 220): 28 days, 10 photos, gold badge, top placement, and homepage feature.' },
+            { cat: 'selling', q: 'What happened to the Boost packages?', a: 'CampusMart is now 100% free for everyone! We removed paid packages to ensure every student has an equal chance to sell their items quickly.' },
             { cat: 'selling', q: 'Why isn’t my listing showing?', a: 'New listings may undergo a quick review. If it' + "'" + 's been over 2 hours, please ensure your listing doesn' + "'" + 't violate our community policies.' },
 
             // Buying & Browsing
@@ -60,13 +60,13 @@ const Chatbot = () => {
             { cat: 'payments', q: 'Why did my payment fail?', a: 'Check if you have sufficient M-Pesa balance, ensured your phone was active, and entered the correct PIN.' },
 
             // Safety & Trust
-            { cat: 'safety', q: 'How do I know a seller is a real student?', a: 'Look for the "Verified" badge (Blue or Gold) on their profile. This indicates they are a student who has undergone verification.' },
+            { cat: 'safety', q: 'How do I know a seller is a real student?', a: 'Check their ratings and reviews from other students. We encourage everyone to trade safely within campus grounds.' },
             { cat: 'safety', q: 'Should I meet a seller inside campus?', a: 'YES! We always recommend meeting in public, well-lit areas on campus during daylight hours for your safety.' },
             { cat: 'safety', q: 'What are the safety tips?', a: '1. Meet on campus. 2. Inspect the item before paying. 3. Avoid paying in advance. 4. Bring a friend if possible.' },
 
             // Policies
             { cat: 'policies', q: 'What items are not allowed?', a: 'Drugs, alcohol, weapons, counterfeit goods, adult content, and any illegal services are strictly prohibited.' },
-            { cat: 'policies', q: 'How is this different from Jiji?', a: 'CampusMart is exclusive to students. It' + "'" + 's safer because traders are within the same campus community.' },
+            { cat: 'policies', q: 'How is this different from Jiji?', a: 'CampusMart is exclusive to students. It' + "'" + 's safer because traders are within the same university community.' },
 
             // Tech Support
             { cat: 'tech', q: 'How do I report a bug?', a: 'Use the "Feedback" button on the bottom right and select "Report Bug". Our dev team will look into it immediately!' },
@@ -78,9 +78,9 @@ const Chatbot = () => {
 
             // Campus Specific
             { cat: 'campus', q: 'Can I filter items by my hostel?', a: 'Yes! When browsing the Marketplace, use the "Filter" option and select your specific Hostel to see items nearest to you.' },
-            { cat: 'campus', q: 'Are listings only for JKUAT students?', a: 'The platform is optimized for JKUAT students and staff, but we welcome students from neighboring institutions like KU and Juja City College.' },
+            { cat: 'campus', q: 'Are listings only for specific students?', a: 'The platform is optimized for all university students and staff in Kenya.' },
             { cat: 'campus', q: 'Can alumni post items?', a: 'Yes, as long as you can meet the buyer on or near campus for the exchange.' },
-            { cat: 'campus', q: 'Is there a guide for freshers on what to buy?', a: 'Welcome to JKUAT! We recommend checking the "Freshers Essentials" category for deals on mattresses, storage boxes, and kettles.' },
+            { cat: 'campus', q: 'Is there a guide for freshers on what to buy?', a: 'Welcome to Campus! We recommend checking the "Freshers Essentials" category for deals on mattresses, storage boxes, and kettles.' },
         ]
     };
 
@@ -120,7 +120,7 @@ const Chatbot = () => {
             return { a: "For payments, we use M-Pesa STK Push. Make sure your phone is unlocked and you have enough balance." };
         }
         if (lowerInput.includes('boost') || lowerInput.includes('verify')) {
-            return { a: "Boosts help you sell 15x faster! Use Starter for 14 days or Power for 28 days of maximum exposure." };
+            return { a: "CampusMart is now completely free! All listings get equal visibility to the entire campus community." };
         }
 
         return {

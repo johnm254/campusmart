@@ -25,7 +25,7 @@
   --jiji-orange-dark: var(--orange-dark);
   --jiji-light-blue: var(--blue-wash);
   --jiji-gray-bg: var(--gray-bg);
-  --jkuat-blue: var(--blue-light);
+  --campus-blue: var(--blue-light);
   --campus-blue: var(--blue);
   --border-light: var(--border);
 }
@@ -39,15 +39,25 @@
   box-sizing: border-box;
 }
 
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 html,
 body {
   overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
 }
 
 img,
 video,
 iframe {
   max-width: 100%;
+  height: auto;
   display: block;
 }
 
@@ -335,10 +345,33 @@ main {
   }
 }
 
+@keyframes pulse {
+
+  0%,
+  100% {
+    box-shadow: 0 6px 16px rgba(21, 128, 61, 0.4);
+    transform: scale(1);
+  }
+
+  50% {
+    box-shadow: 0 10px 28px rgba(21, 128, 61, 0.65);
+    transform: scale(1.015);
+  }
+}
+
 /* ── 14. RESPONSIVE ──────────────────────────────────────────── */
+
+/* Ensure all content scales properly */
+* {
+  max-width: 100%;
+}
 
 /* Tablet ≤ 1024px */
 @media (max-width: 1024px) {
+  html {
+    font-size: 15px;
+  }
+
   .container {
     padding: 2.5rem 1.5rem;
   }
@@ -355,6 +388,10 @@ main {
 
 /* Tablet ≤ 768px */
 @media (max-width: 768px) {
+  html {
+    font-size: 14px;
+  }
+
   .container {
     padding: 2rem 1.25rem;
   }
@@ -378,13 +415,31 @@ main {
 
   .modal-content {
     width: 96% !important;
+    max-width: 96% !important;
     padding: 1.5rem !important;
     border-radius: 20px !important;
+    margin: 1rem;
+  }
+
+  h1 {
+    font-size: 1.75rem !important;
+  }
+
+  h2 {
+    font-size: 1.5rem !important;
+  }
+
+  h3 {
+    font-size: 1.25rem !important;
   }
 }
 
 /* Mobile ≤ 480px */
 @media (max-width: 480px) {
+  html {
+    font-size: 14px;
+  }
+
   .container {
     padding: 1.5rem 1rem;
   }
@@ -408,15 +463,34 @@ main {
 
   .modal-content {
     padding: 1.25rem !important;
+    width: 94% !important;
+    max-width: 94% !important;
   }
 
   .btn {
     font-size: 0.9rem;
+    padding: 0.7rem 1.2rem;
+  }
+
+  h1 {
+    font-size: 1.5rem !important;
+  }
+
+  h2 {
+    font-size: 1.3rem !important;
+  }
+
+  h3 {
+    font-size: 1.1rem !important;
   }
 }
 
 /* Small phone ≤ 360px */
 @media (max-width: 360px) {
+  html {
+    font-size: 13px;
+  }
+
   .container {
     padding: 1rem 0.75rem;
   }
@@ -437,6 +511,14 @@ main {
     font-size: 0.82rem;
     padding: 0.55rem 0.9rem;
   }
+
+  h1 {
+    font-size: 1.3rem !important;
+  }
+
+  h2 {
+    font-size: 1.15rem !important;
+  }
 }
 
 /* PWA installed — safe area padding for notched phones */
@@ -444,5 +526,13 @@ main {
   body {
     padding-top: env(safe-area-inset-top);
     padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* Landscape mobile */
+@media (max-height: 500px) and (orientation: landscape) {
+  .modal-content {
+    max-height: 85vh !important;
+    overflow-y: auto !important;
   }
 }

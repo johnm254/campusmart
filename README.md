@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🎓 CampusMart — JKUAT Student Marketplace
 
 > **The #1 student trading platform at JKUAT.** Buy and sell textbooks, electronics, hostel essentials, clothes and more at comrade prices — safely, fast, and exclusively for JKUAT students.
@@ -588,3 +589,44 @@ Built with ❤️ for the JKUAT student community.
 ---
 
 *Last updated: February 2026*
+=======
+# CampusMart
+
+Student marketplace and accommodation platform.
+
+## Project Structure
+
+```
+campus-mart/
+├── frontend/     # React application - See frontend/README.md
+└── backend/      # Node.js API server - See backend/SETUP.md
+```
+
+## Quick Start
+
+### Backend
+```bash
+cd backend
+npm install
+npm start
+```
+
+### Frontend
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+## Documentation
+
+- **Frontend Setup**: See `frontend/README.md`
+- **Backend Setup**: See `backend/SETUP.md`
+- **Security**: See `backend/SECURITY.md`
+- **Deployment**: See `backend/DEPLOYMENT.md`
+
+## Access
+
+- Frontend: http://localhost:5173
+- Backend: http://localhost:5000
+>>>>>>> 38582d5 (Initial commit: CampusMart platform)

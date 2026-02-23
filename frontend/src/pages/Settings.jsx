@@ -144,68 +144,7 @@ const Settings = () => {
                 </form>
             </div>
 
-            {/* Verification Status Section */}
-            <div style={{ background: 'white', padding: '2.5rem', borderRadius: '24px', boxShadow: '0 10px 40px rgba(0,0,0,0.05)', marginTop: '2rem' }}>
-                <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                    <ShieldCheck size={24} color="var(--campus-blue)" />
-                    Account Verification
-                </h3>
-
-                {user?.is_verified ? (
-                    <div style={{
-                        background: 'linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 165, 0, 0.1) 100%)',
-                        padding: '2rem',
-                        borderRadius: '20px',
-                        border: '2px solid #FFD700',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '2rem'
-                    }}>
-                        <div style={{
-                            width: '64px',
-                            height: '64px',
-                            borderRadius: '50%',
-                            background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            color: 'white',
-                            boxShadow: '0 8px 20px rgba(255, 215, 0, 0.4)'
-                        }}>
-                            <Star size={32} fill="white" />
-                        </div>
-                        <div>
-                            <div style={{ fontWeight: 800, fontSize: '1.2rem', color: '#b8860b' }}>PREMIUM VERIFIED</div>
-                            <p style={{ color: '#666', margin: '0.5rem 0 0', fontWeight: 500 }}>
-                                Your listings are boosted 15x and you have the golden badge visible to all buyers.
-                            </p>
-                            {user.verified_until && (
-                                <div style={{ fontSize: '0.85rem', color: '#999', marginTop: '0.75rem', fontWeight: 600 }}>
-                                    Active until: {new Date(user.verified_until).toLocaleDateString()}
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                ) : (
-                    <div style={{ background: '#f8fafc', padding: '2rem', borderRadius: '20px', border: '1px dashed #cbd5e0' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <div>
-                                <div style={{ fontWeight: 700, fontSize: '1.1rem', color: '#475569' }}>Standard Student Account</div>
-                                <p style={{ color: '#64748b', margin: '0.5rem 0 0', maxWidth: '400px' }}>
-                                    Get verified to unlock the Golden Badge, boost your products 15x, and build trust with buyers.
-                                </p>
-                            </div>
-                            <button
-                                className="btn-jiji-green"
-                                style={{ padding: '0.75rem 2rem', borderRadius: '12px', fontWeight: 800 }}
-                                onClick={() => addNotification('Premium', 'Redirecting to verification...', 'success')}
-                            >
-                                GET VERIFIED
-                            </button>
-                        </div>
-                    </div>
-                )}
-            </div>
+            {/* Removed Verification Section — Platform is now free for all */}
 
             {showCropper && (
                 <ImageCropperModal

@@ -2,9 +2,9 @@ import React from 'react';
 
 const safetySteps = [
     {
-        title: 'The Juja Stage Rule',
-        desc: 'Meet at very busy spots like Juja Stage, Total Petrol Station, or near the Police Station. Never follow a seller into dark alleys or obscure hostels.',
-        image: '/juja%20stage.png'
+        title: 'The Public Stage Rule',
+        desc: 'Meet at very busy spots like the Stage, a Petrol Station, or near a Police Station. Never follow a seller into dark alleys or obscure hostels.',
+        image: '/stage.png'
     },
     {
         title: 'Comrade Power',
@@ -24,7 +24,7 @@ const SafetyGuide = () => {
             <div style={{ textAlign: 'center', marginBottom: '4rem', padding: '0 2rem' }}>
                 <h2 style={{ fontSize: '3rem', color: 'var(--campus-blue)', marginBottom: '1.5rem' }}>Comrade Safe-Trade Initiative</h2>
                 <p style={{ fontSize: '1.35rem', color: 'var(--text-secondary)', maxWidth: '800px', margin: '0 auto', lineHeight: '1.8' }}>
-                    Trading in Juja and off-campus markets requires extra vigilance. We've built these guidelines to ensure every comrade stays protected.
+                    Trading in off-campus markets requires extra vigilance. We've built these guidelines to ensure every comrade stays protected.
                 </p>
             </div>
 

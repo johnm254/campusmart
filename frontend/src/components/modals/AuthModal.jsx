@@ -122,12 +122,12 @@ const AuthModal = ({ isOpen, onClose }) => {
                     {isForgot ? (
                         <div className="form-group">
                             <p style={{ fontSize: '0.9rem', color: '#666', marginBottom: '1rem' }}>
-                                Enter your student email address and we'll send you a link to reset your password.
+                                Enter your email address and we'll send you a link to reset your password.
                             </p>
-                            <label style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', fontSize: '0.9rem', fontWeight: 600 }}><Mail size={16} /> Student Email</label>
+                            <label style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', fontSize: '0.9rem', fontWeight: 600 }}><Mail size={16} /> Email Address</label>
                             <input
                                 type="email"
-                                placeholder="name@student.jkuat.ac.ke"
+                                placeholder="yourname@gmail.com"
                                 value={email}
                                 onChange={e => setEmail(e.target.value)}
                                 required
@@ -170,13 +170,13 @@ const AuthModal = ({ isOpen, onClose }) => {
                             )}
 
                             <div className="form-group">
-                                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', fontSize: '0.9rem', fontWeight: 600 }}><Mail size={16} /> Student Email</label>
+                                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', fontSize: '0.9rem', fontWeight: 600 }}><Mail size={16} /> Email Address</label>
                                 <input
                                     type="email"
                                     id="email"
                                     name="email"
                                     autoComplete="email"
-                                    placeholder="e.g. name@student.jkuat.ac.ke"
+                                    placeholder="e.g. yourname@gmail.com"
                                     value={email}
                                     onChange={e => setEmail(e.target.value)}
                                     required

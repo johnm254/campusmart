@@ -4,11 +4,24 @@ export const api = {
     baseUrl: API_URL,
     async handleResponse(res) {
         const contentType = res.headers.get('content-type');
+        let data;
         if (contentType && contentType.includes('application/json')) {
-            return res.json();
+            data = await res.json();
+        } else {
+            const text = await res.text();
+            data = { error: true, message: `Server error: ${res.status}`, detail: text };
         }
-        const text = await res.text();
-        return { error: true, message: `Server error: ${res.status}`, detail: text };
+
+        // Auto-clear session on token errors (expired or invalid JWT)
+        if ((res.status === 401 || res.status === 403) &&
+            data?.message && (data.message.toLowerCase().includes('invalid token') || data.message.toLowerCase().includes('no token'))) {
+            localStorage.removeItem('user');
+            localStorage.removeItem('token');
+            // Dispatch event so AppContext can react
+            window.dispatchEvent(new CustomEvent('session-expired'));
+        }
+
+        return data;
     },
 
     async signup(data) {

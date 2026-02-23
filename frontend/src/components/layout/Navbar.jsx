@@ -23,11 +23,14 @@ const Navbar = ({ onOpenAuth, onOpenSell }) => {
                 color: currentPage === page ? 'var(--jiji-green)' : 'var(--text-primary)',
                 textDecoration: 'none',
                 fontWeight: 700,
-                fontSize: isMobile ? '1.1rem' : '0.95rem',
-                padding: isMobile ? '0.75rem 0' : '0',
+                fontSize: isMobile ? '1.1rem' : '1.15rem',
+                padding: isMobile ? '0.75rem 0' : '0.5rem 0.25rem',
                 borderBottom: isMobile ? '1px solid #f5f5f5' : 'none',
-                display: 'block'
+                display: 'block',
+                transition: 'all 0.2s'
             }}
+            onMouseOver={e => e.currentTarget.style.color = 'var(--jiji-green)'}
+            onMouseOut={e => e.currentTarget.style.color = currentPage === page ? 'var(--jiji-green)' : 'var(--text-primary)'}
         >
             {label}
         </a>
@@ -44,7 +47,7 @@ const Navbar = ({ onOpenAuth, onOpenSell }) => {
             borderBottom: '1px solid #eee'
         }}>
             {/* Main bar */}
-            <div style={{ maxWidth: '1300px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem' }}>
+            <div style={{ maxWidth: '1400px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '2rem' }}>
 
                 {/* Logo */}
                 <div onClick={() => setCurrentPage('home')} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
@@ -57,11 +60,12 @@ const Navbar = ({ onOpenAuth, onOpenSell }) => {
                     )}
                 </div>
 
-                {/* Desktop nav links */}
+                {/* Desktop nav links - Moved next to right side actions */}
                 {!isMobile && (
-                    <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', gap: '2rem', alignItems: 'center', marginLeft: 'auto' }}>
                         {navLink('home', 'Discover')}
                         {navLink('marketplace', 'Marketplace')}
+                        {navLink('accommodation', 'Accommodation')}
                         {navLink('community', 'Community')}
                     </div>
                 )}
@@ -74,7 +78,7 @@ const Navbar = ({ onOpenAuth, onOpenSell }) => {
                         onClick={() => user ? onOpenSell() : onOpenAuth()}
                         style={{ padding: isMobile ? '0.45rem 0.9rem' : '0.5rem 1.25rem', fontSize: isMobile ? '0.8rem' : '0.9rem' }}
                     >
-                        + SELL
+                        {currentPage === 'accommodation' ? '+ POST HOUSE' : '+ SELL'}
                     </button>
 
                     {/* Profile avatar (always visible when logged in) */}
@@ -179,6 +183,7 @@ const Navbar = ({ onOpenAuth, onOpenSell }) => {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
                         {navLink('home', '🏠  Discover')}
                         {navLink('marketplace', '🛍️  Marketplace')}
+                        {navLink('accommodation', '🏠  Accommodation')}
                         {navLink('community', '👥  Community')}
 
                         {user ? (

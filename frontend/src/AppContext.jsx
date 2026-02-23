@@ -69,11 +69,33 @@ export const AppProvider = ({ children }) => {
 
     // ── Effects ───────────────────────────────────────────────────
 
+    // Helper: decode JWT payload (no signature check, just read expiry)
+    const decodeJwtExpiry = (token) => {
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            return payload.exp ? payload.exp * 1000 : null; // convert to ms
+        } catch {
+            return null;
+        }
+    };
+
     // Restore session from localStorage
     useEffect(() => {
         const saved = localStorage.getItem('user');
+        const token = localStorage.getItem('token');
         if (!saved) return;
         try {
+            // Check if the JWT token is expired
+            if (token) {
+                const expiry = decodeJwtExpiry(token);
+                if (expiry && Date.now() > expiry) {
+                    // Token expired — clear session silently
+                    localStorage.removeItem('user');
+                    localStorage.removeItem('token');
+                    return;
+                }
+            }
+
             const parsed = JSON.parse(saved);
             // Expire local verification if past date
             if (parsed.is_verified && parsed.verified_until && new Date(parsed.verified_until) < new Date()) {
@@ -85,6 +107,20 @@ export const AppProvider = ({ children }) => {
             localStorage.removeItem('user');
             localStorage.removeItem('token');
         }
+    }, []);
+
+    // Listen for session-expired events fired by the API layer
+    useEffect(() => {
+        const handleSessionExpired = () => {
+            setUser(null);
+            setWishlist([]);
+            setUnreadCount(0);
+            prevUnreadRef.current = 0;
+            sessionStorage.removeItem('admin_access_unlocked');
+            addNotification('Session Expired', 'Your session has ended. Please sign in again.', 'warning');
+        };
+        window.addEventListener('session-expired', handleSessionExpired);
+        return () => window.removeEventListener('session-expired', handleSessionExpired);
     }, []);
 
     // Load wishlist when user changes
@@ -134,7 +170,6 @@ export const AppProvider = ({ children }) => {
             logout,
             isAuthModalOpen, setIsAuthModalOpen,
             isSellModalOpen, setIsSellModalOpen,
-            isPremiumModalOpen, setIsPremiumModalOpen,
             unreadCount, setUnreadCount,
             siteSettings, setSiteSettings,
         }}>

@@ -8,7 +8,7 @@ const Notification = ({ notification }) => {
 
     const typeConfig = {
         success: { color: 'var(--jiji-green)', Icon: CheckCircle },
-        info: { color: 'var(--jkuat-blue)', Icon: Info },
+        info: { color: 'var(--campus-blue)', Icon: Info },
         warning: { color: 'var(--jiji-orange)', Icon: AlertTriangle }
     };
 
