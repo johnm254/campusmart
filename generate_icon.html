@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+    <img id="source" src="logo.png" style="display:none">
+    <canvas id="c512" width="512" height="512"></canvas>
+    <div id="output"></div>
+    <script>
+        window.onload = function () {
+            const img = document.getElementById('source');
+            const canvas = document.getElementById('c512');
+            const ctx = canvas.getContext('2d');
+
+            // White background for app icon (cleanest look)
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, 512, 512);
+
+            // Calculate scaling to fit nicely with padding
+            const padding = 60;
+            const availableSize = 512 - (padding * 2);
+            const scale = Math.min(availableSize / img.naturalWidth, availableSize / img.naturalHeight);
+
+            const w = img.naturalWidth * scale;
+            const h = img.naturalHeight * scale;
+            const x = (512 - w) / 2;
+            const y = (512 - h) / 2;
+
+            ctx.drawImage(img, x, y, w, h);
+
+            // Output base64
+            document.getElementById('output').innerText = canvas.toDataURL('image/png');
+        };
+    </script>
+</body>
+
+</html>

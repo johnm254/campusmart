@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Primary SEO -->
+    <title>CampusMart – Student Marketplace & Accommodation | Buy, Sell & Find Housing</title>
+    <meta name="description"
+        content="CampusMart connects students, traders & landlords. Buy and sell textbooks, electronics, furniture at comrade prices. Find hostels, single rooms & apartments near campus. 100% free, zero commission." />
+    <meta name="keywords"
+        content="campusmart, student marketplace Kenya, campus accommodation, student housing, buy textbooks, sell electronics, hostel finder, student rooms, comrade prices, university market, campus trading" />
+    <meta name="author" content="CampusMart Team" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://campusmart.co.ke/" />
+
+    <!-- Open Graph (Facebook, WhatsApp, LinkedIn) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://campusmart.co.ke/" />
+    <meta property="og:title" content="CampusMart – Student Marketplace & Accommodation" />
+    <meta property="og:description"
+        content="Buy & sell campus goods at comrade prices. Find student housing near your campus. Connect with traders & landlords directly. 100% free, zero commission." />
+    <meta property="og:image" content="https://campusmart.co.ke/logo.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content="CampusMart" />
+    <meta property="og:locale" content="en_KE" />
+
+    <!-- Twitter / X Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="CampusMart – Student Marketplace & Accommodation" />
+    <meta name="twitter:description"
+        content="Buy & sell at comrade prices. Find student housing. Connect directly with traders & landlords. 100% free platform." />
+    <meta name="twitter:image" content="https://campusmart.co.ke/logo.png" />
+    <meta name="twitter:site" content="@campusmart_ke" />
+
+    <!-- Favicon & App Icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/logo.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/logo.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="shortcut icon" href="/logo.png" />
+
+    <!-- PWA & Mobile -->
+    <link rel="manifest" href="/manifest.json?v=5" />
+    <meta name="theme-color" content="#1d3d6e" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="CampusMart" />
+    <meta name="application-name" content="CampusMart" />
+
+    <!-- Google Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "CampusMart",
+        "alternateName": "CampusMart Kenya",
+        "url": "https://campusmart.co.ke/",
+        "description": "Student marketplace and accommodation platform. Buy and sell campus goods at comrade prices. Find hostels, single rooms and apartments near your campus. Connect with traders and landlords directly.",
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": {
+                "@type": "EntryPoint",
+                "urlTemplate": "https://campusmart.co.ke/?q={search_term_string}"
+            },
+            "query-input": "required name=search_term_string"
+        }
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "CampusMart",
+        "url": "https://campusmart.co.ke/",
+        "logo": "https://campusmart.co.ke/logo.png",
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "contactType": "customer support",
+            "areaServed": "KE",
+            "availableLanguage": ["English", "Swahili"]
+        }
+    }
+    </script>
+
+    <!-- Fonts & External Styles -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+</head>
+
+<body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('CampusMart SW registered:', reg.scope))
+                    .catch(err => console.warn('SW registration failed:', err));
+            });
+        }
+    </script>
+</body>
+
+</html>
