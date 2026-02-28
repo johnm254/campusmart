@@ -31,22 +31,29 @@ if (dbType === 'mysql') {
         process.exit(1);
     }
 } else {
-    // Default to PostgreSQL - Railway requires SSL but with rejectUnauthorized: false
-    pool = process.env.DATABASE_URL
-        ? new Pool({ 
+    // Default to PostgreSQL - Railway requires SSL configuration
+    if (process.env.DATABASE_URL) {
+        // Use DATABASE_URL with SSL configuration
+        const sslConfig = process.env.NODE_ENV === 'production' || process.env.DATABASE_URL.includes('railway')
+            ? { rejectUnauthorized: false, sslmode: 'require' }
+            : false;
+        
+        pool = new Pool({ 
             connectionString: process.env.DATABASE_URL,
-            ssl: process.env.DATABASE_URL.includes('railway') 
-              ? { rejectUnauthorized: false }
-              : false
-          })
-        : new Pool({
-            host: process.env.DB_HOST,
-            user: process.env.DB_USER,
+            ssl: sslConfig
+        });
+        console.log('📦 Database: Initialized PostgreSQL connection pool with SSL');
+    } else {
+        // Local development without DATABASE_URL
+        pool = new Pool({
+            host: process.env.DB_HOST || 'localhost',
+            user: process.env.DB_USER || 'postgres',
             password: process.env.DB_PASS,
             database: process.env.DB_NAME,
             port: process.env.DB_PORT || 5432,
         });
-    console.log('📦 Database: Initialized PostgreSQL connection pool');
+        console.log('📦 Database: Initialized PostgreSQL connection pool (local)');
+    }
 }
 
 /**
