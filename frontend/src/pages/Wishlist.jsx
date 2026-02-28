@@ -10,7 +10,7 @@ const Wishlist = () => {
             <h2 style={{ marginBottom: '2rem' }}>My Wishlist</h2>
             {wishlist.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: '4rem 0' }}>
-                    <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>❤️</div>
+                    <div style={{ fontSize: '4rem', marginBottom: '1rem' }}><Heart size={80} color="var(--jiji-orange)" /></div>
                     <p style={{ color: 'var(--text-secondary)' }}>Your wishlist is currently empty.</p>
                     <button className="btn btn-primary" style={{ marginTop: '1.5rem' }} onClick={() => setCurrentPage('marketplace')}>
                         Explore Marketplace

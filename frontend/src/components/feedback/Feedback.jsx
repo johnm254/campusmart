@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { MessageSquare, Send, X, Star, CheckCircle2, ThumbsUp, AlertCircle, MessageCircle } from 'lucide-react';
 import { useApp } from '../../AppContext';
 import { api } from '../../lib/api';
+import { useMediaQuery } from '../../hooks/useMediaQuery';
 
 const Feedback = () => {
     const { user, addNotification, setIsAuthModalOpen } = useApp();
@@ -12,6 +13,7 @@ const Feedback = () => {
     const [rating, setRating] = useState(0);
     const [hoverRating, setHoverRating] = useState(0);
     const [type, setType] = useState('general');
+    const isMobile = useMediaQuery('(max-width: 768px)');
 
     // Reset state when closing
     useEffect(() => {
@@ -45,7 +47,7 @@ const Feedback = () => {
 
         setIsSubmitting(true);
         try {
-            const feedbackText = `[${type.toUpperCase()}] Rating: ${rating}/5\n${'⭐'.repeat(rating)}\n\nMessage: ${content}`;
+            const feedbackText = `[${type.toUpperCase()}] Rating: ${rating}/5\n${Array(rating).fill('★').join('')}\n\nMessage: ${content}`;
             const res = await api.sendFeedback(feedbackText);
 
             if (res.message === 'Feedback submitted successfully') {
@@ -68,20 +70,21 @@ const Feedback = () => {
     ];
 
     return (
-        <div style={{ position: 'fixed', bottom: '30px', right: '30px', zIndex: 5000 }}>
+        <div style={{ position: 'fixed', bottom: isMobile ? '15px' : '30px', right: isMobile ? '15px' : '30px', zIndex: 5000 }}>
             {isOpen ? (
                 <div style={{
-                    width: '360px',
+                    width: isMobile ? '90vw' : '360px',
+                    maxWidth: '360px',
                     background: 'rgba(255, 255, 255, 0.98)',
                     backdropFilter: 'blur(10px)',
-                    borderRadius: '24px',
+                    borderRadius: isMobile ? '20px' : '24px',
                     boxShadow: '0 20px 50px rgba(0,0,0,0.15)',
                     display: 'flex',
                     flexDirection: 'column',
                     overflow: 'hidden',
                     border: '1px solid rgba(255, 255, 255, 0.2)',
                     animation: 'slideUp 0.3s ease-out',
-                    maxHeight: '80vh'
+                    maxHeight: isMobile ? '85vh' : '80vh'
                 }}>
                     <style>{`
                         @keyframes slideUp {
@@ -94,14 +97,14 @@ const Feedback = () => {
                     <div style={{
                         background: '#1d3d6e',
                         color: 'white',
-                        padding: '1.25rem 1.5rem',
+                        padding: isMobile ? '1rem 1.25rem' : '1.25rem 1.5rem',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'space-between'
                     }}>
                         <div>
-                            <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800 }}>Feedback Center</h3>
-                            <p style={{ margin: '0.1rem 0 0', fontSize: '0.75rem', opacity: 0.7 }}>Share your thoughts with us</p>
+                            <h3 style={{ margin: 0, fontSize: isMobile ? '1rem' : '1.1rem', fontWeight: 800 }}>Feedback Center</h3>
+                            <p style={{ margin: '0.1rem 0 0', fontSize: isMobile ? '0.7rem' : '0.75rem', opacity: 0.7 }}>Share your thoughts with us</p>
                         </div>
                         <button
                             onClick={() => setIsOpen(false)}
@@ -122,7 +125,7 @@ const Feedback = () => {
                         </button>
                     </div>
 
-                    <div style={{ padding: '1.5rem', overflowY: 'auto' }}>
+                    <div style={{ padding: isMobile ? '1rem' : '1.5rem', overflowY: 'auto' }}>
                         {step === 'form' ? (
                             <form onSubmit={handleSubmit}>
                                 {/* Category */}
@@ -158,7 +161,7 @@ const Feedback = () => {
 
                                 {/* Rating */}
                                 <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
-                                    <div style={{ display: 'flex', justifyContent: 'center', gap: '0.35rem' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'center', gap: isMobile ? '0.25rem' : '0.35rem' }}>
                                         {[1, 2, 3, 4, 5].map((star) => (
                                             <button
                                                 key={star}
@@ -169,7 +172,7 @@ const Feedback = () => {
                                                 style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0.2rem' }}
                                             >
                                                 <Star
-                                                    size={28}
+                                                    size={isMobile ? 24 : 28}
                                                     fill={(hoverRating || rating) >= star ? "#FFD700" : "none"}
                                                     color={(hoverRating || rating) >= star ? "#FFD700" : "#cbd5e0"}
                                                     style={{ transition: '0.1s' }}
@@ -192,13 +195,13 @@ const Feedback = () => {
                                         onChange={e => setContent(e.target.value)}
                                         style={{
                                             width: '100%',
-                                            height: '110px',
+                                            height: isMobile ? '90px' : '110px',
                                             border: '1.5px solid #e2e8f0',
                                             borderRadius: '14px',
-                                            padding: '0.85rem',
+                                            padding: isMobile ? '0.75rem' : '0.85rem',
                                             outline: 'none',
                                             resize: 'none',
-                                            fontSize: '0.9rem',
+                                            fontSize: isMobile ? '0.85rem' : '0.9rem',
                                             background: '#f8fafc',
                                             lineHeight: '1.4',
                                             transition: '0.2s'
@@ -278,10 +281,10 @@ const Feedback = () => {
                 <div
                     onClick={() => setIsOpen(true)}
                     style={{
-                        width: '60px',
-                        height: '60px',
+                        width: isMobile ? '50px' : '60px',
+                        height: isMobile ? '50px' : '60px',
                         background: '#1d3d6e',
-                        borderRadius: '18px',
+                        borderRadius: isMobile ? '15px' : '18px',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -300,7 +303,7 @@ const Feedback = () => {
                         e.currentTarget.style.background = '#1d3d6e';
                     }}
                 >
-                    <MessageSquare size={24} />
+                    <MessageSquare size={isMobile ? 20 : 24} />
                     <span style={{
                         position: 'absolute',
                         top: '-10px',

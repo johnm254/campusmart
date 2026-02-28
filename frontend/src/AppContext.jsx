@@ -17,6 +17,7 @@ export const AppProvider = ({ children }) => {
     const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
     const [isSellModalOpen, setIsSellModalOpen] = useState(false);
     const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
+    const [isAdminLockModalOpen, setIsAdminLockModalOpen] = useState(false);
     const [infoModal, setInfoModal] = useState({ isOpen: false, title: '', content: null });
     const prevUnreadRef = useRef(0);
 
@@ -146,7 +147,7 @@ export const AppProvider = ({ children }) => {
                 const data = await api.getUnreadCount();
                 if (data && typeof data.count === 'number') {
                     if (data.count > prevUnreadRef.current) {
-                        addNotification('💬 New Message', `You have ${data.count} unread message${data.count > 1 ? 's' : ''}.`, 'info');
+                        addNotification('New Message', `You have ${data.count} unread message${data.count > 1 ? 's' : ''}.`, 'info');
                     }
                     prevUnreadRef.current = data.count;
                     setUnreadCount(data.count);
@@ -170,6 +171,7 @@ export const AppProvider = ({ children }) => {
             logout,
             isAuthModalOpen, setIsAuthModalOpen,
             isSellModalOpen, setIsSellModalOpen,
+            isAdminLockModalOpen, setIsAdminLockModalOpen,
             unreadCount, setUnreadCount,
             siteSettings, setSiteSettings,
         }}>

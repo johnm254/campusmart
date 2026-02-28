@@ -240,34 +240,12 @@ const Community = () => {
                             position: 'relative',
                             overflow: 'hidden'
                         }}>
-                            {post.is_admin && (
-                                <div style={{
-                                    position: 'absolute',
-                                    top: 0,
-                                    left: 0,
-                                    right: 0,
-                                    background: 'linear-gradient(90deg, var(--campus-blue), #00d2ff)',
-                                    color: 'white',
-                                    padding: '0.4rem 1rem',
-                                    fontSize: '0.75rem',
-                                    fontWeight: 800,
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    gap: '8px',
-                                    zIndex: 1,
-                                    letterSpacing: '0.5px'
-                                }}>
-                                    <ShieldCheck size={14} /> 📌 PINNED BY ADMIN
-                                </div>
-                            )}
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
                                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                                     <img src={post.author_avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(post.author_name || 'U')}&background=random`} style={{ width: '48px', height: '48px', borderRadius: '14px', objectFit: 'cover' }} alt={post.author_name} />
                                     <div>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                                             <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{post.author_name}</span>
-                                            {post.is_admin && <ShieldCheck size={16} color="var(--campus-blue)" />}
                                         </div>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                             <span style={{ fontSize: '0.75rem', color: '#999', display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
@@ -279,8 +257,8 @@ const Community = () => {
                                                 )}
                                                 {formatTime(post.created_at)} • {getTypeLabel(post.type)}
                                             </span>
-                                            <span style={{ fontSize: '0.7rem', padding: '0.1rem 0.5rem', background: post.is_admin ? 'var(--campus-blue)' : '#f0f0f0', color: post.is_admin ? 'white' : '#666', borderRadius: '4px', fontWeight: 600 }}>
-                                                {post.is_admin ? 'Admin' : 'Student'}
+                                            <span style={{ fontSize: '0.7rem', padding: '0.1rem 0.5rem', background: '#f0f0f0', color: '#666', borderRadius: '4px', fontWeight: 600 }}>
+                                                {post.is_admin ? 'Admin' : 'Member'}
                                             </span>
                                         </div>
                                     </div>
@@ -450,6 +428,7 @@ const Community = () => {
                                 >
                                     <option value="general">General</option>
                                     <option value="market">Marketplace Update</option>
+                                    <option value="other">Other</option>
                                 </select>
                             </div>
                             <div className="form-group">

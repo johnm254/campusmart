@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { MessageCircle, X, Send, Search, ChevronRight, User, ShieldCheck, Zap, HelpCircle, Info, Rocket, Smartphone, ShieldAlert, GraduationCap } from 'lucide-react';
 import { useApp } from '../../AppContext';
+import { useMediaQuery } from '../../hooks/useMediaQuery';
 
 const Chatbot = () => {
     const { user } = useApp();
@@ -12,6 +13,7 @@ const Chatbot = () => {
     const [currentCategory, setCurrentCategory] = useState(null);
     const [isTyping, setIsTyping] = useState(false);
     const messagesEndRef = useRef(null);
+    const isMobile = useMediaQuery('(max-width: 768px)');
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -144,13 +146,15 @@ const Chatbot = () => {
     };
 
     return (
-        <div style={{ position: 'fixed', bottom: '110px', right: '30px', zIndex: 5000 }}>
+        <div style={{ position: 'fixed', bottom: isMobile ? '80px' : '110px', right: isMobile ? '15px' : '30px', zIndex: 5000 }}>
             {isOpen ? (
                 <div style={{
-                    width: '340px',
-                    height: '480px',
+                    width: isMobile ? '90vw' : '340px',
+                    maxWidth: '340px',
+                    height: isMobile ? '70vh' : '480px',
+                    maxHeight: isMobile ? '500px' : '480px',
                     background: '#ffffff',
-                    borderRadius: '24px',
+                    borderRadius: isMobile ? '20px' : '24px',
                     boxShadow: '0 25px 60px rgba(0,0,0,0.2)',
                     display: 'flex',
                     flexDirection: 'column',
@@ -170,22 +174,22 @@ const Chatbot = () => {
                     <div style={{
                         background: 'linear-gradient(135deg, #1d3d6e 0%, #00aeef 100%)',
                         color: 'white',
-                        padding: '1.25rem',
+                        padding: isMobile ? '1rem' : '1.25rem',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'space-between',
                         position: 'relative'
                     }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '0.5rem' : '0.6rem' }}>
                             <div style={{ position: 'relative' }}>
-                                <div style={{ width: '38px', height: '38px', background: 'white', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1d3d6e' }}>
-                                    <MessageCircle size={22} />
+                                <div style={{ width: isMobile ? '34px' : '38px', height: isMobile ? '34px' : '38px', background: 'white', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1d3d6e' }}>
+                                    <MessageCircle size={isMobile ? 18 : 22} />
                                 </div>
                                 <div style={{ position: 'absolute', bottom: '-2px', right: '-2px', width: '12px', height: '12px', background: '#22c55e', border: '2px solid white', borderRadius: '50%' }}></div>
                             </div>
                             <div>
-                                <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 800 }}>Martie</h3>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.7rem', opacity: 0.9 }}>
+                                <h3 style={{ margin: 0, fontSize: isMobile ? '0.9rem' : '1rem', fontWeight: 800 }}>Martie</h3>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: isMobile ? '0.65rem' : '0.7rem', opacity: 0.9 }}>
                                     <div style={{ width: '6px', height: '6px', background: 'white', borderRadius: '50%', animation: 'pulse 2s infinite' }}></div>
                                     Online Assistant
                                 </div>
@@ -197,17 +201,17 @@ const Chatbot = () => {
                     </div>
 
                     {/* Chat Body */}
-                    <div style={{ flex: 1, padding: '1.25rem', overflowY: 'auto', background: '#f8fafc', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    <div style={{ flex: 1, padding: isMobile ? '1rem' : '1.25rem', overflowY: 'auto', background: '#f8fafc', display: 'flex', flexDirection: 'column', gap: isMobile ? '0.75rem' : '1rem' }}>
                         {messages.map((msg, i) => (
                             <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: msg.sender === 'user' ? 'flex-end' : 'flex-start' }}>
                                 <div style={{
                                     maxWidth: '85%',
-                                    padding: '1rem 1.25rem',
+                                    padding: isMobile ? '0.85rem 1rem' : '1rem 1.25rem',
                                     borderRadius: msg.sender === 'user' ? '20px 20px 4px 20px' : '20px 20px 20px 4px',
                                     background: msg.sender === 'user' ? '#1d3d6e' : '#fff',
                                     color: msg.sender === 'user' ? '#fff' : '#1e293b',
                                     boxShadow: msg.sender === 'user' ? '0 5px 15px rgba(29, 61, 110, 0.2)' : '0 5px 15px rgba(0,0,0,0.03)',
-                                    fontSize: '0.9rem',
+                                    fontSize: isMobile ? '0.85rem' : '0.9rem',
                                     lineHeight: 1.5,
                                     border: msg.sender === 'bot' ? '1px solid #f1f5f9' : 'none'
                                 }}>
@@ -243,20 +247,20 @@ const Chatbot = () => {
 
                         {/* Initial Categories */}
                         {messages.length === 1 && (
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginTop: '0.5rem' }}>
+                            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '0.75rem', marginTop: '0.5rem' }}>
                                 {knowledgeBase.categories.map(cat => (
                                     <button
                                         key={cat.id}
                                         onClick={() => selectCategory(cat)}
                                         style={{
-                                            padding: '0.75rem',
+                                            padding: isMobile ? '0.65rem' : '0.75rem',
                                             background: '#fff',
                                             border: '1px solid #e2e8f0',
                                             borderRadius: '16px',
                                             display: 'flex',
-                                            flexDirection: 'column',
+                                            flexDirection: isMobile ? 'row' : 'column',
                                             alignItems: 'center',
-                                            gap: '0.5rem',
+                                            gap: isMobile ? '0.75rem' : '0.5rem',
                                             cursor: 'pointer',
                                             transition: '0.2s'
                                         }}
@@ -264,7 +268,7 @@ const Chatbot = () => {
                                         onMouseLeave={e => { e.currentTarget.style.borderColor = '#e2e8f0'; e.currentTarget.style.transform = 'translateY(0)'; }}
                                     >
                                         <div style={{ color: '#1d3d6e' }}>{cat.icon}</div>
-                                        <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569' }}>{cat.label}</span>
+                                        <span style={{ fontSize: isMobile ? '0.8rem' : '0.75rem', fontWeight: 700, color: '#475569' }}>{cat.label}</span>
                                     </button>
                                 ))}
                             </div>
@@ -273,8 +277,8 @@ const Chatbot = () => {
                     </div>
 
                     {/* Chat Input */}
-                    <div style={{ padding: '1.25rem', borderTop: '1px solid #f1f5f9', background: '#fff' }}>
-                        <div style={{ position: 'relative', display: 'flex', gap: '0.75rem' }}>
+                    <div style={{ padding: isMobile ? '1rem' : '1.25rem', borderTop: '1px solid #f1f5f9', background: '#fff' }}>
+                        <div style={{ position: 'relative', display: 'flex', gap: isMobile ? '0.5rem' : '0.75rem' }}>
                             <input
                                 type="text"
                                 placeholder="Type your question..."
@@ -283,11 +287,11 @@ const Chatbot = () => {
                                 onKeyPress={e => e.key === 'Enter' && handleSendMessage(searchTerm)}
                                 style={{
                                     flex: 1,
-                                    padding: '0.85rem 1rem',
+                                    padding: isMobile ? '0.75rem 0.85rem' : '0.85rem 1rem',
                                     borderRadius: '16px',
                                     border: '1.5px solid #f1f5f9',
                                     outline: 'none',
-                                    fontSize: '0.9rem',
+                                    fontSize: isMobile ? '0.85rem' : '0.9rem',
                                     background: '#f8fafc',
                                     transition: '0.2s'
                                 }}
@@ -297,8 +301,8 @@ const Chatbot = () => {
                             <button
                                 onClick={() => handleSendMessage(searchTerm)}
                                 style={{
-                                    width: '46px',
-                                    height: '46px',
+                                    width: isMobile ? '42px' : '46px',
+                                    height: isMobile ? '42px' : '46px',
                                     background: '#1d3d6e',
                                     color: 'white',
                                     border: 'none',
@@ -312,7 +316,7 @@ const Chatbot = () => {
                                 onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.05)'}
                                 onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
                             >
-                                <Send size={20} />
+                                <Send size={isMobile ? 18 : 20} />
                             </button>
                         </div>
                     </div>
@@ -321,10 +325,10 @@ const Chatbot = () => {
                 <div
                     onClick={() => setIsOpen(true)}
                     style={{
-                        width: '54px',
-                        height: '54px',
+                        width: isMobile ? '48px' : '54px',
+                        height: isMobile ? '48px' : '54px',
                         background: 'linear-gradient(135deg, #1d3d6e 0%, #00aeef 100%)',
-                        borderRadius: '18px',
+                        borderRadius: isMobile ? '15px' : '18px',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -341,7 +345,7 @@ const Chatbot = () => {
                         e.currentTarget.style.transform = 'translateY(0) scale(1)';
                     }}
                 >
-                    <HelpCircle size={24} />
+                    <HelpCircle size={isMobile ? 20 : 24} />
                     <span style={{
                         position: 'absolute',
                         top: '-10px',

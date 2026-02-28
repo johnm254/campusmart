@@ -22,10 +22,10 @@ const PremiumModal = ({ isOpen, onClose }) => {
             power: 'Medium',
             color: '#00aeef', // Blue
             icon: <Rocket size={24} />,
-            badge: '🥉 Starter',
+            badge: 'Starter',
             features: [
                 'Listing appears above free posts',
-                'Highlighted blue badge (⭐ Boosted)',
+                'Highlighted blue badge (Boosted)',
                 'Stays boosted for 14 days',
                 'Up to 5 photos per listing',
                 'Priority in search results'
@@ -39,7 +39,7 @@ const PremiumModal = ({ isOpen, onClose }) => {
             power: 'High',
             color: '#FFD700', // Gold
             icon: <Zap size={24} />,
-            badge: '🥈 Power',
+            badge: 'Power',
             isPopular: false,
             features: [
                 'EVERYTHING in Starter + extra power',

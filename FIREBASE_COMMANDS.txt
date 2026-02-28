@@ -1,0 +1,84 @@
+═══════════════════════════════════════════════════════════════
+  FIREBASE COMMANDS REFERENCE
+  Project: campusmart-7d3d4
+═══════════════════════════════════════════════════════════════
+
+DEPLOYMENT COMMANDS:
+─────────────────────────────────────────────────────────────────
+Deploy everything:
+  firebase deploy
+
+Deploy only hosting (frontend):
+  firebase deploy --only hosting
+
+Deploy only functions (backend):
+  firebase deploy --only functions
+
+Deploy only Firestore rules:
+  firebase deploy --only firestore:rules
+
+═══════════════════════════════════════════════════════════════
+  MONITORING COMMANDS
+═══════════════════════════════════════════════════════════════
+
+View function logs:
+  firebase functions:log
+
+View function logs (live):
+  firebase functions:log --only api
+
+Open Firebase Console:
+  firebase open
+
+List all projects:
+  firebase projects:list
+
+═══════════════════════════════════════════════════════════════
+  LOCAL TESTING COMMANDS
+═══════════════════════════════════════════════════════════════
+
+Start local emulators:
+  firebase emulators:start
+
+Start only functions emulator:
+  firebase emulators:start --only functions
+
+Start only hosting emulator:
+  firebase emulators:start --only hosting
+
+═══════════════════════════════════════════════════════════════
+  PROJECT MANAGEMENT
+═══════════════════════════════════════════════════════════════
+
+Check current project:
+  firebase use
+
+Switch project:
+  firebase use campusmart-7d3d4
+
+Login to Firebase:
+  firebase login
+
+Logout:
+  firebase logout
+
+═══════════════════════════════════════════════════════════════
+  USEFUL URLS
+═══════════════════════════════════════════════════════════════
+
+Your App:
+  https://campusmart-7d3d4.web.app
+
+Firebase Console:
+  https://console.firebase.google.com/project/campusmart-7d3d4
+
+Hosting Dashboard:
+  https://console.firebase.google.com/project/campusmart-7d3d4/hosting
+
+Functions Dashboard:
+  https://console.firebase.google.com/project/campusmart-7d3d4/functions
+
+Firestore Dashboard:
+  https://console.firebase.google.com/project/campusmart-7d3d4/firestore
+
+═══════════════════════════════════════════════════════════════

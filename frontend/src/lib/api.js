@@ -21,6 +21,14 @@ export const api = {
             window.dispatchEvent(new CustomEvent('session-expired'));
         }
 
+        // Throw on non-OK responses so catch blocks in callers work correctly
+        if (!res.ok) {
+            const err = new Error(data?.message || `Request failed with status ${res.status}`);
+            err.status = res.status;
+            err.data = data;
+            throw err;
+        }
+
         return data;
     },
 
@@ -72,6 +80,15 @@ export const api = {
         const token = localStorage.getItem('token');
         const res = await fetch(`${API_URL}/products/${productId}`, {
             method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        return this.handleResponse(res);
+    },
+
+    async markProductAsSold(productId) {
+        const token = localStorage.getItem('token');
+        const res = await fetch(`${API_URL}/products/${productId}/sold`, {
+            method: 'POST',
             headers: { 'Authorization': `Bearer ${token}` }
         });
         return this.handleResponse(res);
@@ -292,7 +309,7 @@ export const api = {
         const token = localStorage.getItem('token');
         const headers = { 'Authorization': `Bearer ${token}` };
         if (sessionStorage.getItem('admin_access_unlocked') === 'true') {
-            headers['X-Admin-Secret'] = import.meta.env.VITE_ADMIN_SECRET || 'CAMPUS_ADMIN_2026';
+            headers['X-Admin-Secret'] = sessionStorage.getItem('admin_secret_key') || import.meta.env.VITE_ADMIN_SECRET || 'CAMPUS_ADMIN_2026';
         }
         return headers;
     },
@@ -403,6 +420,34 @@ export const api = {
         const res = await fetch(`${API_URL}/admin/community/posts/${postId}/delete`, {
             method: 'POST',
             headers: this.getAdminHeaders()
+        });
+        return this.handleResponse(res);
+    },
+
+    async deleteAdminProduct(productId) {
+        const res = await fetch(`${API_URL}/admin/products/${productId}`, {
+            method: 'DELETE',
+            headers: this.getAdminHeaders()
+        });
+        return this.handleResponse(res);
+    },
+
+    async deleteAdminUser(userId) {
+        const res = await fetch(`${API_URL}/admin/users/${userId}`, {
+            method: 'DELETE',
+            headers: this.getAdminHeaders()
+        });
+        return this.handleResponse(res);
+    },
+
+    async postAnnouncement(content) {
+        const res = await fetch(`${API_URL}/admin/announcements`, {
+            method: 'POST',
+            headers: {
+                ...this.getAdminHeaders(),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ content })
         });
         return this.handleResponse(res);
     },

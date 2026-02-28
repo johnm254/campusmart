@@ -1,0 +1,168 @@
+═══════════════════════════════════════════════════════════════
+  CAMPUSMART - COMPLETE SETUP INSTRUCTIONS
+═══════════════════════════════════════════════════════════════
+
+IMPORTANT: Your system has PowerShell execution restrictions.
+You need to run commands manually in Command Prompt (CMD).
+
+═══════════════════════════════════════════════════════════════
+  STEP 1: INSTALL MYSQL2 PACKAGE
+═══════════════════════════════════════════════════════════════
+
+Option A - Use the Batch File (RECOMMENDED):
+  1. Right-click: INSTALL_MYSQL2.bat
+  2. Select: "Run as administrator"
+
+Option B - Manual Installation:
+  1. Press Windows Key + R
+  2. Type: cmd
+  3. Press Enter
+  4. Type: cd "YOUR_PROJECT_PATH\backend"
+  5. Type: npm install mysql2
+  6. Press Enter
+  7. Wait for installation to complete
+
+═══════════════════════════════════════════════════════════════
+  STEP 2: VERIFY DATABASE CREDENTIALS
+═══════════════════════════════════════════════════════════════
+
+✅ Already configured in backend/.env:
+
+  DB_TYPE=mysql
+  DB_HOST=localhost
+  DB_USER=ricoanco_campusmart
+  DB_PASS=911Hamisi.
+  DB_NAME=ricoanco_campusmart
+  DB_PORT=3306
+
+═══════════════════════════════════════════════════════════════
+  STEP 3: TEST DATABASE CONNECTION
+═══════════════════════════════════════════════════════════════
+
+After installing mysql2:
+  1. Right-click: TEST_MYSQL_CONNECTION.bat
+  2. Select: "Run as administrator"
+  
+Expected Output:
+  ✅ MySQL connection successful!
+  Current time from database: [timestamp]
+  Tables in database: [number]
+
+═══════════════════════════════════════════════════════════════
+  STEP 4: INITIALIZE DATABASE
+═══════════════════════════════════════════════════════════════
+
+Right-click: DEPLOY_TO_HOSTPINNACLE.bat
+Select: "Run as administrator"
+
+This will:
+  ✅ Test database connection
+  ✅ Create all required tables
+  ✅ Start the backend server on port 5000
+
+═══════════════════════════════════════════════════════════════
+  STEP 5: UPLOAD TO HOSTPINNACLE
+═══════════════════════════════════════════════════════════════
+
+Backend Files (upload to your server):
+  📁 backend/
+     - .env
+     - index.js
+     - db.js
+     - init-database-mysql.js
+     - package.json
+     - package-lock.json
+     - node_modules/ (or run npm install on server)
+
+Frontend Files (upload to public_html):
+  📁 frontend/dist/
+     - index.html
+     - assets/
+     - .htaccess
+     - All other files
+
+═══════════════════════════════════════════════════════════════
+  TROUBLESHOOTING
+═══════════════════════════════════════════════════════════════
+
+Problem: "Cannot find module 'mysql2'"
+Solution: 
+  - Run INSTALL_MYSQL2.bat as administrator
+  - OR manually: cd backend && npm install mysql2
+
+Problem: "npm cannot be loaded"
+Solution:
+  - Use Command Prompt (CMD) instead of PowerShell
+  - OR run batch files as administrator
+
+Problem: "password authentication failed"
+Solution:
+  - Credentials are now correct in .env
+  - Verify database exists on HostPinnacle
+  - Contact HostPinnacle support if needed
+
+Problem: Backend won't start
+Solution:
+  - Check if port 5000 is available
+  - Check if all npm packages are installed
+  - Run: cd backend && npm install
+
+═══════════════════════════════════════════════════════════════
+  WHAT'S BEEN FIXED
+═══════════════════════════════════════════════════════════════
+
+✅ Database credentials corrected:
+   - Changed from: ricoanco_user_campusmart
+   - Changed to: ricoanco_campusmart
+
+✅ Database type set to MySQL:
+   - Added: DB_TYPE=mysql
+
+✅ MySQL support configured:
+   - backend/db.js has MySQL abstraction layer
+   - Auto-translates PostgreSQL queries to MySQL
+
+✅ Deployment scripts created:
+   - INSTALL_MYSQL2.bat
+   - TEST_MYSQL_CONNECTION.bat
+   - DEPLOY_TO_HOSTPINNACLE.bat
+
+═══════════════════════════════════════════════════════════════
+  QUICK REFERENCE
+═══════════════════════════════════════════════════════════════
+
+Database Info:
+  Name: ricoanco_campusmart
+  User: ricoanco_campusmart
+  Pass: 911Hamisi.
+  Type: MySQL
+  Port: 3306
+
+Domain:
+  https://campusmart.co.ke
+
+Backend Port:
+  5000
+
+API Endpoint:
+  https://campusmart.co.ke/api
+
+═══════════════════════════════════════════════════════════════
+  NEXT STEPS
+═══════════════════════════════════════════════════════════════
+
+1. ✅ Run INSTALL_MYSQL2.bat (as administrator)
+2. ✅ Run TEST_MYSQL_CONNECTION.bat (verify connection)
+3. ✅ Run DEPLOY_TO_HOSTPINNACLE.bat (initialize & start)
+4. ✅ Upload frontend/dist/ to HostPinnacle public_html
+5. ✅ Visit https://campusmart.co.ke
+
+═══════════════════════════════════════════════════════════════
+
+Need Help?
+- Check HOSTPINNACLE_SETUP.txt for more details
+- All configuration files are ready
+- Database credentials are correct
+- Just install mysql2 and run the deployment script
+
+═══════════════════════════════════════════════════════════════

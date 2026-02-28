@@ -1,0 +1,56 @@
+# Firebase ignore file
+# Files and directories to exclude from Firebase deployment
+
+# Node modules
+**/node_modules/**
+
+# Build files
+frontend/src/**
+frontend/public/**
+frontend/vite.config.js
+frontend/package.json
+frontend/package-lock.json
+
+# Backend source (not needed for functions)
+backend/**
+
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Deployment files
+*.zip
+*.bat
+*.vbs
+
+# Documentation
+*.txt
+*.md
+!README.md
+
+# HostPinnacle specific
+HOSTPINNACLE_*
+*_HOSTPINNACLE*
+campusmart-*.zip

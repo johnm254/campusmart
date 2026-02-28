@@ -31,7 +31,7 @@ const Hero = () => {
     const isTablet = useMediaQuery('(max-width: 900px)');
 
     return (
-        <div style={{ maxWidth: '1400px', margin: '0 auto', padding: isMobile ? '1.5rem 1rem 2rem' : isTablet ? '2.5rem 1.5rem 3rem' : '4rem 2rem 5rem' }}>
+        <div style={{ width: '100%', padding: isMobile ? '1.5rem 1rem 2rem' : isTablet ? '2.5rem 1.5rem 3rem' : '4rem 4% 5rem' }}>
 
             {/* ── Top badge ── */}
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: isMobile ? '1.5rem' : '2.5rem' }}>
@@ -147,14 +147,14 @@ const Hero = () => {
                             transition: 'all 0.3s ease',
                             cursor: 'pointer'
                         }}
-                        onMouseOver={e => {
-                            e.currentTarget.style.transform = 'translateY(-8px)';
-                            e.currentTarget.style.boxShadow = `0 12px 32px ${item.color}30`;
-                        }}
-                        onMouseOut={e => {
-                            e.currentTarget.style.transform = 'translateY(0)';
-                            e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.05)';
-                        }}>
+                            onMouseOver={e => {
+                                e.currentTarget.style.transform = 'translateY(-8px)';
+                                e.currentTarget.style.boxShadow = `0 12px 32px ${item.color}30`;
+                            }}
+                            onMouseOut={e => {
+                                e.currentTarget.style.transform = 'translateY(0)';
+                                e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.05)';
+                            }}>
                             <div style={{
                                 position: 'absolute', top: '1.25rem', right: '1.25rem',
                                 fontSize: '0.7rem', fontWeight: 800, color: item.color,

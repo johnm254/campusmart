@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Home, ShoppingBag, MessageCircle, MapPin, Shield, Zap, Users, TrendingUp } from 'lucide-react';
 import { useApp } from '../../AppContext';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
@@ -39,22 +39,6 @@ const WhyCampusMart = () => {
     const { user, setIsAuthModalOpen, setIsSellModalOpen, setCurrentPage } = useApp();
     const isMobile = useMediaQuery('(max-width: 640px)');
     const isTablet = useMediaQuery('(max-width: 900px)');
-
-    // Slider Logic
-    const [currentImageIndex, setCurrentImageIndex] = useState(0);
-    const sliderImages = [
-        '/accommodation-hero.jpg',
-        '/1.webp',
-        '/2.webp',
-        '/4.jpg'
-    ];
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setCurrentImageIndex(prev => (prev + 1) % sliderImages.length);
-        }, 3000);
-        return () => clearInterval(interval);
-    }, [sliderImages.length]);
 
     return (
         <section style={{
@@ -123,48 +107,16 @@ const WhyCampusMart = () => {
                 {/* ══ SECTION 2 — Housing Hero ════════════════════════════════════ */}
                 <div style={{
                     marginBottom: isMobile ? '3rem' : '6rem',
-                    display: 'grid',
-                    gridTemplateColumns: isTablet ? '1fr' : '1fr 1fr',
-                    gap: isTablet ? '1.5rem' : '4rem',
+                    display: 'flex',
+                    flexDirection: 'column',
                     alignItems: 'center',
+                    textAlign: 'center',
+                    maxWidth: '900px',
+                    margin: '0 auto',
+                    marginBottom: isMobile ? '3rem' : '6rem'
                 }}>
-                    {/* Image Column */}
-                    <div style={{
-                        order: isTablet ? 1 : 2,
-                        borderRadius: '24px', overflow: 'hidden',
-                        boxShadow: '0 20px 60px rgba(0,0,0,0.12)',
-                        height: isMobile ? '250px' : isTablet ? '350px' : '480px',
-                        position: 'relative', background: '#f1f5f9'
-                    }}>
-                        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,0.28))', zIndex: 2, pointerEvents: 'none' }} />
-                        {sliderImages.map((img, idx) => (
-                            <img key={idx} src={img} alt={`Campus Housing ${idx + 1}`} style={{
-                                width: '100%', height: '100%', objectFit: 'cover',
-                                position: 'absolute', top: 0, left: 0,
-                                opacity: currentImageIndex === idx ? 1 : 0,
-                                transition: 'opacity 1.2s ease-in-out',
-                                zIndex: currentImageIndex === idx ? 1 : 0
-                            }} onError={e => { e.target.src = 'https://images.unsplash.com/photo-1555854817-5b2260d1502b?w=800&q=80'; }} />
-                        ))}
-                        {/* Dots */}
-                        <div style={{ position: 'absolute', bottom: '20px', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '8px', zIndex: 10 }}>
-                            {sliderImages.map((_, idx) => (
-                                <div key={idx} onClick={() => setCurrentImageIndex(idx)} style={{
-                                    width: currentImageIndex === idx ? '28px' : '9px', height: '9px',
-                                    borderRadius: '5px', background: currentImageIndex === idx ? 'white' : 'rgba(255,255,255,0.45)',
-                                    cursor: 'pointer', transition: 'all 0.4s cubic-bezier(0.4,0,0.2,1)'
-                                }} />
-                            ))}
-                        </div>
-                        {/* Overlay badge */}
-                        <div style={{ position: 'absolute', bottom: '3.5rem', left: '1.25rem', zIndex: 10, background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(10px)', borderRadius: '14px', padding: '0.7rem 1.15rem', color: 'white', fontSize: '0.82rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                            <Home size={16} />
-                            Direct from Landlord · No Agents · 0% Commission
-                        </div>
-                    </div>
-
                     {/* Content Column */}
-                    <div style={{ order: isTablet ? 2 : 1 }}>
+                    <div>
                         <div style={{
                             display: 'inline-flex', alignItems: 'center',
                             background: '#f1f8e9', color: '#8cc63f',
@@ -183,11 +135,11 @@ const WhyCampusMart = () => {
                             Find Your Student<br />
                             <span style={{ color: '#8cc63f' }}>Home. Fast. Free.</span>
                         </h2>
-                        <p style={{ fontSize: isMobile ? '0.9rem' : '1.05rem', color: '#64748b', lineHeight: 1.65, marginBottom: '1.75rem', maxWidth: '520px' }}>
+                        <p style={{ fontSize: isMobile ? '0.9rem' : '1.05rem', color: '#64748b', lineHeight: 1.65, marginBottom: '1.75rem', maxWidth: '620px', margin: '0 auto 1.75rem' }}>
                             Stop wasting weekends physically searching. Browse <strong>hostels, single rooms, bed-sitters and fully furnished apartments</strong> listed by real landlords near your campus. See GPS maps, real photos, and contact details — all in one tap.
                         </p>
                         {/* Mini benefit checklist */}
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '2rem' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '2rem', alignItems: 'flex-start', maxWidth: '520px', margin: '0 auto 2rem' }}>
                             {[
                                 { icon: MapPin, text: 'GPS pinpointed exact locations' },
                                 { icon: TrendingUp, text: 'Compare prices & amenities side-by-side' },
@@ -205,7 +157,7 @@ const WhyCampusMart = () => {
                                 );
                             })}
                         </div>
-                        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
                             <button onClick={() => setCurrentPage('accommodation')} className="btn btn-primary" style={{ borderRadius: '12px', padding: '0.9rem 1.75rem', boxShadow: '0 8px 20px rgba(140,198,63,0.3)', background: '#8cc63f' }}>
                                 Browse All Listings
                             </button>
@@ -214,7 +166,7 @@ const WhyCampusMart = () => {
                             </button>
                         </div>
                         {/* Stats row */}
-                        <div style={{ display: 'flex', gap: '2rem', marginTop: '2rem', flexWrap: 'wrap' }}>
+                        <div style={{ display: 'flex', gap: '2rem', marginTop: '2rem', flexWrap: 'wrap', justifyContent: 'center' }}>
                             {[
                                 { value: '0%', label: 'Commission Fees', color: '#8cc63f' },
                                 { value: 'GPS', label: 'Exact Location', color: '#1d3d6e' },

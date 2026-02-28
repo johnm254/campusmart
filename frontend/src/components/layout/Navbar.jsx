@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useApp } from '../../AppContext';
-import { Menu, X, ShoppingCart, User, LogOut, LayoutDashboard, Tag, MessageSquare, Settings as SettingsIcon, Heart, Users } from 'lucide-react';
+import { Menu, X, ShoppingCart, User, LogOut, LayoutDashboard, Tag, MessageSquare, Settings as SettingsIcon, Heart, Users, Home, Store, Building2, DoorOpen, ShieldCheck } from 'lucide-react';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
 
 const Navbar = ({ onOpenAuth, onOpenSell }) => {
-    const { user, wishlist, setCurrentPage, currentPage, logout, unreadCount } = useApp();
+    const { user, wishlist, setCurrentPage, currentPage, logout, unreadCount, setIsAdminLockModalOpen } = useApp();
     const [showAccountMenu, setShowAccountMenu] = useState(false);
     const [showMobileMenu, setShowMobileMenu] = useState(false);
     const isMobile = useMediaQuery('(max-width: 768px)');
@@ -15,7 +15,7 @@ const Navbar = ({ onOpenAuth, onOpenSell }) => {
         setShowMobileMenu(false);
     };
 
-    const navLink = (page, label) => (
+    const navLink = (page, label, icon = null) => (
         <a
             href="#"
             onClick={(e) => { e.preventDefault(); setCurrentPage(page); setShowMobileMenu(false); }}
@@ -23,15 +23,18 @@ const Navbar = ({ onOpenAuth, onOpenSell }) => {
                 color: currentPage === page ? 'var(--jiji-green)' : 'var(--text-primary)',
                 textDecoration: 'none',
                 fontWeight: 700,
-                fontSize: isMobile ? '1.1rem' : '1.15rem',
+                fontSize: isMobile ? '1rem' : '1.15rem',
                 padding: isMobile ? '0.75rem 0' : '0.5rem 0.25rem',
                 borderBottom: isMobile ? '1px solid #f5f5f5' : 'none',
-                display: 'block',
+                display: isMobile ? 'flex' : 'block',
+                alignItems: 'center',
+                gap: isMobile ? '0.75rem' : '0',
                 transition: 'all 0.2s'
             }}
             onMouseOver={e => e.currentTarget.style.color = 'var(--jiji-green)'}
             onMouseOut={e => e.currentTarget.style.color = currentPage === page ? 'var(--jiji-green)' : 'var(--text-primary)'}
         >
+            {isMobile && icon && <span style={{ display: 'flex', alignItems: 'center' }}>{icon}</span>}
             {label}
         </a>
     );
@@ -47,17 +50,15 @@ const Navbar = ({ onOpenAuth, onOpenSell }) => {
             borderBottom: '1px solid #eee'
         }}>
             {/* Main bar */}
-            <div style={{ maxWidth: '1400px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '2rem' }}>
+            <div style={{ width: '100%', margin: '0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '2rem' }}>
 
                 {/* Logo */}
                 <div onClick={() => setCurrentPage('home')} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
                     <img src="/logo.png" alt="CampusMart Logo" style={{ height: isMobile ? '30px' : '38px', objectFit: 'contain' }} />
-                    {!isMobile && (
-                        <span style={{ fontSize: '1.5rem', fontWeight: 800, letterSpacing: '-0.5px' }}>
-                            <span style={{ color: 'var(--campus-blue)' }}>CAMPUS</span>
-                            <span style={{ color: 'var(--jiji-green)' }}>MART</span>
-                        </span>
-                    )}
+                    <span style={{ fontSize: isMobile ? '1.1rem' : '1.5rem', fontWeight: 800, letterSpacing: '-0.5px' }}>
+                        <span style={{ color: 'var(--campus-blue)' }}>CAMPUS</span>
+                        <span style={{ color: 'var(--jiji-green)' }}>MART</span>
+                    </span>
                 </div>
 
                 {/* Desktop nav links - Moved next to right side actions */}
@@ -138,6 +139,15 @@ const Navbar = ({ onOpenAuth, onOpenSell }) => {
                                         ))}
 
                                         <div style={{ height: '1px', background: '#f5f5f5', margin: '0.5rem 0' }} />
+                                        <div
+                                            onClick={() => { setIsAdminLockModalOpen(true); setShowAccountMenu(false); }}
+                                            className="menu-item-premium"
+                                            style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#1d3d6e' }}
+                                        >
+                                            <ShieldCheck size={16} color="#1d3d6e" /> Admin Console
+                                        </div>
+
+                                        <div style={{ height: '1px', background: '#f5f5f5', margin: '0.5rem 0' }} />
                                         <div onClick={handleLogout} style={{ color: 'var(--jiji-orange)' }} className="menu-item-premium">
                                             <LogOut size={16} /> Sign Out
                                         </div>
@@ -181,22 +191,28 @@ const Navbar = ({ onOpenAuth, onOpenSell }) => {
                     borderTop: '1px solid #f0f0f0'
                 }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
-                        {navLink('home', '🏠  Discover')}
-                        {navLink('marketplace', '🛍️  Marketplace')}
-                        {navLink('accommodation', '🏠  Accommodation')}
-                        {navLink('community', '👥  Community')}
+                        {navLink('home', 'Discover', <Home size={20} />)}
+                        {navLink('marketplace', 'Marketplace', <Store size={20} />)}
+                        {navLink('accommodation', 'Accommodation', <Building2 size={20} />)}
+                        {navLink('community', 'Community', <Users size={20} />)}
 
                         {user ? (
                             <>
-                                {navLink('dashboard', '📊  My Dashboard')}
-                                {navLink('messages', `💬  Messages${unreadCount > 0 ? ` (${unreadCount})` : ''}`)}
-                                {navLink('wishlist', `❤️  Wishlist${wishlist.length > 0 ? ` (${wishlist.length})` : ''}`)}
-                                {navLink('settings', '⚙️  Settings')}
+                                {navLink('dashboard', 'My Dashboard', <LayoutDashboard size={20} />)}
+                                {navLink('messages', `Messages${unreadCount > 0 ? ` (${unreadCount})` : ''}`, <MessageSquare size={20} />)}
+                                {navLink('wishlist', `Wishlist${wishlist.length > 0 ? ` (${wishlist.length})` : ''}`, <Heart size={20} />)}
+                                {navLink('settings', 'Settings', <SettingsIcon size={20} />)}
+                                <button
+                                    onClick={() => { setIsAdminLockModalOpen(true); setShowMobileMenu(false); }}
+                                    style={{ width: '100%', padding: '0.75rem', background: '#ebf2f7', border: 'none', borderRadius: '10px', color: '#1d3d6e', fontWeight: 800, fontSize: '1rem', cursor: 'pointer', textAlign: 'left', display: 'flex', alignItems: 'center', gap: '0.75rem', marginTop: '0.25rem' }}
+                                >
+                                    <ShieldCheck size={20} /> Admin Console
+                                </button>
                                 <button
                                     onClick={handleLogout}
-                                    style={{ marginTop: '0.75rem', width: '100%', padding: '0.75rem', background: '#fff5f5', border: 'none', borderRadius: '10px', color: 'var(--jiji-orange)', fontWeight: 800, fontSize: '1rem', cursor: 'pointer', textAlign: 'left' }}
+                                    style={{ marginTop: '0.5rem', width: '100%', padding: '0.75rem', background: '#fff5f5', border: 'none', borderRadius: '10px', color: 'var(--jiji-orange)', fontWeight: 800, fontSize: '1rem', cursor: 'pointer', textAlign: 'left', display: 'flex', alignItems: 'center', gap: '0.75rem' }}
                                 >
-                                    🚪  Sign Out
+                                    <DoorOpen size={20} /> Sign Out
                                 </button>
                             </>
                         ) : (

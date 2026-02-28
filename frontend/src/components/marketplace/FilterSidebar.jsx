@@ -1,6 +1,6 @@
 import React from 'react';
 
-const FilterSidebar = ({ filters, setFilters, availableCategories = [], availableLocations = [] }) => {
+const FilterSidebar = ({ filters, setFilters, availableCategories = [], availableLocations = [], isMobile = false, onClose }) => {
     const categoryNames = {
         all: 'All items',
         books: 'Books & Stationaries',
@@ -10,7 +10,8 @@ const FilterSidebar = ({ filters, setFilters, availableCategories = [], availabl
         utensils: 'Utensils',
         appliances: 'Home Appliances',
         housing: 'Accommodation',
-        accessories: 'Accessories'
+        accessories: 'Accessories',
+        other: 'Other'
     };
 
     const toggleLocation = (loc) => {
@@ -22,10 +23,22 @@ const FilterSidebar = ({ filters, setFilters, availableCategories = [], availabl
 
     const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
+    const handleReset = () => {
+        setFilters({
+            category: 'all',
+            minPrice: '',
+            maxPrice: '',
+            search: '',
+            location: [],
+            condition: []
+        });
+        if (isMobile && onClose) onClose();
+    };
+
     return (
-        <aside style={{ background: 'white', padding: '1.5rem', borderRadius: '16px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)', height: 'fit-content', position: 'sticky', top: '100px' }}>
-            <div style={{ marginBottom: '2rem', paddingBottom: '1rem', borderBottom: '1px solid #eee' }}>
-                <h2 style={{ fontSize: '1.25rem', color: 'var(--campus-blue)', margin: 0 }}>Filters</h2>
+        <aside style={{ background: 'white', padding: isMobile ? '0' : '1.5rem', borderRadius: isMobile ? '0' : '16px', boxShadow: isMobile ? 'none' : '0 4px 12px rgba(0, 0, 0, 0.05)', height: 'fit-content', position: isMobile ? 'static' : 'sticky', top: '100px' }}>
+            <div style={{ marginBottom: '2rem', paddingBottom: isMobile ? '0' : '1rem', borderBottom: isMobile ? 'none' : '1px solid #eee' }}>
+                {!isMobile && <h2 style={{ fontSize: '1.25rem', color: 'var(--campus-blue)', margin: 0 }}>Filters</h2>}
             </div>
 
             <div style={{ marginBottom: '2rem' }}>
@@ -96,17 +109,20 @@ const FilterSidebar = ({ filters, setFilters, availableCategories = [], availabl
             <button
                 className="btn btn-secondary"
                 style={{ width: '100%' }}
-                onClick={() => setFilters({
-                    category: 'all',
-                    minPrice: '',
-                    maxPrice: '',
-                    search: '',
-                    location: [],
-                    condition: []
-                })}
+                onClick={handleReset}
             >
                 Reset Filters
             </button>
+
+            {isMobile && (
+                <button
+                    className="btn btn-primary"
+                    style={{ width: '100%', marginTop: '0.75rem' }}
+                    onClick={onClose}
+                >
+                    Apply Filters
+                </button>
+            )}
         </aside>
     );
 };

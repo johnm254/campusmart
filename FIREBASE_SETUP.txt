@@ -1,0 +1,204 @@
+═══════════════════════════════════════════════════════════════
+  CAMPUSMART - FIREBASE DEPLOYMENT GUIDE
+═══════════════════════════════════════════════════════════════
+
+This guide will help you deploy CampusMart to Firebase:
+  • Frontend → Firebase Hosting
+  • Backend → Firebase Functions
+  • Database → Firebase Firestore OR keep MySQL (Cloud SQL)
+
+═══════════════════════════════════════════════════════════════
+  STEP 1: INSTALL FIREBASE CLI
+═══════════════════════════════════════════════════════════════
+
+Open Command Prompt or PowerShell and run:
+
+npm install -g firebase-tools
+
+Verify installation:
+firebase --version
+
+═══════════════════════════════════════════════════════════════
+  STEP 2: LOGIN TO FIREBASE
+═══════════════════════════════════════════════════════════════
+
+firebase login
+
+This will open your browser. Login with your Google account.
+
+═══════════════════════════════════════════════════════════════
+  STEP 3: CREATE FIREBASE PROJECT
+═══════════════════════════════════════════════════════════════
+
+Option A: Use Firebase Console (Recommended)
+──────────────────────────────────────────────────────────────
+1. Go to: https://console.firebase.google.com
+2. Click "Add project"
+3. Project name: campusmart (or campusmart-ke)
+4. Enable Google Analytics (optional)
+5. Click "Create project"
+
+Option B: Use CLI
+──────────────────────────────────────────────────────────────
+firebase projects:create campusmart
+
+═══════════════════════════════════════════════════════════════
+  STEP 4: INITIALIZE FIREBASE IN YOUR PROJECT
+═══════════════════════════════════════════════════════════════
+
+In your project directory, run:
+
+firebase init
+
+Select these options:
+  ☑ Hosting (for frontend)
+  ☑ Functions (for backend)
+  ☑ Firestore (optional - if switching from MySQL)
+
+Configuration:
+  • Project: Select "campusmart" (the one you created)
+  • Functions language: JavaScript
+  • ESLint: No (or Yes if you want)
+  • Install dependencies: Yes
+  • Public directory: frontend/dist
+  • Single-page app: Yes
+  • GitHub deploys: No (for now)
+
+═══════════════════════════════════════════════════════════════
+  STEP 5: DATABASE OPTIONS
+═══════════════════════════════════════════════════════════════
+
+You have 3 options:
+
+Option A: Firebase Firestore (Recommended for Firebase)
+──────────────────────────────────────────────────────────────
+✅ Pros:
+  • Free tier (50K reads/day, 20K writes/day)
+  • No server management
+  • Real-time updates
+  • Automatic scaling
+  • Built-in security rules
+
+❌ Cons:
+  • Need to migrate data from MySQL
+  • Different query syntax
+  • Learning curve
+
+Option B: Google Cloud SQL (MySQL)
+──────────────────────────────────────────────────────────────
+✅ Pros:
+  • Keep existing MySQL database
+  • No code changes needed
+  • Familiar SQL syntax
+
+❌ Cons:
+  • Costs money (~$10-50/month)
+  • Need to manage database
+  • Requires Cloud SQL setup
+
+Option C: Keep HostPinnacle MySQL + Firebase Hosting
+──────────────────────────────────────────────────────────────
+✅ Pros:
+  • Cheapest option
+  • Keep existing database
+  • Only deploy frontend to Firebase
+
+❌ Cons:
+  • Backend still on HostPinnacle
+  • Need to manage two platforms
+
+RECOMMENDATION: Start with Option C (easiest), then migrate
+to Firestore later if needed.
+
+═══════════════════════════════════════════════════════════════
+  STEP 6: BUILD YOUR FRONTEND
+═══════════════════════════════════════════════════════════════
+
+cd frontend
+npm run build
+
+This creates the frontend/dist/ folder with production files.
+
+═══════════════════════════════════════════════════════════════
+  STEP 7: DEPLOY TO FIREBASE
+═══════════════════════════════════════════════════════════════
+
+Option A: Deploy Everything (Frontend + Backend)
+──────────────────────────────────────────────────────────────
+firebase deploy
+
+Option B: Deploy Frontend Only
+──────────────────────────────────────────────────────────────
+firebase deploy --only hosting
+
+Option C: Deploy Backend Only
+──────────────────────────────────────────────────────────────
+firebase deploy --only functions
+
+═══════════════════════════════════════════════════════════════
+  STEP 8: CONFIGURE CUSTOM DOMAIN (campusmart.co.ke)
+═══════════════════════════════════════════════════════════════
+
+1. Go to Firebase Console → Hosting
+2. Click "Add custom domain"
+3. Enter: campusmart.co.ke
+4. Follow DNS configuration instructions
+5. Add these DNS records at your domain registrar:
+
+   Type: A
+   Name: @
+   Value: (Firebase will provide IP addresses)
+
+   Type: A
+   Name: www
+   Value: (Firebase will provide IP addresses)
+
+6. Wait for SSL certificate (automatic, takes ~24 hours)
+
+═══════════════════════════════════════════════════════════════
+  FIREBASE HOSTING FEATURES
+═══════════════════════════════════════════════════════════════
+
+✅ Free SSL certificate (HTTPS)
+✅ Global CDN (fast worldwide)
+✅ Free tier: 10GB storage, 360MB/day transfer
+✅ Automatic scaling
+✅ Version history & rollbacks
+✅ Preview channels for testing
+
+═══════════════════════════════════════════════════════════════
+  COST COMPARISON
+═══════════════════════════════════════════════════════════════
+
+Firebase Hosting (Frontend):
+  FREE for most small-medium apps
+  Paid: $0.026/GB storage, $0.15/GB transfer
+
+Firebase Functions (Backend):
+  FREE: 2M invocations/month, 400K GB-seconds
+  Paid: $0.40 per million invocations
+
+Firestore (Database):
+  FREE: 50K reads, 20K writes, 1GB storage per day
+  Paid: $0.06 per 100K reads, $0.18 per 100K writes
+
+Cloud SQL (MySQL):
+  ~$10-50/month depending on size
+
+HostPinnacle:
+  Your current hosting cost
+
+RECOMMENDATION: Start with Firebase free tier!
+
+═══════════════════════════════════════════════════════════════
+  NEXT STEPS
+═══════════════════════════════════════════════════════════════
+
+I'll create these files for you:
+  ✅ firebase.json (Firebase configuration)
+  ✅ .firebaserc (Project settings)
+  ✅ functions/index.js (Backend API)
+  ✅ firestore.rules (Database security)
+  ✅ DEPLOY_FIREBASE.bat (One-click deploy script)
+
+═══════════════════════════════════════════════════════════════

@@ -1,0 +1,181 @@
+═══════════════════════════════════════════════════════════════
+  UPDATE BACKEND ON HOSTPINNACLE (FIX CORS)
+═══════════════════════════════════════════════════════════════
+
+Your Firebase frontend is deployed and working, but it can't connect
+to your HostPinnacle backend due to CORS. Here's how to fix it:
+
+═══════════════════════════════════════════════════════════════
+  METHOD 1: UPLOAD SINGLE FILE (FASTEST)
+═══════════════════════════════════════════════════════════════
+
+1. Login to HostPinnacle cPanel
+   https://hostpinnacle.co.ke/cpanel
+
+2. Open File Manager
+
+3. Navigate to your backend folder
+   (wherever you uploaded the backend)
+
+4. Find and click on: index.js
+
+5. Click "Edit" button
+
+6. Replace the CORS section (around line 50-55) with:
+
+   ─────────────────────────────────────────────────────────────
+   const app = express();
+
+   // CORS configuration - allow Firebase and production domains
+   const allowedOrigins = [
+       'http://localhost:5173',
+       'http://localhost:3000',
+       'https://campusmart.co.ke',
+       'https://www.campusmart.co.ke',
+       'https://campusmart-7d3d4.web.app',
+       'https://campusmart-7d3d4.firebaseapp.com'
+   ];
+
+   app.use(cors({
+       origin: function(origin, callback) {
+           if (!origin) return callback(null, true);
+           if (allowedOrigins.indexOf(origin) !== -1) {
+               callback(null, true);
+           } else {
+               console.log('CORS blocked origin:', origin);
+               callback(null, true);
+           }
+       },
+       credentials: true,
+       methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+       allowedHeaders: ['Content-Type', 'Authorization', 'X-Admin-Secret']
+   }));
+
+   app.use(express.json({ limit: '10mb' }));
+   app.use(express.urlencoded({ limit: '10mb', extended: true }));
+   ─────────────────────────────────────────────────────────────
+
+7. Click "Save Changes"
+
+8. Restart your backend:
+   • If using PM2: pm2 restart campusmart
+   • If using Node.js app manager: Restart the app
+   • Or SSH and run: node index.js
+
+9. Test: Visit https://campusmart-7d3d4.web.app and try to register
+
+═══════════════════════════════════════════════════════════════
+  METHOD 2: UPLOAD ENTIRE FILE (SAFER)
+═══════════════════════════════════════════════════════════════
+
+1. The updated backend/index.js is already in your local project
+
+2. Login to HostPinnacle cPanel → File Manager
+
+3. Navigate to your backend folder
+
+4. Click "Upload" button
+
+5. Select: backend/index.js from your computer
+
+6. When asked "File exists, overwrite?", click "Yes"
+
+7. Restart your backend server
+
+8. Test the app
+
+═══════════════════════════════════════════════════════════════
+  METHOD 3: RE-UPLOAD ENTIRE BACKEND (MOST THOROUGH)
+═══════════════════════════════════════════════════════════════
+
+1. Create new backend ZIP:
+   • Right-click backend folder
+   • "Send to" → "Compressed (zipped) folder"
+   • Rename to: campusmart-backend-updated.zip
+
+2. Upload to HostPinnacle:
+   • cPanel → File Manager
+   • Navigate to backend folder
+   • Upload ZIP
+   • Extract (overwrite existing files)
+
+3. Restart backend server
+
+4. Test the app
+
+═══════════════════════════════════════════════════════════════
+  VERIFY IT WORKS
+═══════════════════════════════════════════════════════════════
+
+1. Visit: https://campusmart-7d3d4.web.app
+
+2. Open browser console (F12)
+
+3. Try to register a new account
+
+4. Check console - should see NO CORS errors
+
+5. If it works, you'll see:
+   ✅ "Registration successful" message
+   ✅ Redirected to dashboard
+
+═══════════════════════════════════════════════════════════════
+  TROUBLESHOOTING
+═══════════════════════════════════════════════════════════════
+
+Problem: Still getting CORS errors
+Solution:
+  • Check backend is running: https://campusmart.co.ke/api
+  • Verify you saved the file correctly
+  • Restart backend server
+  • Clear browser cache (Ctrl+Shift+Delete)
+
+Problem: Backend not responding
+Solution:
+  • Check backend logs in HostPinnacle
+  • Verify Node.js app is running
+  • Check for syntax errors in index.js
+
+Problem: Can't find backend folder
+Solution:
+  • Look in: /home/ricoanco/backend
+  • Or wherever you originally uploaded it
+  • Check with HostPinnacle support
+
+═══════════════════════════════════════════════════════════════
+  ALTERNATIVE: DEPLOY FULL FIREBASE
+═══════════════════════════════════════════════════════════════
+
+If updating HostPinnacle is too complicated, consider deploying
+everything to Firebase:
+
+Benefits:
+  ✅ No CORS issues (same domain)
+  ✅ Better performance
+  ✅ Easier management
+  ✅ Auto-scaling
+
+Steps:
+  1. Read: UPGRADE_TO_BLAZE.txt
+  2. Upgrade to Blaze plan (2 minutes)
+  3. Run: DEPLOY_NOW.bat
+  4. Done!
+
+Cost: $0-5/month (likely $0)
+
+═══════════════════════════════════════════════════════════════
+  SUMMARY
+═══════════════════════════════════════════════════════════════
+
+Current Setup:
+  • Frontend: Firebase ✅ (working)
+  • Backend: HostPinnacle ⚠️ (needs CORS update)
+
+To Fix:
+  1. Update backend/index.js on HostPinnacle
+  2. Restart backend
+  3. Test app
+
+Time needed: 5-10 minutes
+
+═══════════════════════════════════════════════════════════════

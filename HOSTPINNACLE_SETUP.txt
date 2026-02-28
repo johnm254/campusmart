@@ -1,0 +1,101 @@
+═══════════════════════════════════════════════════════════════
+  CAMPUSMART - HOSTPINNACLE DEPLOYMENT GUIDE
+═══════════════════════════════════════════════════════════════
+
+DATABASE CREDENTIALS (VERIFIED):
+  Database Name: ricoanco_campusmart
+  Database User: ricoanco_campusmart
+  Password: 911Hamisi.
+  Type: MySQL
+  Port: 3306
+  Host: localhost
+
+DOMAIN:
+  https://campusmart.co.ke
+
+═══════════════════════════════════════════════════════════════
+  QUICK START (3 STEPS)
+═══════════════════════════════════════════════════════════════
+
+STEP 1: TEST DATABASE CONNECTION
+  Right-click: TEST_MYSQL_CONNECTION.bat
+  Select: "Run as administrator"
+  
+  ✅ If successful: Continue to Step 2
+  ❌ If failed: Contact HostPinnacle support
+
+STEP 2: DEPLOY TO HOSTPINNACLE
+  Right-click: DEPLOY_TO_HOSTPINNACLE.bat
+  Select: "Run as administrator"
+  
+  This will:
+  - Test database connection
+  - Create all tables
+  - Start the backend server
+
+STEP 3: UPLOAD FRONTEND
+  1. Frontend files are in: frontend/dist/
+  2. Upload ALL files from dist/ to your HostPinnacle public_html
+  3. Make sure .htaccess is uploaded too
+
+═══════════════════════════════════════════════════════════════
+  WHAT'S CONFIGURED
+═══════════════════════════════════════════════════════════════
+
+✅ Backend (.env):
+   - DB_TYPE=mysql
+   - Correct MySQL credentials
+   - Port 5000
+   - Production mode
+
+✅ Frontend (.env.production):
+   - API URL: https://campusmart.co.ke/api
+   - Domain: https://campusmart.co.ke
+
+✅ Database:
+   - MySQL connection configured
+   - Auto-translation from PostgreSQL queries
+   - All tables will be created automatically
+
+═══════════════════════════════════════════════════════════════
+  TROUBLESHOOTING
+═══════════════════════════════════════════════════════════════
+
+Problem: "password authentication failed"
+Solution: Database credentials are now correct in .env
+
+Problem: "Cannot find module 'mysql2'"
+Solution: Run in backend folder: npm install mysql2
+
+Problem: Backend won't start
+Solution: Check if port 5000 is available on HostPinnacle
+
+Problem: Frontend can't connect to backend
+Solution: Verify FRONTEND_URL in backend/.env matches your domain
+
+═══════════════════════════════════════════════════════════════
+  FILES READY FOR DEPLOYMENT
+═══════════════════════════════════════════════════════════════
+
+Backend Files (upload to server):
+  ✅ backend/.env (MySQL configured)
+  ✅ backend/index.js
+  ✅ backend/db.js (MySQL abstraction layer)
+  ✅ backend/init-database-mysql.js
+  ✅ backend/package.json
+  ✅ backend/node_modules/ (or run npm install on server)
+
+Frontend Files (upload to public_html):
+  ✅ frontend/dist/* (all files)
+  ✅ frontend/dist/.htaccess
+
+═══════════════════════════════════════════════════════════════
+  NEXT STEPS
+═══════════════════════════════════════════════════════════════
+
+1. Run TEST_MYSQL_CONNECTION.bat to verify database
+2. Run DEPLOY_TO_HOSTPINNACLE.bat to initialize and start
+3. Upload frontend/dist/ files to HostPinnacle
+4. Visit https://campusmart.co.ke
+
+═══════════════════════════════════════════════════════════════

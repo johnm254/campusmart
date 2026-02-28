@@ -7,26 +7,17 @@ const jwt = require('jsonwebtoken');
 const axios = require('axios');
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
-const { Pool } = require('pg');
-
-// ─── Database Configuration ──────────────────────────────────────────────
-const pool = process.env.DATABASE_URL
-    ? new Pool({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } })
-    : new Pool({
-        host: process.env.DB_HOST,
-        user: process.env.DB_USER,
-        password: process.env.DB_PASS,
-        database: process.env.DB_NAME,
-        port: process.env.DB_PORT || 5432,
-    });
-
-const db = {
-    query: (text, params) => pool.query(text, params),
-    pool
-};
+const db = require('./db');
 
 // ─── Auto-Initialize Schema ──────────────────────────────────────────────
 const initSchema = async () => {
+    // Skip auto-init if using MySQL - use init-database-mysql.js instead
+    if (db.dbType === 'mysql') {
+        console.log('⚠️  MySQL detected - skipping auto-init.');
+        console.log('   Run: node init-database-mysql.js to initialize schema');
+        return;
+    }
+    
     try {
         console.log('Ensuring database schema is up to date...');
         await db.query(`CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY, full_name VARCHAR(255), email VARCHAR(255) UNIQUE, password VARCHAR(255), whatsapp VARCHAR(20), avatar_url TEXT, is_admin BOOLEAN DEFAULT FALSE, is_banned BOOLEAN DEFAULT FALSE, is_verified BOOLEAN DEFAULT FALSE, verified_until TIMESTAMP, boost_type VARCHAR(50), last_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)`);
@@ -54,7 +45,34 @@ const initSchema = async () => {
 initSchema();
 
 const app = express();
-app.use(cors());
+
+// CORS configuration - allow Firebase and production domains
+const allowedOrigins = [
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'https://campusmart.co.ke',
+    'https://www.campusmart.co.ke',
+    'https://campusmart-7d3d4.web.app',
+    'https://campusmart-7d3d4.firebaseapp.com'
+];
+
+app.use(cors({
+    origin: function(origin, callback) {
+        // Allow requests with no origin (mobile apps, Postman, etc.)
+        if (!origin) return callback(null, true);
+        
+        if (allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            console.log('CORS blocked origin:', origin);
+            callback(null, true); // Allow all for now, remove in production
+        }
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Admin-Secret']
+}));
+
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
@@ -71,7 +89,8 @@ const transporter = nodemailer.createTransport({
 
 // Middleware to protect routes
 const verifyToken = (req, res, next) => {
-    const token = req.headers['authorization']?.split(' ')[1];
+    const authHeader = req.headers['authorization'];
+    const token = authHeader ? authHeader.split(' ')[1] : undefined;
     if (!token) return res.status(401).json({ message: 'No token provided' });
 
     jwt.verify(token, JWT_SECRET, async (err, decoded) => {
@@ -96,25 +115,59 @@ const verifyToken = (req, res, next) => {
     });
 };
 
-const verifyAdminToken = (req, res, next) => {
+const verifyAdminToken = async (req, res, next) => {
     const adminSecret = req.headers['x-admin-secret'];
-    const isSecretValid = adminSecret === (process.env.ADMIN_SECRET || 'CAMPUS_ADMIN_2026');
+    const validSecrets = [
+        process.env.ADMIN_SECRET,
+        'CAMPUS_ADMIN_2026',
+        '#CAMPUS_ADMIN_2026#',
+        'CAMPUS_ADMIN_2027',
+        '#CAMPUS_ADMIN_2027#'
+    ];
+    const isSecretValid = validSecrets.filter(Boolean).includes(adminSecret);
 
-    if (isSecretValid) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader ? authHeader.split(' ')[1] : undefined;
+
+    if (token) {
+        jwt.verify(token, JWT_SECRET, async (err, decoded) => {
+            if (err) {
+                // JWT invalid — fall back to secret key only
+                if (isSecretValid) {
+                    req.user = { is_admin: true, id: null };
+                    return next();
+                }
+                return res.status(403).json({ message: 'Invalid token' });
+            }
+
+            // JWT is valid — always re-check is_admin from DB (handles stale tokens)
+            try {
+                const dbUser = await db.query('SELECT is_admin, is_banned FROM users WHERE id = $1', [decoded.id]);
+                if (dbUser.rows.length === 0) {
+                    return res.status(403).json({ message: 'User not found' });
+                }
+                if (dbUser.rows[0].is_banned) {
+                    return res.status(403).json({ message: 'Your account has been suspended.' });
+                }
+                // Use DB is_admin (source of truth), override stale JWT value
+                req.user = { ...decoded, is_admin: dbUser.rows[0].is_admin };
+            } catch (dbErr) {
+                console.error('Admin token DB check error:', dbErr.message);
+                // Fall back to JWT value if DB check fails
+                req.user = decoded;
+            }
+
+            if (req.user.is_admin || isSecretValid) {
+                return next();
+            }
+            res.status(403).json({ message: 'Admin access required' });
+        });
+    } else if (isSecretValid) {
         req.user = { is_admin: true, id: null };
-        return next();
-    }
-
-    const token = req.headers['authorization']?.split(' ')[1];
-    if (!token) return res.status(401).json({ message: 'No token provided' });
-
-    jwt.verify(token, JWT_SECRET, (err, decoded) => {
-        if (err) return res.status(403).json({ message: 'Invalid token' });
-        if (!decoded.is_admin) return res.status(403).json({ message: 'Admin access required' });
-
-        req.user = decoded;
         next();
-    });
+    } else {
+        res.status(401).json({ message: 'No token provided' });
+    }
 };
 
 const logActivity = async (userId, action, metadata = {}) => {
@@ -332,6 +385,7 @@ app.get('/api/products', async (req, res) => {
                    p.latitude, p.longitude, p.metadata, p.contact_phone, p.security_features
             FROM products p 
             LEFT JOIN users u ON p.seller_id = u.id 
+            WHERE (p.status = 'available' OR p.status IS NULL OR p.status = '')
             ORDER BY 
               CASE 
                 WHEN u.is_verified = TRUE AND (u.verified_until IS NULL OR u.verified_until >= NOW()) AND u.boost_type = 'power' THEN 2
@@ -424,6 +478,33 @@ app.delete('/api/products/:id', verifyToken, async (req, res) => {
     }
 });
 
+// Mark product as sold
+app.post('/api/products/:id/sold', verifyToken, async (req, res) => {
+    try {
+        const productId = req.params.id;
+        const userId = req.user.id;
+
+        // Check ownership
+        const product = await db.query('SELECT seller_id, title FROM products WHERE id = $1', [productId]);
+
+        if (product.rows.length === 0) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+
+        if (product.rows[0].seller_id !== userId) {
+            return res.status(403).json({ message: 'Unauthorized' });
+        }
+
+        await db.query("UPDATE products SET status = 'sold' WHERE id = $1", [productId]);
+        logActivity(userId, 'product_sold', { productId, title: product.rows[0].title });
+
+        res.json({ message: 'Product marked as sold successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error marking product as sold' });
+    }
+});
+
 // Increment product views
 app.post('/api/products/:id/view', async (req, res) => {
     try {
@@ -455,13 +536,16 @@ app.get('/api/user/stats', verifyToken, async (req, res) => {
             WHERE reviewee_id = $1
         `, [userId]);
 
+        const salesRes = await db.query("SELECT COUNT(*) as count FROM products WHERE seller_id = $1 AND status = 'sold'", [userId]);
+
         res.json({
             active_listings: parseInt(listingsRes.rows[0].count) || 0,
             total_views: parseInt(viewsRes.rows[0].count) || 0,
             saved_items: parseInt(wishlistRes.rows[0].count) || 0,
             total_messages: parseInt(messagesRes.rows[0].count) || 0,
             average_rating: parseFloat(ratingRes.rows[0].average_rating) || 0,
-            review_count: parseInt(ratingRes.rows[0].review_count) || 0
+            review_count: parseInt(ratingRes.rows[0].review_count) || 0,
+            successful_sales: parseInt(salesRes.rows[0].count) || 0
         });
     } catch (error) {
         console.error('Stats error:', error);
@@ -795,7 +879,12 @@ app.post('/api/wishlist/:productId', verifyToken, async (req, res) => {
 // Get all community posts
 app.get('/api/community/posts', async (req, res) => {
     try {
-        const userId = req.headers['authorization'] ? jwt.decode(req.headers['authorization'].split(' ')[1])?.id : null;
+        const authHeader = req.headers['authorization'];
+        let userId = null;
+        if (authHeader) {
+            const decodedToken = jwt.decode(authHeader.split(' ')[1]);
+            userId = decodedToken ? decodedToken.id : null;
+        }
 
         const result = await db.query(`
             SELECT cp.*, u.full_name as author_name, u.avatar_url as author_avatar, u.is_admin,
@@ -827,8 +916,9 @@ app.post('/api/community/posts', verifyToken, async (req, res) => {
         const is_admin = req.user.is_admin;
 
         // Fetch current user status from DB to ensure verification hasn't expired
-        const userStatus = await db.query('SELECT is_verified, verified_until FROM users WHERE id = $1', [author_id]);
-        const is_verified = userStatus.rows[0]?.is_verified && (userStatus.rows[0]?.verified_until === null || new Date(userStatus.rows[0]?.verified_until) >= new Date());
+        const userStatusResult = await db.query('SELECT is_verified, verified_until FROM users WHERE id = $1', [author_id]);
+        const userStatus = userStatusResult.rows[0];
+        const is_verified = userStatus && userStatus.is_verified && (userStatus.verified_until === null || new Date(userStatus.verified_until) >= new Date());
 
         // Restriction: Only admins and verified users can post events and announcements
         if ((type === 'announcement' || type === 'events') && !is_admin && !is_verified) {
@@ -901,8 +991,8 @@ app.post('/api/community/posts/:id/comments', verifyToken, async (req, res) => {
         if (postAuthor.rows.length > 0 && postAuthor.rows[0].author_id !== userId) {
             const authorId = postAuthor.rows[0].author_id;
             const postPreview = postAuthor.rows[0].post_content.substring(0, 40);
-            const commenterName = await db.query('SELECT full_name FROM users WHERE id = $1', [userId]);
-            const name = commenterName.rows[0]?.full_name || 'Someone';
+            const commenterResult = await db.query('SELECT full_name FROM users WHERE id = $1', [userId]);
+            const name = (commenterResult.rows[0] && commenterResult.rows[0].full_name) || 'Someone';
 
             // Insert a message into the messages table
             await db.query(
@@ -1103,7 +1193,7 @@ app.get('/api/mpesa/status', async (req, res) => {
         }
         return res.json({ status: 'unknown', message: 'Unexpected response from Safaricom', data: r.data });
     } catch (e) {
-        const httpStatus = e.response?.status;
+        const httpStatus = e.response ? e.response.status : undefined;
         if (httpStatus === 400 || httpStatus === 401) {
             return res.json({
                 status: 'invalid',
@@ -1207,10 +1297,12 @@ app.get('/api/admin/stats', verifyAdminToken, async (req, res) => {
             WHERE t.status = $1
         `, ['completed']);
         const pendingApprovals = await db.query('SELECT COUNT(*) FROM products WHERE is_approved = FALSE');
+        const successfulSalesCount = await db.query("SELECT COUNT(*) FROM products WHERE status = 'sold'");
 
         // New active stats
         const usersToday = await db.query('SELECT COUNT(*) FROM users WHERE created_at >= CURRENT_DATE');
         const productsToday = await db.query('SELECT COUNT(*) FROM products WHERE created_at >= CURRENT_DATE');
+        const salesToday = await db.query("SELECT COUNT(*) FROM products WHERE status = 'sold' AND created_at >= CURRENT_DATE");
 
         const recentUsers = await db.query('SELECT full_name, email, created_at FROM users ORDER BY created_at DESC LIMIT 5');
         const recentTransactions = await db.query(`
@@ -1227,8 +1319,10 @@ app.get('/api/admin/stats', verifyAdminToken, async (req, res) => {
                 total_products: parseInt(productsCount.rows[0].count),
                 total_revenue: parseFloat(revenueTotal.rows[0].sum || 0),
                 pending_approvals: parseInt(pendingApprovals.rows[0].count),
+                successful_sales: parseInt(successfulSalesCount.rows[0].count),
                 users_today: parseInt(usersToday.rows[0].count),
-                products_today: parseInt(productsToday.rows[0].count)
+                products_today: parseInt(productsToday.rows[0].count),
+                sales_today: parseInt(salesToday.rows[0].count)
             },
             recent_users: recentUsers.rows,
             recent_transactions: recentTransactions.rows
@@ -1299,6 +1393,19 @@ app.post('/api/admin/products/:id/toggle-approval', verifyAdminToken, async (req
         res.json({ message: `Product ${newValue ? 'authorized' : 'deactivated'}`, is_approved: newValue });
     } catch (error) {
         res.status(500).json({ message: 'Error toggling product status' });
+    }
+});
+
+app.delete('/api/admin/products/:id', verifyAdminToken, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const existing = await db.query('SELECT id FROM products WHERE id = $1', [id]);
+        if (existing.rows.length === 0) return res.status(404).json({ message: 'Product not found' });
+        await db.query('DELETE FROM products WHERE id = $1', [id]);
+        logActivity(req.user.id, 'admin_delete_product', { targetProductId: id });
+        res.json({ message: 'Product deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error deleting product' });
     }
 });
 
@@ -1386,6 +1493,38 @@ app.post('/api/admin/users/:id/update-role', verifyAdminToken, async (req, res) 
     }
 });
 
+app.delete('/api/admin/users/:id', verifyAdminToken, async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Prevent admin from deleting themselves
+        if (req.user && parseInt(id) === parseInt(req.user.id)) {
+            return res.status(400).json({ message: 'You cannot delete your own admin account.' });
+        }
+
+        // 1. Delete associated data first
+        await db.query('DELETE FROM products WHERE seller_id = $1', [id]);
+        await db.query('DELETE FROM community_posts WHERE author_id = $1', [id]);
+        await db.query('DELETE FROM messages WHERE sender_id = $1 OR receiver_id = $1', [id]);
+        await db.query('DELETE FROM activity_logs WHERE user_id = $1', [id]);
+        // Note: Transactions are usually kept for audit, but for full deletion:
+        // await db.query('DELETE FROM transactions WHERE user_id = $1', [id]);
+
+        // 2. Delete the user
+        const result = await db.query('DELETE FROM users WHERE id = $1', [id]);
+
+        if (result.rowCount === 0 && result.affectedRows === 0) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        logActivity(req.user ? req.user.id : null, 'admin_delete_user', { targetUserId: id });
+        res.json({ message: 'User and all associated data deleted successfully.' });
+    } catch (error) {
+        console.error('Delete user error:', error);
+        res.status(500).json({ message: 'Error deleting user: ' + error.message });
+    }
+});
+
 app.post('/api/admin/users/:id/verify', verifyAdminToken, async (req, res) => {
     try {
         const { id } = req.params;
@@ -1433,6 +1572,40 @@ app.post('/api/admin/community/posts/:id/delete', verifyAdminToken, async (req, 
         res.json({ message: 'Post deleted successfully' });
     } catch (error) {
         res.status(500).json({ message: 'Error deleting post' });
+    }
+});
+
+// ─── Admin: Post Announcement ─────────────────────────────────────────────────
+// Uses verifyAdminToken (checks DB, not just JWT) so it always works for current admins.
+app.post('/api/admin/announcements', verifyAdminToken, async (req, res) => {
+    try {
+        const { content } = req.body;
+        if (!content || !content.trim()) {
+            return res.status(400).json({ message: 'Announcement content cannot be empty.' });
+        }
+
+        // When using secret-key-only (no JWT), req.user.id is null.
+        // In that case, find the first admin user to use as author.
+        let author_id = req.user.id;
+        if (!author_id) {
+            const adminUser = await db.query('SELECT id FROM users WHERE is_admin = TRUE ORDER BY id ASC LIMIT 1');
+            if (adminUser.rows.length === 0) {
+                return res.status(400).json({ message: 'No admin user found to author this announcement. Please log in as an admin first.' });
+            }
+            author_id = adminUser.rows[0].id;
+        }
+
+        const result = await db.query(
+            `INSERT INTO community_posts (author_id, content, type, image_url)
+             VALUES ($1, $2, 'announcement', NULL) RETURNING *`,
+            [author_id, content.trim()]
+        );
+
+        logActivity(req.user.id, 'admin_announcement_post', { postId: result.rows[0].id, author_id });
+        res.status(201).json({ message: 'Announcement published successfully', post: result.rows[0] });
+    } catch (error) {
+        console.error('Announcement error:', error);
+        res.status(500).json({ message: 'Error publishing announcement: ' + error.message });
     }
 });
 

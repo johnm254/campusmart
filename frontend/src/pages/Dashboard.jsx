@@ -13,7 +13,8 @@ const Dashboard = () => {
         saved_items: 0,
         total_messages: 0,
         average_rating: 0,
-        review_count: 0
+        review_count: 0,
+        successful_sales: 0
     });
     const [reviews, setReviews] = useState([]);
 
@@ -64,197 +65,289 @@ const Dashboard = () => {
         }
     };
 
+    const handleMarkAsSold = async (id) => {
+        if (window.confirm('Mark this item as sold? It will no longer be visible in the marketplace but will count towards your successful sales.')) {
+            try {
+                const res = await api.markProductAsSold(id);
+                if (res.message === 'Product marked as sold successfully') {
+                    addNotification('Sold!', 'Listing marked as successfully sold', 'success');
+                    // Update local state to reflect change or re-fetch
+                    fetchDashboardData();
+                }
+            } catch (err) {
+                addNotification('Error', 'Failed to mark as sold', 'warning');
+            }
+        }
+    };
+
     const stats = [
         { label: 'Active Listings', value: (realStats?.active_listings || 0).toString(), icon: Package, color: 'var(--jiji-green)' },
         { label: 'Total Views', value: (realStats?.total_views || 0).toString(), icon: Eye, color: 'var(--campus-blue)' },
         { label: 'Saved Items', value: (realStats?.saved_items || 0).toString(), icon: Heart, color: 'var(--jiji-orange)' },
-        { label: 'Avg Rating', value: (realStats?.average_rating || 0).toFixed(1) + ' (' + (realStats?.review_count || 0) + ')', icon: Star, color: '#FFD700' },
+        { label: 'Sales Done', value: (realStats?.successful_sales || 0).toString(), icon: Check, color: '#16a34a' },
     ];
 
     return (
-        <div className="container" style={{ maxWidth: '1200px' }}>
-            <div style={{ marginBottom: '3rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
-                <div>
-                    <h2 style={{ fontSize: '2rem', color: 'var(--campus-blue)', marginBottom: '0.5rem' }}>Welcome back, {user?.full_name || user?.name || 'Comrade'}!</h2>
-                    <p style={{ color: 'var(--text-secondary)' }}>Manage your campus listings and student interactions.</p>
-                </div>
-                <div style={{ display: 'flex', gap: '1rem' }}>
-                    <button
-                        onClick={() => setCurrentPage('messages')}
-                        className="btn btn-secondary"
-                        style={{ borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem 1.5rem', background: '#eef2ff', border: '1px solid #d0dfff', color: 'var(--campus-blue)' }}
-                    >
-                        <MessageCircle size={20} /> My Chats ({realStats.total_messages})
-                    </button>
-                    <button
-                        onClick={() => setIsSellModalOpen(true)}
-                        className="btn btn-primary"
-                        style={{ borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem 1.5rem' }}
-                    >
-                        <Plus size={20} /> Create New Listing
-                    </button>
-                </div>
-            </div>
+        <div style={{
+            flex: 1,
+            overflow: 'hidden',
+            display: 'flex',
+            flexDirection: 'column',
+            background: '#f8fafc'
+        }}>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem', marginBottom: '3rem' }}>
-                {stats.map((stat, i) => (
-                    <div key={i} style={{ background: 'white', padding: '2rem', borderRadius: '24px', boxShadow: '0 10px 30px rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }}>
-                        <div style={{ position: 'absolute', top: '-10px', right: '-10px', width: '80px', height: '80px', background: stat.color, opacity: 0.05, borderRadius: '50%' }}></div>
-                        <div style={{ background: stat.color + '15', color: stat.color, width: '48px', height: '48px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem' }}>
-                            <stat.icon size={24} />
+            <div style={{
+                flex: 1,
+                overflowY: 'auto',
+                padding: '2rem 0'
+            }}>
+                <div className="container" style={{ maxWidth: '1300px' }}>
+
+                    {/* TOP HEADER SECTION */}
+                    <div style={{ marginBottom: '3rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div>
+                            <h1 style={{ fontSize: '2.5rem', fontWeight: 900, color: '#1d3d6e', letterSpacing: '-1px', marginBottom: '0.5rem' }}>
+                                Habari, {user?.full_name?.split(' ')[0] || 'Comrade'}! 👋
+                            </h1>
+                            <p style={{ color: '#64748b', fontSize: '1.1rem', fontWeight: 500 }}>
+                                Your campus trading hub is running smoothly.
+                            </p>
                         </div>
-                        <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', fontWeight: 600, marginBottom: '0.25rem' }}>{stat.label}</div>
-                        <div style={{ fontSize: '2.5rem', fontWeight: 800, color: 'var(--text-primary)' }}>{stat.value}</div>
-                    </div>
-                ))}
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: '2.2fr 1fr', gap: '2rem', marginBottom: '3rem' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-                    <div style={{ background: 'white', padding: '2rem', borderRadius: '24px', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                            <h3 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 800 }}>My Listings</h3>
+                        <div style={{ display: 'flex', gap: '1rem' }}>
                             <button
-                                onClick={() => setCurrentPage('marketplace')}
-                                style={{ background: 'none', border: 'none', color: 'var(--jiji-green)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.25rem', cursor: 'pointer', fontSize: '0.9rem' }}
+                                onClick={() => setCurrentPage('messages')}
+                                className="btn"
+                                style={{ borderRadius: '14px', display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.85rem 1.75rem', background: 'white', border: '1px solid #e2e8f0', color: '#1d3d6e', fontWeight: 700, boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}
                             >
-                                Explore Marketplace <ArrowUpRight size={16} />
+                                <MessageCircle size={20} /> Chats ({realStats.total_messages})
+                            </button>
+                            <button
+                                onClick={() => setIsSellModalOpen(true)}
+                                className="btn btn-primary"
+                                style={{ borderRadius: '14px', display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.85rem 1.75rem', boxShadow: '0 8px 20px rgba(238, 28, 36, 0.2)' }}
+                            >
+                                <Plus size={20} /> New Listing
                             </button>
                         </div>
-
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                            {isLoading ? (
-                                <div style={{ textAlign: 'center', padding: '2rem', color: '#888' }}>Loading your items...</div>
-                            ) : myProducts.length === 0 ? (
-                                <div style={{ textAlign: 'center', padding: '3rem', background: '#f9f9f9', borderRadius: '16px', border: '2px dashed #eee' }}>
-                                    <Package size={48} color="#ccc" style={{ marginBottom: '1rem' }} />
-                                    <p style={{ color: '#888', marginBottom: '1.5rem' }}>You haven't listed any items for sale yet.</p>
-                                    <button onClick={() => setIsSellModalOpen(true)} className="btn btn-secondary" style={{ borderRadius: '8px' }}>Start Selling</button>
-                                </div>
-                            ) : (
-                                myProducts.slice(0, 5).map((product, i) => (
-                                    <div key={product.id} style={{ display: 'flex', gap: '1.5rem', paddingBottom: '1.5rem', borderBottom: i < myProducts.length - 1 && i < 4 ? '1px solid #f0f0f0' : 'none', alignItems: 'center' }}>
-                                        <div style={{ width: '80px', height: '80px', borderRadius: '12px', overflow: 'hidden', flexShrink: 0 }}>
-                                            <img src={product.image_url || 'https://via.placeholder.com/80x80'} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt={product.title} />
-                                        </div>
-                                        <div style={{ flex: 1 }}>
-                                            <div style={{ fontWeight: 800, fontSize: '1.1rem', marginBottom: '0.25rem', color: '#1a1a1a' }}>{product.title}</div>
-                                            <div style={{ color: 'var(--jiji-green)', fontWeight: 900, fontSize: '1.05rem' }}>KSh {Number(product.price).toLocaleString()}</div>
-                                            <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem', fontSize: '0.8rem', color: '#888', fontWeight: 600 }}>
-                                                <span>{product.category}</span>
-                                                <span>•</span>
-                                                <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}><Eye size={14} /> {product.views} views</span>
-                                            </div>
-                                        </div>
-                                        <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-                                            <div style={{ background: '#e6f4ea', color: '#1e7e34', padding: '0.3rem 0.8rem', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 800, textAlign: 'center' }}>Active</div>
-                                            <button
-                                                onClick={() => handleDelete(product.id)}
-                                                style={{ background: '#fff0f0', color: '#d32f2f', border: 'none', padding: '0.5rem 1rem', borderRadius: '8px', fontSize: '0.75rem', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s', boxShadow: '0 2px 4px rgba(211, 47, 47, 0.1)' }}
-                                                onMouseOver={e => e.currentTarget.style.background = '#ffe5e5'}
-                                                onMouseOut={e => e.currentTarget.style.background = '#fff0f0'}
-                                            >
-                                                Delete
-                                            </button>
-                                        </div>
-                                    </div>
-                                ))
-                            )}
-                        </div>
                     </div>
 
-                    {/* Recently Received Reviews */}
-                    <div style={{ background: 'white', padding: '2rem', borderRadius: '24px', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                            <h3 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 800 }}>Feedback/Reviews</h3>
-                            <div style={{ background: '#fff9e6', color: '#b8860b', padding: '0.4rem 0.8rem', borderRadius: '12px', fontSize: '0.85rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                <Star size={16} fill="#b8860b" /> {(realStats?.average_rating || 0).toFixed(1)} / 5.0
-                            </div>
-                        </div>
-
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                            {isLoading ? (
-                                <div style={{ textAlign: 'center', padding: '2rem', color: '#888' }}>Loading reviews...</div>
-                            ) : reviews.length === 0 ? (
-                                <div style={{ textAlign: 'center', padding: '3rem', background: '#fcfcfc', borderRadius: '16px', border: '2px dashed #eee' }}>
-                                    <Star size={48} color="#eee" style={{ marginBottom: '1rem' }} />
-                                    <p style={{ color: '#888', fontWeight: 600 }}>No reviews yet. Transactions build trust!</p>
+                    {/* METRIC CARDS */}
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', marginBottom: '3rem' }}>
+                        {stats.map((stat, i) => (
+                            <div key={i} style={{
+                                background: 'white', padding: '2rem', borderRadius: '28px',
+                                boxShadow: '0 10px 30px rgba(0,0,0,0.04)', border: '1px solid #f1f5f9',
+                                display: 'flex', flexDirection: 'column', position: 'relative'
+                            }}>
+                                <div style={{ background: stat.color + '15', color: stat.color, width: '52px', height: '52px', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem' }}>
+                                    <stat.icon size={28} />
                                 </div>
-                            ) : (
-                                reviews.slice(0, 3).map((review) => (
-                                    <div key={review.id} style={{ display: 'flex', gap: '1.25rem', padding: '1.25rem', background: '#f8fafc', borderRadius: '16px', border: '1px solid #f1f5f9' }}>
-                                        <img
-                                            src={review.reviewer_avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(review.reviewer_name)}&background=random`}
-                                            style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover' }}
-                                            alt={review.reviewer_name}
-                                        />
-                                        <div style={{ flex: 1 }}>
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
-                                                <span style={{ fontWeight: 800, fontSize: '0.95rem' }}>{review.reviewer_name}</span>
-                                                <div style={{ display: 'flex', gap: '2px' }}>
-                                                    {[1, 2, 3, 4, 5].map(s => (
-                                                        <Star key={s} size={12} fill={review.rating >= s ? "#FFD700" : "none"} color={review.rating >= s ? "#FFD700" : "#cbd5e0"} />
-                                                    ))}
+                                <div style={{ fontSize: '1rem', color: '#64748b', fontWeight: 700, marginBottom: '0.5rem' }}>{stat.label}</div>
+                                <div style={{ fontSize: '2.5rem', fontWeight: 900, color: '#111827' }}>{stat.value}</div>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '2rem', marginBottom: '3rem' }}>
+
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+
+                            {/* MY LISTINGS SECTION */}
+                            <div style={{ background: 'white', padding: '2.5rem', borderRadius: '32px', border: '1px solid #f1f5f9', boxShadow: '0 10px 40px rgba(0,0,0,0.03)' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem' }}>
+                                    <h3 style={{ margin: 0, fontSize: '1.6rem', fontWeight: 900, color: '#111827' }}>My Active Listings</h3>
+                                    <button
+                                        onClick={() => setCurrentPage('marketplace')}
+                                        style={{ background: '#f1f5f9', border: 'none', color: '#1d3d6e', fontWeight: 800, padding: '0.6rem 1.2rem', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.85rem' }}
+                                    >
+                                        Browse More <ArrowUpRight size={16} />
+                                    </button>
+                                </div>
+
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                                    {isLoading ? (
+                                        <div style={{ textAlign: 'center', padding: '3rem' }}>
+                                            <div className="spinner" style={{ margin: '0 auto 1.5rem' }} />
+                                            <p style={{ color: '#94a3b8', fontWeight: 700 }}>Fetching inventory...</p>
+                                        </div>
+                                    ) : myProducts.length === 0 ? (
+                                        <div style={{ textAlign: 'center', padding: '4rem 2rem', background: '#f8fafc', borderRadius: '24px', border: '2px dashed #e2e8f0' }}>
+                                            <Package size={56} color="#cbd5e1" style={{ marginBottom: '1.5rem' }} />
+                                            <h4 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#111827', marginBottom: '0.5rem' }}>Nothing for sale yet?</h4>
+                                            <p style={{ color: '#64748b', marginBottom: '1.5rem', fontWeight: 500 }}>Turn your unused items into cash today.</p>
+                                            <button onClick={() => setIsSellModalOpen(true)} className="btn btn-secondary" style={{ borderRadius: '12px', padding: '1rem 2rem' }}>Post Your First Item</button>
+                                        </div>
+                                    ) : (
+                                        myProducts.slice(0, 5).map((product, i) => (
+                                            <div key={product.id} style={{
+                                                display: 'flex', gap: '1.5rem', padding: '1.25rem',
+                                                background: '#fff', borderRadius: '20px', border: '1px solid #f1f5f9',
+                                                alignItems: 'center', transition: '0.2s'
+                                            }} onMouseEnter={e => e.currentTarget.style.borderColor = '#d1d5db'}>
+                                                <div style={{ width: '90px', height: '90px', borderRadius: '16px', overflow: 'hidden', flexShrink: 0, border: '1px solid #eee' }}>
+                                                    <img src={product.image_url || 'https://via.placeholder.com/90x90'} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt={product.title} />
+                                                </div>
+                                                <div style={{ flex: 1 }}>
+                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.4rem' }}>
+                                                        <div style={{ fontWeight: 800, fontSize: '1.15rem', color: '#111827' }}>{product.title}</div>
+                                                        {product.status === 'sold' && (
+                                                            <span style={{ background: '#dcfce7', color: '#166534', padding: '0.2rem 0.6rem', borderRadius: '6px', fontSize: '0.7rem', fontWeight: 900, textTransform: 'uppercase' }}>Sold</span>
+                                                        )}
+                                                    </div>
+                                                    <div style={{ color: '#16a34a', fontWeight: 900, fontSize: '1.2rem' }}>KSh {Number(product.price).toLocaleString()}</div>
+                                                    <div style={{ display: 'flex', gap: '1.25rem', marginTop: '0.6rem', fontSize: '0.85rem', color: '#64748b', fontWeight: 700 }}>
+                                                        <span style={{ background: '#f1f5f9', padding: '0.2rem 0.6rem', borderRadius: '6px' }}>{product.category}</span>
+                                                        <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}><Eye size={16} /> {product.views} Views</span>
+                                                    </div>
+                                                </div>
+                                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                                                    {product.status !== 'sold' && (
+                                                        <button
+                                                            onClick={() => handleMarkAsSold(product.id)}
+                                                            className="btn-success"
+                                                            style={{
+                                                                background: '#16a34a',
+                                                                color: 'white',
+                                                                border: 'none',
+                                                                padding: '0.6rem 1.2rem',
+                                                                borderRadius: '12px',
+                                                                fontSize: '0.8rem',
+                                                                fontWeight: 800,
+                                                                cursor: 'pointer',
+                                                                boxShadow: '0 4px 12px rgba(22, 163, 74, 0.2)'
+                                                            }}
+                                                        >
+                                                            Mark Sold
+                                                        </button>
+                                                    )}
+                                                    <button
+                                                        onClick={() => handleDelete(product.id)}
+                                                        style={{ background: '#fee2e2', color: '#dc2626', border: 'none', padding: '0.6rem 1.2rem', borderRadius: '12px', fontSize: '0.8rem', fontWeight: 800, cursor: 'pointer', transition: '0.2s' }}
+                                                        onMouseOver={e => e.currentTarget.style.background = '#fecaca'}
+                                                        onMouseOut={e => e.currentTarget.style.background = '#fee2e2'}
+                                                    >
+                                                        Remove
+                                                    </button>
                                                 </div>
                                             </div>
-                                            <p style={{ margin: 0, fontSize: '0.88rem', color: '#4a5568', lineHeight: 1.5 }}>
-                                                "{review.comment || 'No comment provided.'}"
-                                            </p>
-                                            <div style={{ marginTop: '0.6rem', fontSize: '0.72rem', color: '#94a3b8', fontWeight: 600 }}>
-                                                {new Date(review.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
-                                            </div>
-                                        </div>
+                                        ))
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* REVIEWS SECTION */}
+                            <div style={{ background: 'white', padding: '2.5rem', borderRadius: '32px', border: '1px solid #f1f5f9', boxShadow: '0 10px 40px rgba(0,0,0,0.03)' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+                                    <h3 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 900 }}>Trust Score & Feedback</h3>
+                                    <div style={{ background: '#fffbeb', color: '#b45309', padding: '0.5rem 1rem', borderRadius: '16px', fontSize: '0.95rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.5rem', border: '1px solid #fef3c7' }}>
+                                        <Star size={18} fill="#f59e0b" /> {(realStats?.average_rating || 0).toFixed(1)} Rating
                                     </div>
-                                ))
-                            )}
-                        </div>
-                    </div>
-                </div>
+                                </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-                    <div style={{ background: 'linear-gradient(135deg, var(--campus-blue), #1e4d8c)', color: 'white', padding: '2.5rem 2rem', borderRadius: '24px', boxShadow: '0 10px 30px rgba(29, 61, 110, 0.2)', textAlign: 'center', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '1rem' }}>
-                        <div style={{ background: 'rgba(255,255,255,0.12)', width: '64px', height: '64px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto' }}>
-                            <Zap size={32} color="#fbbf24" />
-                        </div>
-                        <h3 style={{ marginBottom: '0.25rem', fontSize: '1.4rem' }}>You're on CampusMart!</h3>
-                        <p style={{ opacity: 0.85, fontSize: '0.9rem', lineHeight: 1.6, margin: 0 }}>
-                            Everything is <strong>100% free</strong> — list goods, find houses, and connect with traders & landlords near your campus.
-                        </p>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginTop: '0.5rem' }}>
-                            <div style={{ background: 'rgba(255,255,255,0.1)', borderRadius: '12px', padding: '0.75rem' }}>
-                                <div style={{ fontSize: '1.5rem', fontWeight: 900, color: '#fbbf24' }}>{realStats.active_listings}</div>
-                                <div style={{ fontSize: '0.7rem', opacity: 0.8, fontWeight: 600 }}>Active Listings</div>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                                    {isLoading ? (
+                                        <div style={{ textAlign: 'center', padding: '2rem', color: '#888' }}>Syncing reviews...</div>
+                                    ) : reviews.length === 0 ? (
+                                        <div style={{ textAlign: 'center', padding: '3rem', background: '#f8fafc', borderRadius: '24px', border: '2px dashed #e2e8f0' }}>
+                                            <Star size={48} color="#cbd5e1" style={{ marginBottom: '1rem', opacity: 0.5 }} />
+                                            <p style={{ color: '#64748b', fontWeight: 700 }}>Start trading to earn reviews and build trust!</p>
+                                        </div>
+                                    ) : (
+                                        reviews.slice(0, 3).map((review) => (
+                                            <div key={review.id} style={{ display: 'flex', gap: '1.5rem', padding: '1.5rem', background: '#f8fafc', borderRadius: '20px', border: '1px solid #f1f5f9' }}>
+                                                <img
+                                                    src={review.reviewer_avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(review.reviewer_name)}&background=1d3d6e&color=fff`}
+                                                    style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover', border: '2px solid white', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}
+                                                    alt={review.reviewer_name}
+                                                />
+                                                <div style={{ flex: 1 }}>
+                                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                                                        <span style={{ fontWeight: 800, fontSize: '1rem', color: '#111827' }}>{review.reviewer_name}</span>
+                                                        <div style={{ display: 'flex', gap: '2px' }}>
+                                                            {[1, 2, 3, 4, 5].map(s => (
+                                                                <Star key={s} size={14} fill={review.rating >= s ? "#f59e0b" : "none"} color={review.rating >= s ? "#f59e0b" : "#cbd5e0"} />
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                    <p style={{ margin: 0, fontSize: '0.95rem', color: '#374151', lineHeight: 1.6, fontStyle: 'italic' }}>
+                                                        "{review.comment || 'Smooth transaction!'}"
+                                                    </p>
+                                                    <div style={{ marginTop: '0.75rem', fontSize: '0.8rem', color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                                                        {new Date(review.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))
+                                    )}
+                                </div>
                             </div>
-                            <div style={{ background: 'rgba(255,255,255,0.1)', borderRadius: '12px', padding: '0.75rem' }}>
-                                <div style={{ fontSize: '1.5rem', fontWeight: 900, color: '#fbbf24' }}>{realStats.total_views}</div>
-                                <div style={{ fontSize: '0.7rem', opacity: 0.8, fontWeight: 600 }}>Total Views</div>
-                            </div>
                         </div>
-                        <button
-                            onClick={() => setIsSellModalOpen(true)}
-                            className="btn btn-secondary"
-                            style={{ width: '100%', borderRadius: '12px', padding: '0.9rem', fontWeight: 700, marginTop: '0.25rem' }}
-                        >
-                            + Post New Listing
-                        </button>
-                    </div>
 
-                    <div style={{ background: 'white', padding: '2rem', borderRadius: '24px', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }}>
-                        <h3 style={{ marginBottom: '1.5rem', fontSize: '1.25rem' }}>Quick Tips</h3>
-                        <ul style={{ padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                            <li style={{ display: 'flex', gap: '0.75rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
-                                <div style={{ color: 'var(--jiji-green)', flexShrink: 0 }}>•</div>
-                                <span>Use clear, well-lit photos for 2x more clicks.</span>
-                            </li>
-                            <li style={{ display: 'flex', gap: '0.75rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
-                                <div style={{ color: 'var(--jiji-green)', flexShrink: 0 }}>•</div>
-                                <span>Be honest about any flaws to build trust.</span>
-                            </li>
-                            <li style={{ display: 'flex', gap: '0.75rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
-                                <div style={{ color: 'var(--jiji-green)', flexShrink: 0 }}>•</div>
-                                <span>Respond to messages within 2 hours.</span>
-                            </li>
-                        </ul>
+                        {/* SIDEBAR WIDGETS (Seamless Features) */}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+
+                            {/* Pro Card */}
+                            <div style={{
+                                background: 'linear-gradient(135deg, #1d3d6e 0%, #0f172a 100%)',
+                                color: 'white', padding: '2.5rem 2rem', borderRadius: '32px',
+                                boxShadow: '0 20px 40px rgba(15, 23, 42, 0.15)', textAlign: 'center',
+                                display: 'flex', flexDirection: 'column', gap: '1.25rem',
+                                position: 'relative', overflow: 'hidden'
+                            }}>
+                                <Zap size={80} style={{ position: 'absolute', top: '-10px', right: '-10px', opacity: 0.1 }} />
+
+                                <div style={{ background: 'rgba(255,255,255,0.1)', width: '64px', height: '64px', borderRadius: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto' }}>
+                                    <Zap size={32} color="#f59e0b" />
+                                </div>
+
+                                <div>
+                                    <h3 style={{ fontSize: '1.5rem', fontWeight: 900, marginBottom: '0.5rem' }}>Comrade Power! 🚀</h3>
+                                    <p style={{ opacity: 0.8, fontSize: '0.95rem', lineHeight: 1.7, margin: 0 }}>
+                                        You're part of <strong>CampusMart</strong>. Trade freely, save money, and build your campus reputation.
+                                    </p>
+                                </div>
+
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginTop: '0.5rem' }}>
+                                    <div style={{ background: 'rgba(255,255,255,0.05)', borderRadius: '16px', padding: '1rem', border: '1px solid rgba(255,255,255,0.1)' }}>
+                                        <div style={{ fontSize: '1.75rem', fontWeight: 900, color: '#f59e0b' }}>{realStats.active_listings}</div>
+                                        <div style={{ fontSize: '0.7rem', opacity: 0.6, fontWeight: 800, textTransform: 'uppercase' }}>Items Live</div>
+                                    </div>
+                                    <div style={{ background: 'rgba(255,255,255,0.05)', borderRadius: '16px', padding: '1rem', border: '1px solid rgba(255,255,255,0.1)' }}>
+                                        <div style={{ fontSize: '1.75rem', fontWeight: 900, color: '#f59e0b' }}>{realStats.total_views}</div>
+                                        <div style={{ fontSize: '0.7rem', opacity: 0.6, fontWeight: 800, textTransform: 'uppercase' }}>Total Views</div>
+                                    </div>
+                                </div>
+
+                                <button
+                                    onClick={() => setIsSellModalOpen(true)}
+                                    className="btn"
+                                    style={{ width: '100%', borderRadius: '14px', padding: '1rem', fontWeight: 800, background: '#8cc63f', color: 'white', border: 'none', cursor: 'pointer', transition: '0.2s' }}
+                                    onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.02)'}
+                                    onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+                                >
+                                    + Post New Listing
+                                </button>
+                            </div>
+
+                            {/* Quick Tips (Seamless Guidance) */}
+                            <div style={{ background: 'white', padding: '2rem', borderRadius: '32px', border: '1px solid #f1f5f9', boxShadow: '0 10px 30px rgba(0,0,0,0.03)' }}>
+                                <h3 style={{ marginBottom: '1.5rem', fontSize: '1.2rem', fontWeight: 900, display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                                    <Shield size={18} color="#16a34a" /> Pro Tips
+                                </h3>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                                    {[
+                                        { icon: '📸', text: 'Bright, clear photos sell 3x faster than blurry ones.' },
+                                        { icon: '💬', text: 'Respond within 1 hour to increase buyer trust.' },
+                                        { icon: '🤝', text: 'Meet at school gates for the safest transactions.' }
+                                    ].map((tip, i) => (
+                                        <div key={i} style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+                                            <span style={{ fontSize: '1.25rem' }}>{tip.icon}</span>
+                                            <p style={{ margin: 0, fontSize: '0.9rem', color: '#64748b', fontWeight: 600, lineHeight: 1.5 }}>{tip.text}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

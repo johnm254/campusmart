@@ -3,12 +3,12 @@ import { api } from '../../lib/api';
 import { useApp } from '../../AppContext';
 import { X, Camera, Plus, Trash2, Shield, Home, Clock, DoorOpen, MapPin, ShieldCheck, Phone, Check, Users, Building2, Bed, Star } from 'lucide-react';
 import ImageCropperModal from '../ui/ImageCropperModal';
+import { useMediaQuery } from '../../hooks/useMediaQuery';
 
 // ── Housing Catalog Definitions ───────────────────────────────────
 const HOUSE_CATALOG = [
     {
         id: 'Hostel',
-        emoji: '🏫',
         label: 'Hostel',
         badge: 'Shared',
         badgeColor: '#f97316',
@@ -23,7 +23,6 @@ const HOUSE_CATALOG = [
     },
     {
         id: 'Apartment',
-        emoji: '🏢',
         label: 'Apartment',
         badge: 'Private',
         badgeColor: '#8b5cf6',
@@ -38,7 +37,6 @@ const HOUSE_CATALOG = [
     },
     {
         id: 'Single Room',
-        emoji: '🚪',
         label: 'Single Room',
         badge: 'Private',
         badgeColor: '#10b981',
@@ -53,7 +51,6 @@ const HOUSE_CATALOG = [
     },
     {
         id: '1 Bedroom',
-        emoji: '🛏️',
         label: '1 Bedroom',
         badge: 'Private',
         badgeColor: '#3b82f6',
@@ -68,7 +65,6 @@ const HOUSE_CATALOG = [
     },
     {
         id: 'Bed-sitter',
-        emoji: '🛋️',
         label: 'Bed-sitter',
         badge: 'Private',
         badgeColor: '#ec4899',
@@ -83,7 +79,6 @@ const HOUSE_CATALOG = [
     },
     {
         id: 'Studio',
-        emoji: '🏠',
         label: 'Studio',
         badge: 'Modern',
         badgeColor: '#0ea5e9',
@@ -98,7 +93,6 @@ const HOUSE_CATALOG = [
     },
     {
         id: 'Shared Room',
-        emoji: '👥',
         label: 'Shared Room',
         badge: 'Shared',
         badgeColor: '#64748b',
@@ -116,6 +110,8 @@ const HOUSE_CATALOG = [
 
 const SellModal = ({ isOpen, onClose }) => {
     const { user, addNotification, currentPage } = useApp();
+    const isMobile = useMediaQuery('(max-width: 768px)');
+    const isSmallMobile = useMediaQuery('(max-width: 480px)');
     const [loading, setLoading] = useState(false);
     const [locationUploaded, setLocationUploaded] = useState(false);
     const [locationLoading, setLocationLoading] = useState(false);
@@ -285,31 +281,37 @@ const SellModal = ({ isOpen, onClose }) => {
     };
 
     return (
-        <div className="modal-overlay" onClick={handleOverlayClick} style={{ zIndex: 400000 }}>
+        <div className="modal-overlay" onClick={handleOverlayClick} style={{ zIndex: 400000, padding: isMobile ? '0' : '2rem 0' }}>
             <div className="modal-content" onClick={e => e.stopPropagation()} style={{
-                maxWidth: '800px',
-                width: '95%',
+                maxWidth: isMobile ? '100%' : '800px',
+                width: isMobile ? '100%' : '95%',
+                height: isMobile ? '100vh' : 'auto',
+                maxHeight: isMobile ? '100vh' : '90vh',
                 padding: 0,
-                borderRadius: '24px',
-                border: formData.category === 'housing' ? '2px solid var(--jiji-green)' : 'none'
+                borderRadius: isMobile ? '0' : '24px',
+                border: formData.category === 'housing' ? '2px solid var(--jiji-green)' : 'none',
+                overflowY: 'auto'
             }}>
                 <div style={{
-                    padding: '1.5rem 2rem',
+                    padding: isMobile ? '1rem 1.25rem' : '1.5rem 2rem',
                     borderBottom: '1px solid #eee',
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
                     background: formData.category === 'housing' ? 'linear-gradient(135deg, #ffffff 0%, #f0fff4 100%)' : 'white',
-                    borderRadius: '24px 24px 0 0'
+                    borderRadius: isMobile ? '0' : '24px 24px 0 0',
+                    position: 'sticky',
+                    top: 0,
+                    zIndex: 10
                 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                        {formData.category === 'housing' && <Home color="var(--jiji-green)" size={28} />}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '0.75rem' : '1rem' }}>
+                        {formData.category === 'housing' && <Home color="var(--jiji-green)" size={isMobile ? 24 : 28} />}
                         <div>
-                            <h2 style={{ fontSize: '1.5rem', color: 'var(--campus-blue)', fontWeight: 800, margin: 0 }}>
-                                {formData.category === 'housing' ? 'Post New House / Hostel' : 'Create New Listing'}
+                            <h2 style={{ fontSize: isMobile ? '1.2rem' : '1.5rem', color: 'var(--campus-blue)', fontWeight: 800, margin: 0 }}>
+                                {formData.category === 'housing' ? (isMobile ? 'Post House' : 'Post New House / Hostel') : 'Create New Listing'}
                             </h2>
-                            {formData.category === 'housing' && (
-                                <span style={{ fontSize: '0.7rem', fontWeight: 800, color: 'var(--jiji-green)', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                            {formData.category === 'housing' && !isSmallMobile && (
+                                <span style={{ fontSize: isMobile ? '0.65rem' : '0.7rem', fontWeight: 800, color: 'var(--jiji-green)', textTransform: 'uppercase', letterSpacing: '1px' }}>
                                     Property Manager Dashboard
                                 </span>
                             )}
@@ -322,18 +324,18 @@ const SellModal = ({ isOpen, onClose }) => {
                         } else {
                             onClose();
                         }
-                    }}><X /></button>
+                    }} style={{ padding: isMobile ? '0.4rem' : '0.5rem' }}><X size={isMobile ? 20 : 24} /></button>
                 </div>
 
-                <form onSubmit={handleSubmit} style={{ padding: '2rem', maxHeight: '80vh', overflowY: 'auto' }}>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 1.2fr', gap: '2rem' }} className="sell-modal-grid">
+                <form onSubmit={handleSubmit} style={{ padding: isMobile ? '1.25rem' : '2rem', maxHeight: isMobile ? 'none' : '80vh', overflowY: 'auto' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'minmax(0, 1fr) 1.2fr', gap: isMobile ? '1.5rem' : '2rem' }} className="sell-modal-grid">
                         {/* Image Sector */}
                         <div>
-                            <label style={{ fontSize: '0.9rem', fontWeight: 700, color: '#334155', display: 'block', marginBottom: '1rem' }}>
+                            <label style={{ fontSize: isMobile ? '0.85rem' : '0.9rem', fontWeight: 700, color: '#334155', display: 'block', marginBottom: '1rem' }}>
                                 Photos ({formData.images.length}/{photoLimit})
                             </label>
 
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))', gap: '0.75rem', marginBottom: '1rem' }}>
+                            <div style={{ display: 'grid', gridTemplateColumns: isSmallMobile ? 'repeat(3, 1fr)' : isMobile ? 'repeat(4, 1fr)' : 'repeat(auto-fill, minmax(100px, 1fr))', gap: isMobile ? '0.5rem' : '0.75rem', marginBottom: '1rem' }}>
                                 {formData.images.map((img, index) => (
                                     <div key={index} style={{ position: 'relative', aspectRatio: '1', borderRadius: '12px', overflow: 'hidden', border: '1px solid #e2e8f0', background: '#f8fafc' }}>
                                         <img src={img} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -376,7 +378,7 @@ const SellModal = ({ isOpen, onClose }) => {
 
                             <div style={{ background: '#f0fdf4', padding: '0.75rem 1rem', borderRadius: '10px', border: '1px solid #bbf7d0', marginTop: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                 <Shield size={16} color="#059669" />
-                                <p style={{ fontSize: '0.75rem', color: '#059669', fontWeight: 700, margin: 0 }}>Up to 5 photos — completely free for everyone 🎉</p>
+                                <p style={{ fontSize: '0.75rem', color: '#059669', fontWeight: 700, margin: 0 }}>Up to 5 photos — completely free for everyone</p>
                             </div>
                         </div>
 
@@ -409,6 +411,7 @@ const SellModal = ({ isOpen, onClose }) => {
                                         <option value="outfit">Outfit</option>
                                         <option value="utensils">Utensils</option>
                                         <option value="accessories">Accessories</option>
+                                        <option value="other">Other</option>
                                     </select>
                                 </div>
                                 <div className="form-group">
@@ -514,16 +517,15 @@ const SellModal = ({ isOpen, onClose }) => {
                                                             </div>
                                                         )}
 
-                                                        {/* Emoji + Badge row */}
-                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                                                            <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>{cat.emoji}</span>
+                                                        {/* Badge */}
+                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
                                                             <span style={{
-                                                                fontSize: '0.6rem',
+                                                                fontSize: '0.65rem',
                                                                 fontWeight: 800,
                                                                 color: cat.badgeColor,
                                                                 background: `${cat.badgeColor}18`,
                                                                 border: `1px solid ${cat.badgeColor}40`,
-                                                                padding: '0.1rem 0.45rem',
+                                                                padding: '0.2rem 0.55rem',
                                                                 borderRadius: '99px',
                                                                 letterSpacing: '0.03em',
                                                                 textTransform: 'uppercase'
@@ -531,7 +533,7 @@ const SellModal = ({ isOpen, onClose }) => {
                                                         </div>
 
                                                         {/* Title */}
-                                                        <div style={{ fontSize: '0.9rem', fontWeight: 800, color: isSelected ? cat.accentColor : '#1e293b', marginBottom: '0.25rem' }}>
+                                                        <div style={{ fontSize: '1rem', fontWeight: 800, color: isSelected ? cat.accentColor : '#1e293b', marginBottom: '0.25rem' }}>
                                                             {cat.label}
                                                         </div>
 
@@ -551,7 +553,7 @@ const SellModal = ({ isOpen, onClose }) => {
                                                                         background: `${cat.accentColor}12`,
                                                                         padding: '0.15rem 0.4rem',
                                                                         borderRadius: '6px'
-                                                                    }}>✓ {a}</span>
+                                                                    }}>{a}</span>
                                                                 ))}
                                                             </div>
                                                         )}
@@ -577,13 +579,13 @@ const SellModal = ({ isOpen, onClose }) => {
                                                 }}>
                                                     <span style={{ fontSize: '0.7rem', color: '#64748b', fontWeight: 600 }}>Auto-filled:</span>
                                                     <span style={{ fontSize: '0.72rem', fontWeight: 700, color: cat.accentColor }}>
-                                                        🏠 {formData.room_count}
+                                                        {formData.room_count}
                                                     </span>
                                                     <span style={{ fontSize: '0.72rem', fontWeight: 700, color: cat.accentColor, textTransform: 'capitalize' }}>
-                                                        {formData.facility_type === 'shared' ? '👥 Shared Facilities' : '🔒 Private Facilities'}
+                                                        {formData.facility_type === 'shared' ? 'Shared Facilities' : 'Private Facilities'}
                                                     </span>
                                                     <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#64748b' }}>
-                                                        ✅ {formData.amenities.length} amenities selected
+                                                        {formData.amenities.length} amenities selected
                                                     </span>
                                                 </div>
                                             );
@@ -592,7 +594,7 @@ const SellModal = ({ isOpen, onClose }) => {
                                         {/* Editable overrides */}
                                         {formData.condition && (
                                             <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', gap: '0.75rem', marginTop: '0.5rem' }}>
-                                                <p style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 600, margin: 0 }}>✏️ Fine-tune details (auto-filled above)</p>
+                                                <p style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 600, margin: 0 }}>Fine-tune details (auto-filled above)</p>
                                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
                                                     <div>
                                                         <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569' }}>Facility Type</label>
@@ -883,7 +885,7 @@ const SellModal = ({ isOpen, onClose }) => {
                                                 }}>
                                                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                                         <ShieldCheck size={20} />
-                                                        <span>✅ LOCATION UPLOADED</span>
+                                                        <span>LOCATION UPLOADED</span>
                                                     </div>
                                                     <button
                                                         type="button"
@@ -902,7 +904,7 @@ const SellModal = ({ isOpen, onClose }) => {
                                                     type="button"
                                                     onClick={() => {
                                                         setLocationUploaded(true);
-                                                        addNotification('✅ Location Uploaded!', `Coordinates saved: ${parseFloat(formData.latitude).toFixed(5)}, ${parseFloat(formData.longitude).toFixed(5)}. This will be attached to your post.`, 'success');
+                                                        addNotification('Location Uploaded!', `Coordinates saved: ${parseFloat(formData.latitude).toFixed(5)}, ${parseFloat(formData.longitude).toFixed(5)}. This will be attached to your post.`, 'success');
                                                     }}
                                                     style={{
                                                         width: '100%',
