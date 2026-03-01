@@ -9,6 +9,9 @@ const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 const db = require('./db');
 
+const PORT = process.env.PORT || 5000;
+const JWT_SECRET = process.env.JWT_SECRET;
+
 // ─── Auto-Initialize Schema ──────────────────────────────────────────────
 const initSchema = async () => {
     // Skip auto-init if using MySQL - use init-database-mysql.js instead
@@ -76,18 +79,22 @@ app.use(cors({
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
-// CORS already handled by app.use(cors(...)) above. 
-// Redundant app.options('*') removed to prevent Express 5 PathErrors.
-
-const PORT = process.env.PORT || 5000;
-const JWT_SECRET = process.env.JWT_SECRET;
-
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
     }
+});
+
+// Health check / Home route
+app.get('/', (req, res) => {
+    res.json({
+        status: 'Online',
+        message: 'CampusMart API is running perfectly!',
+        version: '2.5.0 (Supabase+IPv4)',
+        database: 'Connected'
+    });
 });
 
 // Middleware to protect routes
