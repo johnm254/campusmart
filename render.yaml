@@ -1,0 +1,34 @@
+services:
+  - type: web
+    name: campus-mart-api
+    env: node
+    region: frankfurt
+    plan: free
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: DATABASE_URL
+        # Set this on Render Dashboard to your Supabase Connection String
+        value: "postgresql://postgres:[PASSWORD]@db.[REF].supabase.co:6543/postgres?sslmode=require"
+      - key: DB_TYPE
+        value: postgres
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+
+  - type: web
+    name: campus-mart-frontend
+    env: static
+    region: frankfurt
+    plan: free
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      - key: VITE_API_URL
+        # Set this on Render Dashboard to your Deployed API URL
+        value: "https://your-api-name.onrender.com/api"
+
+# Note: No 'databases' section needed because we are using EXTERNAL Supabase PostgreSQL.
