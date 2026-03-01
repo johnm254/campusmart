@@ -42,7 +42,7 @@ if (dbType === 'mysql') {
             connectionString: process.env.DATABASE_URL,
             ssl: sslConfig
         });
-        console.log('📦 Database: Initialized PostgreSQL connection pool with SSL');
+        console.log('📦 Database: Initialized PostgreSQL connection pool with SSL [v2.0-FIXED]');
     } else {
         // Local development without DATABASE_URL
         pool = new Pool({
