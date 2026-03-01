@@ -45,7 +45,6 @@ const initSchema = async () => {
         console.error('❌ Schema initialization error:', err.message);
     }
 };
-initSchema();
 
 const app = express();
 
@@ -1441,6 +1440,7 @@ app.get('/api/settings', async (req, res) => {
         result.rows.forEach(row => settings[row.key] = row.value);
         res.json(settings);
     } catch (error) {
+        console.error('Settings fetch error:', error);
         res.status(500).json({ message: 'Error fetching settings' });
     }
 });
@@ -1619,8 +1619,18 @@ app.post('/api/admin/announcements', verifyAdminToken, async (req, res) => {
     }
 });
 
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-    // Test M-Pesa credentials on startup so you know immediately if they're expired
-    // mpesaController.testCredentials();
-});
+const startServer = async () => {
+    try {
+        await initSchema();
+        app.listen(PORT, () => {
+            console.log(`Server running on http://localhost:${PORT}`);
+            // Test M-Pesa credentials on startup so you know immediately if they're expired
+            // mpesaController.testCredentials();
+        });
+    } catch (err) {
+        console.error('Failed to start server:', err);
+        process.exit(1);
+    }
+};
+
+startServer();

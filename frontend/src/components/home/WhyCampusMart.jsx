@@ -106,7 +106,6 @@ const WhyCampusMart = () => {
 
                 {/* ══ SECTION 2 — Housing Hero ════════════════════════════════════ */}
                 <div style={{
-                    marginBottom: isMobile ? '3rem' : '6rem',
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
