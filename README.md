@@ -47,3 +47,31 @@ campus--mart/
 - React source files are in `frontend/src`.
 - Backend server entrypoint is `backend/index.js`.
 - Utility script `check-secrets.js` (at repo root) scans staged files for secrets.
+
+## Backend‑only development & deployment
+
+If you're only interested in the API (for example, to host it on Railway) you can completely
+ignore or delete the `frontend/` folder – the backend is self‑contained.
+
+### Running just the backend locally
+
+```bash
+# from the repository root or anywhere else:
+cd backend
+npm install       # one-time setup
+npm start         # production mode (or npm run dev)
+```
+
+### Deploying on Railway
+
+1. Create a new project on Railway and connect your GitHub account.
+2. Select this repository (`johnm254/campusmart`) and choose the `main` branch.
+3. In the deployment settings, set the **root directory** to `backend` so Railway only considers
+   the server package.
+4. Ensure the build command is `npm install` and the start command is `npm start`.
+5. Add the PostgreSQL plugin – this provides a `DATABASE_URL` environment variable.
+6. Set other secrets (e.g. `SESSION_SECRET`, mail credentials) in the Railway variables panel.
+7. Trigger a deploy; the server will start on a Railway-provided URL.
+
+> 📝 The frontend is *not* required for the backend to function, so you don't need to build or
+> deploy it when working with Railway. You may keep it in the repo or remove it later.
