@@ -56,6 +56,59 @@ The client talks to the API using a base URL defined in `src/lib/api.js`:
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 ```
 
+### Deploying the frontend
+
+You can host the React app almost anywhere; two easy options are **Vercel** and
+**Firebase Hosting**. Either service can pull this GitHub repository directly and
+build the project for you.
+
+#### Vercel (recommended for simplicity)
+
+1. Visit https://vercel.com and sign in with your GitHub account.
+2. Click "New Project", then select the `johnm254/campusmart` repository.
+3. When prompted for configuration:
+   - Set the **Root Directory** to `frontend`.
+   - Ensure the **Build Command** is `npm run build`.
+   - Set the **Output Directory** to `dist` (Vite's default).
+4. Add an environment variable `VITE_API_URL` pointing at
+   `https://campusmart-production-f264.up.railway.app/api` (your backend URL).
+5. Deploy the project. Vercel will build and publish a URL such as
+   `https://campusmart.vercel.app`.
+
+> You can also add a custom domain later in the Vercel dashboard.
+
+#### Firebase Hosting
+
+1. Install the Firebase CLI:
+   ```bash
+   npm install -g firebase-tools
+   firebase login
+   ```
+2. Initialize in the `frontend` folder:
+   ```bash
+   cd frontend
+   firebase init hosting
+   ```
+   - Select your Firebase project (create one if needed).
+   - Choose `dist` as the public directory and enable single‑page app
+     rewrites.
+3. Add the API URL as an environment configuration or directly in
+   `.env.production`:
+   ```env
+   VITE_API_URL=https://campusmart-production-f264.up.railway.app/api
+   ```
+4. Build and deploy:
+   ```bash
+   npm run build
+   firebase deploy --only hosting
+   ```
+5. The CLI will print the hosting URL where your frontend is live.
+
+Both hosts support automatic redeploys on GitHub pushes.
+
+---
+
+
 When you build or run the frontend you can override this with an environment
 variable. Create a `.env` (or `.env.development`/`.env.production`) file in the
 `frontend/` directory containing:
