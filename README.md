@@ -48,6 +48,39 @@ campus--mart/
 - Backend server entrypoint is `backend/index.js`.
 - Utility script `check-secrets.js` (at repo root) scans staged files for secrets.
 
+## Frontend configuration
+
+The client talks to the API using a base URL defined in `src/lib/api.js`:
+
+```js
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+```
+
+When you build or run the frontend you can override this with an environment
+variable. Create a `.env` (or `.env.development`/`.env.production`) file in the
+`frontend/` directory containing:
+
+```env
+VITE_API_URL=https://your-railway-app.up.railway.app/api
+```
+
+Replace the URL above with the **actual** domain Railway provided for your
+backend. After restarting the development server or rebuilding, the client will
+make requests to the deployed API instead of localhost.
+
+If you host the front‑end somewhere (Netlify, Vercel, etc.), set the same
+variable in that platform’s environment settings.
+
+### CORS and frontend origin
+
+The backend uses the `FRONTEND_URL` environment variable to set CORS and
+senders in emails. By default it defaults to `http://localhost:5173`. When you
+point the front end to the hosted site, update `FRONTEND_URL` in your
+backend’s environment variables accordingly (e.g. `https://campusmart.example.com`).
+
+This lets authenticated operations (login/signup) work correctly and prevents
+browser CORS errors.
+
 ## Backend‑only development & deployment
 
 If you're only interested in the API (for example, to host it on Railway) you can completely
