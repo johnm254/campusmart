@@ -102,9 +102,25 @@ npm start         # production mode (or npm run dev)
 3. In the deployment settings, set the **root directory** to `backend` so Railway only considers
    the server package.
 4. Ensure the build command is `npm install` and the start command is `npm start`.
-5. Add the PostgreSQL plugin – this provides a `DATABASE_URL` environment variable.
-6. Set other secrets (e.g. `SESSION_SECRET`, mail credentials) in the Railway variables panel.
-7. Trigger a deploy; the server will start on a Railway-provided URL.
+5. Add the PostgreSQL plugin – this will provision a database and give you a set of
+   Postgres-specific variables (DATABASE_URL, PGHOST, etc.).
+   - **Important:** the database service and your `campusmart` service are separate; you
+     must link them so the backend actually receives `DATABASE_URL`.
+   - Go to the **campusmart** service → **Variables** tab and click **Add Variable** or
+     use the **"Trying to connect a database? Add Variable"** prompt. Choose the
+     `DATABASE_URL` (or the whole set) from the Postgres service. This creates a
+     reference so the environment variable is injected into the backend container.
+6. Set other secrets (e.g. `JWT_SECRET`, `SESSION_SECRET`, mail credentials) in the
+   Railway variables panel for the `campusmart` service.
+7. Trigger a deploy; the server will start on a Railway-provided URL. The startup logs
+   should show a successful connection:
+   ```
+   Ensuring database schema is up to date...
+   Database connection successful.
+   ✅ Database schema verified.
+   ```
+   If you still see `ECONNREFUSED` connecting to `127.0.0.1` or `::1`, it means
+   `DATABASE_URL` wasn't set – go back and link the Postgres variable.
 
 > 📝 The frontend is *not* required for the backend to function, so you don't need to build or
 > deploy it when working with Railway. You may keep it in the repo or remove it later.
