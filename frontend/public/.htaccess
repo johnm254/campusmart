@@ -1,0 +1,14 @@
+Options -MultiViews
+RewriteEngine On
+
+# ── Redirect HTTP → HTTPS ─────────────────────────────────────
+RewriteCond %{HTTPS} off
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# ── Route /api/* → Node.js backend (port 5000 via Passenger) ──
+# (HostPinnacle proxies Node.js via Phusion Passenger automatically)
+
+# ── React SPA – serve index.html for all frontend routes ──────
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.html [L]

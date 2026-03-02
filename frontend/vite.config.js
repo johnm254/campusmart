@@ -5,6 +5,15 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
     plugins: [react()],
     server: {
+<<<<<<< HEAD
+=======
+        host: 'localhost',
+        port: 5173,
+        hmr: {
+            host: 'localhost',
+            port: 5173,
+        },
+>>>>>>> teammate/main
         proxy: {
             '/api': {
                 target: 'http://localhost:5000',

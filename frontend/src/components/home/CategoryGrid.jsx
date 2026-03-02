@@ -9,7 +9,12 @@ const categories = [
     { id: 'utensils', name: 'Utensils', image: 'https://images.unsplash.com/photo-1556911220-bff31c812dba?w=400&h=300&fit=crop' },
     { id: 'appliances', name: 'Home Appliances', image: 'https://images.unsplash.com/photo-1574269909862-7e1d70bb8078?w=400&h=300&fit=crop' },
     { id: 'housing', name: 'Accommodation', image: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=400&h=300&fit=crop' },
+<<<<<<< HEAD
     { id: 'accessories', name: 'Accessories', image: 'https://images.unsplash.com/photo-1576053139778-7e32f2ae3cfd?w=400&h=300&fit=crop' }
+=======
+    { id: 'accessories', name: 'Accessories', image: 'https://images.unsplash.com/photo-1576053139778-7e32f2ae3cfd?w=400&h=300&fit=crop' },
+    { id: 'other', name: 'Other', image: 'https://images.unsplash.com/photo-1533154683836-84ea7a0bc310?w=400&h=300&fit=crop' }
+>>>>>>> teammate/main
 ];
 
 const CategoryGrid = () => {

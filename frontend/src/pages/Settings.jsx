@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../AppContext';
 import { api } from '../lib/api';
+<<<<<<< HEAD
 import ImageCropperModal from '../components/modals/ImageCropperModal';
+=======
+import ImageCropperModal from '../components/ui/ImageCropperModal';
+>>>>>>> teammate/main
 import { Camera, Save, User, Phone, Mail, ShieldCheck, Star } from 'lucide-react';
 
 const Settings = () => {

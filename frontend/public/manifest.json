@@ -1,8 +1,23 @@
 {
     "short_name": "CampusMart",
+<<<<<<< HEAD
     "name": "CampusMart - Student Marketplace",
     "description": "The #1 student marketplace for buying and selling textbooks, electronics, and more.",
     "id": "/",
+=======
+    "name": "CampusMart - Student Marketplace & Accommodation",
+    "description": "The #1 student-to-student marketplace. Buy, sell, and find housing at comrade prices.",
+    "id": "/",
+    "start_url": "/?source=pwa",
+    "display": "standalone",
+    "display_override": [
+        "window-controls-overlay",
+        "standalone"
+    ],
+    "theme_color": "#1d3d6e",
+    "background_color": "#ffffff",
+    "orientation": "portrait-primary",
+>>>>>>> teammate/main
     "icons": [
         {
             "src": "/icon-192.png",
@@ -17,11 +32,14 @@
             "purpose": "any maskable"
         }
     ],
+<<<<<<< HEAD
     "start_url": "/",
     "display": "standalone",
     "theme_color": "#1d3d6e",
     "background_color": "#ffffff",
     "orientation": "portrait-primary",
+=======
+>>>>>>> teammate/main
     "categories": [
         "shopping",
         "education",

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import React, { useState, useEffect } from 'react';
+=======
+import React from 'react';
+>>>>>>> teammate/main
 import { Home, ShoppingBag, MessageCircle, MapPin, Shield, Zap, Users, TrendingUp } from 'lucide-react';
 import { useApp } from '../../AppContext';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
@@ -40,6 +44,7 @@ const WhyCampusMart = () => {
     const isMobile = useMediaQuery('(max-width: 640px)');
     const isTablet = useMediaQuery('(max-width: 900px)');
 
+<<<<<<< HEAD
     // Slider Logic
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const sliderImages = [
@@ -56,6 +61,8 @@ const WhyCampusMart = () => {
         return () => clearInterval(interval);
     }, [sliderImages.length]);
 
+=======
+>>>>>>> teammate/main
     return (
         <section style={{
             padding: isMobile ? '3rem 1rem 4rem' : '5rem 2rem 6rem',
@@ -122,6 +129,7 @@ const WhyCampusMart = () => {
 
                 {/* ══ SECTION 2 — Housing Hero ════════════════════════════════════ */}
                 <div style={{
+<<<<<<< HEAD
                     marginBottom: isMobile ? '3rem' : '6rem',
                     display: 'grid',
                     gridTemplateColumns: isTablet ? '1fr' : '1fr 1fr',
@@ -165,6 +173,18 @@ const WhyCampusMart = () => {
 
                     {/* Content Column */}
                     <div style={{ order: isTablet ? 2 : 1 }}>
+=======
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    textAlign: 'center',
+                    maxWidth: '900px',
+                    margin: '0 auto',
+                    marginBottom: isMobile ? '3rem' : '6rem'
+                }}>
+                    {/* Content Column */}
+                    <div>
+>>>>>>> teammate/main
                         <div style={{
                             display: 'inline-flex', alignItems: 'center',
                             background: '#f1f8e9', color: '#8cc63f',
@@ -183,11 +203,19 @@ const WhyCampusMart = () => {
                             Find Your Student<br />
                             <span style={{ color: '#8cc63f' }}>Home. Fast. Free.</span>
                         </h2>
+<<<<<<< HEAD
                         <p style={{ fontSize: isMobile ? '0.9rem' : '1.05rem', color: '#64748b', lineHeight: 1.65, marginBottom: '1.75rem', maxWidth: '520px' }}>
                             Stop wasting weekends physically searching. Browse <strong>hostels, single rooms, bed-sitters and fully furnished apartments</strong> listed by real landlords near your campus. See GPS maps, real photos, and contact details — all in one tap.
                         </p>
                         {/* Mini benefit checklist */}
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '2rem' }}>
+=======
+                        <p style={{ fontSize: isMobile ? '0.9rem' : '1.05rem', color: '#64748b', lineHeight: 1.65, marginBottom: '1.75rem', maxWidth: '620px', margin: '0 auto 1.75rem' }}>
+                            Stop wasting weekends physically searching. Browse <strong>hostels, single rooms, bed-sitters and fully furnished apartments</strong> listed by real landlords near your campus. See GPS maps, real photos, and contact details — all in one tap.
+                        </p>
+                        {/* Mini benefit checklist */}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '2rem', alignItems: 'flex-start', maxWidth: '520px', margin: '0 auto 2rem' }}>
+>>>>>>> teammate/main
                             {[
                                 { icon: MapPin, text: 'GPS pinpointed exact locations' },
                                 { icon: TrendingUp, text: 'Compare prices & amenities side-by-side' },
@@ -205,7 +233,11 @@ const WhyCampusMart = () => {
                                 );
                             })}
                         </div>
+<<<<<<< HEAD
                         <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+=======
+                        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+>>>>>>> teammate/main
                             <button onClick={() => setCurrentPage('accommodation')} className="btn btn-primary" style={{ borderRadius: '12px', padding: '0.9rem 1.75rem', boxShadow: '0 8px 20px rgba(140,198,63,0.3)', background: '#8cc63f' }}>
                                 Browse All Listings
                             </button>
@@ -214,7 +246,11 @@ const WhyCampusMart = () => {
                             </button>
                         </div>
                         {/* Stats row */}
+<<<<<<< HEAD
                         <div style={{ display: 'flex', gap: '2rem', marginTop: '2rem', flexWrap: 'wrap' }}>
+=======
+                        <div style={{ display: 'flex', gap: '2rem', marginTop: '2rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+>>>>>>> teammate/main
                             {[
                                 { value: '0%', label: 'Commission Fees', color: '#8cc63f' },
                                 { value: 'GPS', label: 'Exact Location', color: '#1d3d6e' },

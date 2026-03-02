@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../../AppContext';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
+<<<<<<< HEAD
 import { ShoppingBag, Home, ArrowRight, Zap, Users, Star, TrendingUp, Search, MessageSquare, HelpingHand } from 'lucide-react';
+=======
+import { ShoppingBag, Home, ArrowRight, Zap, Users, Star, TrendingUp, Search, MessageSquare, Handshake } from 'lucide-react';
+>>>>>>> teammate/main
 
 const AnimatedStat = ({ end, label, color, prefix = '', suffix = '' }) => {
     const [count, setCount] = useState(0);
@@ -31,7 +35,11 @@ const Hero = () => {
     const isTablet = useMediaQuery('(max-width: 900px)');
 
     return (
+<<<<<<< HEAD
         <div style={{ maxWidth: '1400px', margin: '0 auto', padding: isMobile ? '1.5rem 1rem 2rem' : isTablet ? '2.5rem 1.5rem 3rem' : '4rem 2rem 5rem' }}>
+=======
+        <div style={{ width: '100%', padding: isMobile ? '1.5rem 1rem 2rem' : isTablet ? '2.5rem 1.5rem 3rem' : '4rem 4% 5rem' }}>
+>>>>>>> teammate/main
 
             {/* ── Top badge ── */}
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: isMobile ? '1.5rem' : '2.5rem' }}>
@@ -129,7 +137,11 @@ const Hero = () => {
                         desc: 'Message sellers, traders and landlords in real-time. No agents, no commission, no middlemen — ever.'
                     },
                     {
+<<<<<<< HEAD
                         step: '03', Icon: HelpingHand, color: '#ee1c24', bg: '#ffebee', border: '#ee1c24',
+=======
+                        step: '03', Icon: Handshake, color: '#ee1c24', bg: '#ffebee', border: '#ee1c24',
+>>>>>>> teammate/main
                         title: 'Deal at Campus Rates',
                         desc: 'Negotiate honest prices with people who understand the student hustle. Save more, stress less.'
                     }
@@ -147,6 +159,7 @@ const Hero = () => {
                             transition: 'all 0.3s ease',
                             cursor: 'pointer'
                         }}
+<<<<<<< HEAD
                         onMouseOver={e => {
                             e.currentTarget.style.transform = 'translateY(-8px)';
                             e.currentTarget.style.boxShadow = `0 12px 32px ${item.color}30`;
@@ -155,6 +168,16 @@ const Hero = () => {
                             e.currentTarget.style.transform = 'translateY(0)';
                             e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.05)';
                         }}>
+=======
+                            onMouseOver={e => {
+                                e.currentTarget.style.transform = 'translateY(-8px)';
+                                e.currentTarget.style.boxShadow = `0 12px 32px ${item.color}30`;
+                            }}
+                            onMouseOut={e => {
+                                e.currentTarget.style.transform = 'translateY(0)';
+                                e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.05)';
+                            }}>
+>>>>>>> teammate/main
                             <div style={{
                                 position: 'absolute', top: '1.25rem', right: '1.25rem',
                                 fontSize: '0.7rem', fontWeight: 800, color: item.color,

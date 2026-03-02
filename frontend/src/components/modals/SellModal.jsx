@@ -2,7 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { api } from '../../lib/api';
 import { useApp } from '../../AppContext';
 import { X, Camera, Plus, Trash2, Shield, Home, Clock, DoorOpen, MapPin, ShieldCheck, Phone, Check, Users, Building2, Bed, Star } from 'lucide-react';
+<<<<<<< HEAD
 import ImageCropperModal from './ImageCropperModal';
+=======
+import ImageCropperModal from '../ui/ImageCropperModal';
+import { useMediaQuery } from '../../hooks/useMediaQuery';
+>>>>>>> teammate/main
 
 // ── Housing Catalog Definitions ───────────────────────────────────
 const HOUSE_CATALOG = [
@@ -92,7 +97,10 @@ const HOUSE_CATALOG = [
     },
     {
         id: 'Shared Room',
+<<<<<<< HEAD
         emoji: '👥',
+=======
+>>>>>>> teammate/main
         label: 'Shared Room',
         badge: 'Shared',
         badgeColor: '#64748b',
@@ -110,6 +118,11 @@ const HOUSE_CATALOG = [
 
 const SellModal = ({ isOpen, onClose }) => {
     const { user, addNotification, currentPage } = useApp();
+<<<<<<< HEAD
+=======
+    const isMobile = useMediaQuery('(max-width: 768px)');
+    const isSmallMobile = useMediaQuery('(max-width: 480px)');
+>>>>>>> teammate/main
     const [loading, setLoading] = useState(false);
     const [locationUploaded, setLocationUploaded] = useState(false);
     const [locationLoading, setLocationLoading] = useState(false);
@@ -279,6 +292,7 @@ const SellModal = ({ isOpen, onClose }) => {
     };
 
     return (
+<<<<<<< HEAD
         <div className="modal-overlay" onClick={handleOverlayClick} style={{ zIndex: 400000 }}>
             <div className="modal-content" onClick={e => e.stopPropagation()} style={{
                 maxWidth: '800px',
@@ -289,11 +303,27 @@ const SellModal = ({ isOpen, onClose }) => {
             }}>
                 <div style={{
                     padding: '1.5rem 2rem',
+=======
+        <div className="modal-overlay" onClick={handleOverlayClick} style={{ zIndex: 400000, padding: isMobile ? '0' : '2rem 0' }}>
+            <div className="modal-content" onClick={e => e.stopPropagation()} style={{
+                maxWidth: isMobile ? '100%' : '800px',
+                width: isMobile ? '100%' : '95%',
+                height: isMobile ? '100vh' : 'auto',
+                maxHeight: isMobile ? '100vh' : '90vh',
+                padding: 0,
+                borderRadius: isMobile ? '0' : '24px',
+                border: formData.category === 'housing' ? '2px solid var(--jiji-green)' : 'none',
+                overflowY: 'auto'
+            }}>
+                <div style={{
+                    padding: isMobile ? '1rem 1.25rem' : '1.5rem 2rem',
+>>>>>>> teammate/main
                     borderBottom: '1px solid #eee',
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
                     background: formData.category === 'housing' ? 'linear-gradient(135deg, #ffffff 0%, #f0fff4 100%)' : 'white',
+<<<<<<< HEAD
                     borderRadius: '24px 24px 0 0'
                 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -304,6 +334,21 @@ const SellModal = ({ isOpen, onClose }) => {
                             </h2>
                             {formData.category === 'housing' && (
                                 <span style={{ fontSize: '0.7rem', fontWeight: 800, color: 'var(--jiji-green)', textTransform: 'uppercase', letterSpacing: '1px' }}>
+=======
+                    borderRadius: isMobile ? '0' : '24px 24px 0 0',
+                    position: 'sticky',
+                    top: 0,
+                    zIndex: 10
+                }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '0.75rem' : '1rem' }}>
+                        {formData.category === 'housing' && <Home color="var(--jiji-green)" size={isMobile ? 24 : 28} />}
+                        <div>
+                            <h2 style={{ fontSize: isMobile ? '1.2rem' : '1.5rem', color: 'var(--campus-blue)', fontWeight: 800, margin: 0 }}>
+                                {formData.category === 'housing' ? (isMobile ? 'Post House' : 'Post New House / Hostel') : 'Create New Listing'}
+                            </h2>
+                            {formData.category === 'housing' && !isSmallMobile && (
+                                <span style={{ fontSize: isMobile ? '0.65rem' : '0.7rem', fontWeight: 800, color: 'var(--jiji-green)', textTransform: 'uppercase', letterSpacing: '1px' }}>
+>>>>>>> teammate/main
                                     Property Manager Dashboard
                                 </span>
                             )}
@@ -316,6 +361,7 @@ const SellModal = ({ isOpen, onClose }) => {
                         } else {
                             onClose();
                         }
+<<<<<<< HEAD
                     }}><X /></button>
                 </div>
 
@@ -328,6 +374,20 @@ const SellModal = ({ isOpen, onClose }) => {
                             </label>
 
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))', gap: '0.75rem', marginBottom: '1rem' }}>
+=======
+                    }} style={{ padding: isMobile ? '0.4rem' : '0.5rem' }}><X size={isMobile ? 20 : 24} /></button>
+                </div>
+
+                <form onSubmit={handleSubmit} style={{ padding: isMobile ? '1.25rem' : '2rem', maxHeight: isMobile ? 'none' : '80vh', overflowY: 'auto' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'minmax(0, 1fr) 1.2fr', gap: isMobile ? '1.5rem' : '2rem' }} className="sell-modal-grid">
+                        {/* Image Sector */}
+                        <div>
+                            <label style={{ fontSize: isMobile ? '0.85rem' : '0.9rem', fontWeight: 700, color: '#334155', display: 'block', marginBottom: '1rem' }}>
+                                Photos ({formData.images.length}/{photoLimit})
+                            </label>
+
+                            <div style={{ display: 'grid', gridTemplateColumns: isSmallMobile ? 'repeat(3, 1fr)' : isMobile ? 'repeat(4, 1fr)' : 'repeat(auto-fill, minmax(100px, 1fr))', gap: isMobile ? '0.5rem' : '0.75rem', marginBottom: '1rem' }}>
+>>>>>>> teammate/main
                                 {formData.images.map((img, index) => (
                                     <div key={index} style={{ position: 'relative', aspectRatio: '1', borderRadius: '12px', overflow: 'hidden', border: '1px solid #e2e8f0', background: '#f8fafc' }}>
                                         <img src={img} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -370,7 +430,11 @@ const SellModal = ({ isOpen, onClose }) => {
 
                             <div style={{ background: '#f0fdf4', padding: '0.75rem 1rem', borderRadius: '10px', border: '1px solid #bbf7d0', marginTop: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                 <Shield size={16} color="#059669" />
+<<<<<<< HEAD
                                 <p style={{ fontSize: '0.75rem', color: '#059669', fontWeight: 700, margin: 0 }}>Up to 5 photos — completely free for everyone 🎉</p>
+=======
+                                <p style={{ fontSize: '0.75rem', color: '#059669', fontWeight: 700, margin: 0 }}>Up to 5 photos — completely free for everyone</p>
+>>>>>>> teammate/main
                             </div>
                         </div>
 
@@ -403,6 +467,10 @@ const SellModal = ({ isOpen, onClose }) => {
                                         <option value="outfit">Outfit</option>
                                         <option value="utensils">Utensils</option>
                                         <option value="accessories">Accessories</option>
+<<<<<<< HEAD
+=======
+                                        <option value="other">Other</option>
+>>>>>>> teammate/main
                                     </select>
                                 </div>
                                 <div className="form-group">
@@ -544,7 +612,11 @@ const SellModal = ({ isOpen, onClose }) => {
                                                                         background: `${cat.accentColor}12`,
                                                                         padding: '0.15rem 0.4rem',
                                                                         borderRadius: '6px'
+<<<<<<< HEAD
                                                                     }}>✓ {a}</span>
+=======
+                                                                    }}>{a}</span>
+>>>>>>> teammate/main
                                                                 ))}
                                                             </div>
                                                         )}
@@ -573,10 +645,17 @@ const SellModal = ({ isOpen, onClose }) => {
                                                         {formData.room_count}
                                                     </span>
                                                     <span style={{ fontSize: '0.72rem', fontWeight: 700, color: cat.accentColor, textTransform: 'capitalize' }}>
+<<<<<<< HEAD
                                                         {formData.facility_type === 'shared' ? '👥 Shared Facilities' : '🔒 Private Facilities'}
                                                     </span>
                                                     <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#64748b' }}>
                                                         ✅ {formData.amenities.length} amenities selected
+=======
+                                                        {formData.facility_type === 'shared' ? 'Shared Facilities' : 'Private Facilities'}
+                                                    </span>
+                                                    <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#64748b' }}>
+                                                        {formData.amenities.length} amenities selected
+>>>>>>> teammate/main
                                                     </span>
                                                 </div>
                                             );
@@ -585,7 +664,11 @@ const SellModal = ({ isOpen, onClose }) => {
                                         {/* Editable overrides */}
                                         {formData.condition && (
                                             <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', gap: '0.75rem', marginTop: '0.5rem' }}>
+<<<<<<< HEAD
                                                 <p style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 600, margin: 0 }}>✏️ Fine-tune details (auto-filled above)</p>
+=======
+                                                <p style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 600, margin: 0 }}>Fine-tune details (auto-filled above)</p>
+>>>>>>> teammate/main
                                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
                                                     <div>
                                                         <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569' }}>Facility Type</label>
@@ -876,7 +959,11 @@ const SellModal = ({ isOpen, onClose }) => {
                                                 }}>
                                                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                                         <ShieldCheck size={20} />
+<<<<<<< HEAD
                                                         <span>✅ LOCATION UPLOADED</span>
+=======
+                                                        <span>LOCATION UPLOADED</span>
+>>>>>>> teammate/main
                                                     </div>
                                                     <button
                                                         type="button"
@@ -895,7 +982,11 @@ const SellModal = ({ isOpen, onClose }) => {
                                                     type="button"
                                                     onClick={() => {
                                                         setLocationUploaded(true);
+<<<<<<< HEAD
                                                         addNotification('✅ Location Uploaded!', `Coordinates saved: ${parseFloat(formData.latitude).toFixed(5)}, ${parseFloat(formData.longitude).toFixed(5)}. This will be attached to your post.`, 'success');
+=======
+                                                        addNotification('Location Uploaded!', `Coordinates saved: ${parseFloat(formData.latitude).toFixed(5)}, ${parseFloat(formData.longitude).toFixed(5)}. This will be attached to your post.`, 'success');
+>>>>>>> teammate/main
                                                     }}
                                                     style={{
                                                         width: '100%',

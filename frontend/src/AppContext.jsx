@@ -17,6 +17,10 @@ export const AppProvider = ({ children }) => {
     const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
     const [isSellModalOpen, setIsSellModalOpen] = useState(false);
     const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
+<<<<<<< HEAD
+=======
+    const [isAdminLockModalOpen, setIsAdminLockModalOpen] = useState(false);
+>>>>>>> teammate/main
     const [infoModal, setInfoModal] = useState({ isOpen: false, title: '', content: null });
     const prevUnreadRef = useRef(0);
 
@@ -146,7 +150,11 @@ export const AppProvider = ({ children }) => {
                 const data = await api.getUnreadCount();
                 if (data && typeof data.count === 'number') {
                     if (data.count > prevUnreadRef.current) {
+<<<<<<< HEAD
                         addNotification('💬 New Message', `You have ${data.count} unread message${data.count > 1 ? 's' : ''}.`, 'info');
+=======
+                        addNotification('New Message', `You have ${data.count} unread message${data.count > 1 ? 's' : ''}.`, 'info');
+>>>>>>> teammate/main
                     }
                     prevUnreadRef.current = data.count;
                     setUnreadCount(data.count);
@@ -170,6 +178,10 @@ export const AppProvider = ({ children }) => {
             logout,
             isAuthModalOpen, setIsAuthModalOpen,
             isSellModalOpen, setIsSellModalOpen,
+<<<<<<< HEAD
+=======
+            isAdminLockModalOpen, setIsAdminLockModalOpen,
+>>>>>>> teammate/main
             unreadCount, setUnreadCount,
             siteSettings, setSiteSettings,
         }}>

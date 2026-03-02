@@ -2,7 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useApp } from '../AppContext';
 import { api } from '../lib/api';
 import { MessageSquare, Plus, Heart, MessageCircle, Share2, MoreVertical, ShieldCheck, X, Send, Tag, ImagePlus, Trash2, Crop, Star } from 'lucide-react';
+<<<<<<< HEAD
 import ImageCropperModal from '../components/modals/ImageCropperModal';
+=======
+import ImageCropperModal from '../components/ui/ImageCropperModal';
+>>>>>>> teammate/main
 
 const Community = () => {
     const { user, addNotification, setIsAuthModalOpen } = useApp();
@@ -240,6 +244,7 @@ const Community = () => {
                             position: 'relative',
                             overflow: 'hidden'
                         }}>
+<<<<<<< HEAD
                             {post.is_admin && (
                                 <div style={{
                                     position: 'absolute',
@@ -261,13 +266,18 @@ const Community = () => {
                                     <ShieldCheck size={14} /> 📌 PINNED BY ADMIN
                                 </div>
                             )}
+=======
+>>>>>>> teammate/main
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
                                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                                     <img src={post.author_avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(post.author_name || 'U')}&background=random`} style={{ width: '48px', height: '48px', borderRadius: '14px', objectFit: 'cover' }} alt={post.author_name} />
                                     <div>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                                             <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{post.author_name}</span>
+<<<<<<< HEAD
                                             {post.is_admin && <ShieldCheck size={16} color="var(--campus-blue)" />}
+=======
+>>>>>>> teammate/main
                                         </div>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                             <span style={{ fontSize: '0.75rem', color: '#999', display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
@@ -279,8 +289,13 @@ const Community = () => {
                                                 )}
                                                 {formatTime(post.created_at)} • {getTypeLabel(post.type)}
                                             </span>
+<<<<<<< HEAD
                                             <span style={{ fontSize: '0.7rem', padding: '0.1rem 0.5rem', background: post.is_admin ? 'var(--campus-blue)' : '#f0f0f0', color: post.is_admin ? 'white' : '#666', borderRadius: '4px', fontWeight: 600 }}>
                                                 {post.is_admin ? 'Admin' : 'Student'}
+=======
+                                            <span style={{ fontSize: '0.7rem', padding: '0.1rem 0.5rem', background: '#f0f0f0', color: '#666', borderRadius: '4px', fontWeight: 600 }}>
+                                                {post.is_admin ? 'Admin' : 'Member'}
+>>>>>>> teammate/main
                                             </span>
                                         </div>
                                     </div>
@@ -450,6 +465,10 @@ const Community = () => {
                                 >
                                     <option value="general">General</option>
                                     <option value="market">Marketplace Update</option>
+<<<<<<< HEAD
+=======
+                                    <option value="other">Other</option>
+>>>>>>> teammate/main
                                 </select>
                             </div>
                             <div className="form-group">

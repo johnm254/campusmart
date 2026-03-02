@@ -31,6 +31,16 @@ const DownloadPrompt = () => {
                 setTimeout(() => setShowAndroid(true), 3000);
             };
 
+<<<<<<< HEAD
+=======
+            const handleTrigger = () => {
+                if (isIOS()) setShowIOS(true);
+                else if (deferredPrompt) setShowAndroid(true);
+                else alert("CampusMart is already installed or your browser doesn't support installation.");
+            };
+
+            window.addEventListener('trigger-pwa-install', handleTrigger);
+>>>>>>> teammate/main
             window.addEventListener('beforeinstallprompt', handleBeforeInstall);
 
             window.addEventListener('appinstalled', () => {
@@ -38,7 +48,14 @@ const DownloadPrompt = () => {
                 setDeferredPrompt(null);
             });
 
+<<<<<<< HEAD
             return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstall);
+=======
+            return () => {
+                window.removeEventListener('beforeinstallprompt', handleBeforeInstall);
+                window.removeEventListener('trigger-pwa-install', handleTrigger);
+            };
+>>>>>>> teammate/main
         }
     }, []);
 
