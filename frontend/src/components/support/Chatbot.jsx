@@ -45,11 +45,11 @@ const Chatbot = () => {
             { cat: 'account', q: 'How do I deactivate my account?', a: 'Contact our support team via the Feedback button or email us at support@campusmart.co.ke' },
 
             // Listings & Selling
-            { cat: 'selling', q: 'How do I post an item for sale?', a: 'Click the "Sell" button in the navigation bar. Fill in the details, upload up to 5 photos, and click "Post Product". It's 100% free!' },
+            { cat: 'selling', q: 'How do I post an item for sale?', a: 'Click the "Sell" button in the navigation bar. Fill in the details, upload up to 5 photos, and click "Post Product". It' + "'" + 's 100% free!' },
             { cat: 'selling', q: 'How many photos can I upload per listing?', a: 'All users can upload up to 5 clear photos per listing at no cost.' },
             { cat: 'selling', q: 'Can I edit or delete a listing?', a: 'Yes, go to your Dashboard. You' + "'" + 'll see all your listings with options to Edit or Delete them.' },
             { cat: 'selling', q: 'What happened to the Boost packages?', a: 'CampusMart is now 100% free for everyone! We removed paid packages to ensure every student has an equal chance to sell their items quickly.' },
-            { cat: 'selling', q: 'Why isn't my listing showing?', a: 'New listings may undergo a quick review. If it' + "'" + 's been over 2 hours, please ensure your listing doesn' + "'" + 't violate our community policies.' },
+            { cat: 'selling', q: 'Why isn' + "'" + 't my listing showing?', a: 'New listings may undergo a quick review. If it' + "'" + 's been over 2 hours, please ensure your listing doesn' + "'" + 't violate our community policies.' },
 
             // Buying & Browsing
             { cat: 'buying', q: 'How do I search for items?', a: 'Use the search bar at the top of the Marketplace page. You can search by product name, category, or keyword.' },
