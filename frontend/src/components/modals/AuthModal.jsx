@@ -651,7 +651,7 @@ const AuthModal = ({ isOpen, onClose }) => {
 
                     {/* Action Buttons */}
                     <div style={{ display: 'flex', gap: '12px', marginTop: '1rem' }}>
-                        {!isLogin && signupStep === 2 && (
+                        {!isLogin && signupStep === 2 && !isForgot && (
                             <button 
                                 type="button" 
                                 onClick={() => setSignupStep(1)}
@@ -678,6 +678,7 @@ const AuthModal = ({ isOpen, onClose }) => {
                     </div>
                 </form>
 
+                {/* Footer Section */}
                 <p style={{ textAlign: 'center', fontSize: '0.9rem', marginTop: '2rem', borderTop: '1px solid #f0f0f0', paddingTop: '1.5rem' }}>
                     {isForgot ? (
                         <button
@@ -690,7 +691,7 @@ const AuthModal = ({ isOpen, onClose }) => {
                         <>
                             {isLogin ? "New to CampusMart? " : "Already have an account? "}
                             <button
-                                onClick={() => setIsLogin(!isLogin)}
+                                onClick={() => { setIsLogin(!isLogin); setSignupStep(1); }}
                                 style={{ background: 'none', border: 'none', color: 'var(--jiji-green)', fontWeight: 700, cursor: 'pointer', fontSize: '0.9rem' }}
                             >
                                 {isLogin ? 'Register now' : 'Sign in'}
@@ -698,6 +699,7 @@ const AuthModal = ({ isOpen, onClose }) => {
                         </>
                     )}
                 </p>
+                </div>
             </div>
         </div>
     );
