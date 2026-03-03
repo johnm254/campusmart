@@ -835,7 +835,7 @@ const SellModal = ({ isOpen, onClose }) => {
                                                                 longitude: lng.toString()
                                                             }));
                                                             setLocationLoading(false);
-                                                            addNotification('≡ƒôì GPS Captured!', 'Your live location is pinpointed. Now click "Upload Location" to confirm.', 'success');
+                                                            addNotification('📍 GPS Captured!', 'Your live location is pinpointed. Now click "Upload Location" to confirm.', 'success');
                                                         },
                                                         (error) => {
                                                             setLocationLoading(false);

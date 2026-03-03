@@ -198,9 +198,9 @@ const ProductDetailModal = ({ product, onClose }) => {
                                 <h1 style={{ fontSize: isMobile ? '1.3rem' : '1.75rem', fontWeight: 800, marginBottom: '0.75rem', color: '#1a1a1a' }}>{product.title}</h1>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '0.5rem' : '1rem', color: '#666', fontSize: isMobile ? '0.8rem' : '0.9rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
                                     <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}><MapPin size={16} color="#888" /> {product.location || 'On Campus'}</span>
-                                    <span>ΓÇó</span>
+                                    <span>•</span>
                                     <span>{new Date(product.created_at || Date.now()).toLocaleDateString()}</span>
-                                    <span>ΓÇó</span>
+                                    <span>•</span>
                                     <span style={{
                                         color: 'var(--jiji-green)',
                                         fontWeight: 700,

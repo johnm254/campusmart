@@ -107,7 +107,7 @@ const Dashboard = () => {
                     <div style={{ marginBottom: '3rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <div>
                             <h1 style={{ fontSize: '2.5rem', fontWeight: 900, color: '#1d3d6e', letterSpacing: '-1px', marginBottom: '0.5rem' }}>
-                                Habari, {user?.full_name?.split(' ')[0] || 'Comrade'}! ≡ƒæï
+                                Habari, {user?.full_name?.split(' ')[0] || 'Comrade'}! 👋
                             </h1>
                             <p style={{ color: '#64748b', fontSize: '1.1rem', fontWeight: 500 }}>
                                 Your campus trading hub is running smoothly.
@@ -301,7 +301,7 @@ const Dashboard = () => {
                                 </div>
 
                                 <div>
-                                    <h3 style={{ fontSize: '1.5rem', fontWeight: 900, marginBottom: '0.5rem' }}>Comrade Power! ≡ƒÜÇ</h3>
+                                    <h3 style={{ fontSize: '1.5rem', fontWeight: 900, marginBottom: '0.5rem' }}>Comrade Power! 💪</h3>
                                     <p style={{ opacity: 0.8, fontSize: '0.95rem', lineHeight: 1.7, margin: 0 }}>
                                         You're part of <strong>CampusMart</strong>. Trade freely, save money, and build your campus reputation.
                                     </p>
@@ -336,9 +336,9 @@ const Dashboard = () => {
                                 </h3>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                                     {[
-                                        { icon: '≡ƒô╕', text: 'Bright, clear photos sell 3x faster than blurry ones.' },
-                                        { icon: '≡ƒÆ¼', text: 'Respond within 1 hour to increase buyer trust.' },
-                                        { icon: '≡ƒñ¥', text: 'Meet at school gates for the safest transactions.' }
+                                        { icon: '📸', text: 'Bright, clear photos sell 3x faster than blurry ones.' },
+                                        { icon: '💬', text: 'Respond within 1 hour to increase buyer trust.' },
+                                        { icon: '🤝', text: 'Meet at school gates for the safest transactions.' }
                                     ].map((tip, i) => (
                                         <div key={i} style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
                                             <span style={{ fontSize: '1.25rem' }}>{tip.icon}</span>

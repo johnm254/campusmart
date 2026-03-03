@@ -107,7 +107,7 @@ const AdminHeader = ({ activeTab, search, setSearch, onLogout, onRefresh, isLoad
     );
 };
 
-// ΓöÇΓöÇΓöÇ Main Component ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+// ═══ Main Component ═══════════════════════════════════════════════════════════════════════════════
 const AdminDashboard = () => {
     const { user, addNotification, logout } = useApp();
     const [activeTab, setActiveTab] = useState('overview');
@@ -270,7 +270,7 @@ const AdminDashboard = () => {
         setIsPosting(true);
         try {
             await api.postAnnouncement(announcementText.trim());
-            addNotification('Published! ≡ƒôú', 'Announcement is now live in the Community', 'success');
+            addNotification('Published! 🎉', 'Announcement is now live in the Community', 'success');
             setAnnouncementText('');
             setActiveTab('announcements');
             loadData();
@@ -720,8 +720,8 @@ const CommunityPosts = ({ posts, onDelete, products, setProducts, loadData, addN
                         </div>
                         <p style={{ color: '#374151', fontSize: '0.95rem', lineHeight: 1.6, margin: 0 }}>{post.content}</p>
                         <div style={{ display: 'flex', gap: '1.5rem', marginTop: '0.75rem', fontSize: '0.8rem', color: '#64748b', fontWeight: 600 }}>
-                            <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>Γ¥ñ∩╕Å {post.likes ?? 0} Likes</span>
-                            <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>≡ƒÆ¼ {post.comments ?? 0} Comments</span>
+                            <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>👍 {post.likes ?? 0} Likes</span>
+                            <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>💬 {post.comments ?? 0} Comments</span>
                         </div>
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
@@ -830,7 +830,7 @@ const Announcements = ({ adminPosts, announcementText, setAnnouncementText, onPo
                             <span style={{ fontSize: '0.8rem', color: '#94a3b8', fontWeight: 600 }}>{new Date(post.created_at).toLocaleString()}</span>
                         </div>
                         <p style={{ color: '#374151', fontSize: '1rem', lineHeight: 1.7, margin: 0, fontWeight: 500 }}>{post.content}</p>
-                        <div style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '0.8rem', fontWeight: 600 }}>Γ¥ñ∩╕Å {post.likes ?? 0} Likes &nbsp;ΓÇó&nbsp; ≡ƒÆ¼ {post.comments ?? 0} Comments</div>
+                        <div style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '0.8rem', fontWeight: 600 }}>👍 {post.likes ?? 0} Likes &nbsp;•&nbsp; 💬 {post.comments ?? 0} Comments</div>
                     </div>
                     <button onClick={() => onDelete(post.id)} style={{ padding: '0.6rem', borderRadius: 12, border: 'none', background: '#fee2e2', color: '#dc2626', cursor: 'pointer', flexShrink: 0, transition: '0.2s' }}>
                         <Trash2 size={18} />

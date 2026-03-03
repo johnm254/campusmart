@@ -168,7 +168,7 @@ const Footer = () => {
                                 triggerAdminPrompt();
                             }}
                         >
-                            ┬⌐ 2026 Campus Student Marketplace. All rights reserved.
+                            © 2026 Campus Student Marketplace. All rights reserved.
                         </p>
 
                         <div style={{ display: 'flex', gap: '0.8rem', alignItems: 'center' }}>

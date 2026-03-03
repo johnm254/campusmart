@@ -44,7 +44,7 @@ const PremiumModal = ({ isOpen, onClose }) => {
             features: [
                 'EVERYTHING in Starter + extra power',
                 'Top placement in category',
-                'ΓÇ£≡ƒöÑ Urgent SaleΓÇ¥ badge',
+                '"🔥 Urgent Sale" badge',
                 'Boost lasts 28 days',
                 'Up to 10 photos per listing',
                 'Featured on homepage',
@@ -59,7 +59,7 @@ const PremiumModal = ({ isOpen, onClose }) => {
             power: 'Supreme (15x Views)',
             color: '#1d3d6e', // Dark Blue
             icon: <Shield size={24} />,
-            badge: '≡ƒÑç Premium',
+            badge: '👑 Premium',
             isPopular: true,
             features: [
                 'EVERYTHING in Power + Verification',
