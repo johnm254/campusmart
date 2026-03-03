@@ -8,7 +8,7 @@ import {
     TrendingUp, Package, X, EyeOff, Zap, Moon, Sun
 } from 'lucide-react';
 
-// ΓöÇΓöÇΓöÇ Sidebar Nav ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+// Sidebar Nav
 const NAV_ITEMS = [
     { id: 'overview', label: 'Overview', icon: LayoutDashboard },
     { id: 'users', label: 'User Management', icon: Users },
@@ -19,7 +19,7 @@ const NAV_ITEMS = [
     { id: 'settings', label: 'Site Settings', icon: Settings },
 ];
 
-// ΓöÇΓöÇΓöÇ Shared SearchBar with Toggle UI ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+// Shared SearchBar with Toggle UI
 const AdminHeader = ({ activeTab, search, setSearch, onLogout, onRefresh, isLoading, isMobile, toggleMobileMenu, isDarkMode, toggleTheme }) => {
     const activeItem = NAV_ITEMS.find(n => n.id === activeTab) || NAV_ITEMS[0];
     const HeaderIcon = activeItem.icon;

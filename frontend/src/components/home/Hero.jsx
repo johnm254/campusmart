@@ -33,7 +33,7 @@ const Hero = () => {
     return (
         <div style={{ width: '100%', padding: isMobile ? '1.5rem 1rem 2rem' : isTablet ? '2.5rem 1.5rem 3rem' : '4rem 4% 5rem' }}>
 
-            {/* ΓöÇΓöÇ Top badge ΓöÇΓöÇ */}
+            {/* Top badge */}
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: isMobile ? '1.5rem' : '2.5rem' }}>
                 <div style={{
                     display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
@@ -47,7 +47,7 @@ const Hero = () => {
                 </div>
             </div>
 
-            {/* ΓöÇΓöÇ Main tagline ΓöÇΓöÇ */}
+            {/* Main tagline */}
             <div style={{ textAlign: 'center', marginBottom: isMobile ? '1.75rem' : '3rem' }}>
                 <h1 style={{
                     fontSize: isMobile ? '2rem' : isTablet ? '2.8rem' : '4rem',
@@ -69,12 +69,12 @@ const Hero = () => {
                 }}>
                     CampusMart bridges the gap between <strong style={{ color: 'var(--campus-blue)' }}>students</strong>,{' '}
                     <strong style={{ color: 'var(--jiji-green)' }}>campus traders</strong>, and{' '}
-                    <strong style={{ color: 'var(--jiji-orange)' }}>landlords</strong> ΓÇö ending the hustle of house hunting
+                    <strong style={{ color: 'var(--jiji-orange)' }}>landlords</strong> — ending the hustle of house hunting
                     and bringing every market good under one roof.
                 </p>
             </div>
 
-            {/* ΓöÇΓöÇ Dual CTA buttons ΓöÇΓöÇ */}
+            {/* Dual CTA buttons */}
             <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap', marginBottom: isMobile ? '2.5rem' : '4rem' }}>
                 <button
                     className="btn btn-primary"
@@ -110,7 +110,7 @@ const Hero = () => {
                 </button>
             </div>
 
-            {/* ΓöÇΓöÇ 3-step How it Works ribbon ΓöÇΓöÇ */}
+            {/* 3-step How it Works ribbon */}
             <div style={{
                 display: 'grid',
                 gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
@@ -126,7 +126,7 @@ const Hero = () => {
                     {
                         step: '02', Icon: MessageSquare, color: '#8cc63f', bg: '#f1f8e9', border: '#8cc63f',
                         title: 'Connect Directly',
-                        desc: 'Message sellers, traders and landlords in real-time. No agents, no commission, no middlemen ΓÇö ever.'
+                        desc: 'Message sellers, traders and landlords in real-time. No agents, no commission, no middlemen — ever.'
                     },
                     {
                         step: '03', Icon: Handshake, color: '#ee1c24', bg: '#ffebee', border: '#ee1c24',
@@ -177,7 +177,7 @@ const Hero = () => {
                 })}
             </div>
 
-            {/* ΓöÇΓöÇ Stats bar ΓöÇΓöÇ */}
+            {/* Stats bar */}
             <div style={{
                 background: 'linear-gradient(135deg, #1d3d6e 0%, #00aeef 100%)',
                 borderRadius: '20px',
@@ -189,11 +189,11 @@ const Hero = () => {
             }}>
                 <AnimatedStat end={0} suffix="% Fees" label="Zero Commissions" color="#8cc63f" />
                 <AnimatedStat end={5} suffix=" Photos" label="Free Per Listing" color="#ffffff" />
-                <AnimatedStat end={3} suffix=" Sections" label="Market ┬╖ Housing ┬╖ Community" color="#8cc63f" />
+                <AnimatedStat end={3} suffix=" Sections" label="Market • Housing • Community" color="#8cc63f" />
                 <AnimatedStat end={100} suffix="%" label="Student Driven" color="#ffffff" />
             </div>
 
-            {/* ΓöÇΓöÇ Seller / Landlord CTA ΓöÇΓöÇ */}
+            {/* Seller / Landlord CTA */}
             <div style={{
                 marginTop: isMobile ? '2rem' : '3rem',
                 display: 'flex', flexDirection: isMobile ? 'column' : 'row',

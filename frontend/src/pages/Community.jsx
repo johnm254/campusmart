@@ -544,7 +544,7 @@ const Community = () => {
                 </div>
             )}
 
-            {/* Shared Cropper Modal ΓÇö free aspect ratio for community posts */}
+            {/* Shared Cropper Modal — free aspect ratio for community posts */}
             {showCropper && (
                 <ImageCropperModal
                     image={tempImage}

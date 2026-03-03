@@ -144,7 +144,7 @@ const Settings = () => {
                 </form>
             </div>
 
-            {/* Removed Verification Section ΓÇö Platform is now free for all */}
+            {/* Removed Verification Section — Platform is now free for all */}
 
             {showCropper && (
                 <ImageCropperModal

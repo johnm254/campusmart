@@ -9,7 +9,7 @@ const safetySteps = [
     },
     {
         title: 'Comrade Power',
-        desc: "A deal off-campus shouldn't be a solo mission. Carry a fellow comrade alongΓÇöit's safer and makes negotiation easier when you have backup.",
+        desc: "A deal off-campus shouldn't be a solo mission. Carry a fellow comrade along—it's safer and makes negotiation easier when you have backup.",
         image: '/comrade%20power.png'
     },
     {

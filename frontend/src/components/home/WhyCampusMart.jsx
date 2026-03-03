@@ -3,12 +3,12 @@ import { Home, ShoppingBag, MessageCircle, MapPin, Shield, Zap, Users, TrendingU
 import { useApp } from '../../AppContext';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
 
-// ΓöÇΓöÇ Pain-point cards ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+// Pain-point cards
 const PROBLEMS = [
     {
         color: '#ee1c24', bg: '#ffebee', border: '#ee1c24',
         problem: 'House Hunting Nightmares',
-        solution: 'Scroll verified landlord listings, see real photos, GPS maps & contact them directly ΓÇö zero agents.',
+        solution: 'Scroll verified landlord listings, see real photos, GPS maps & contact them directly — zero agents.',
         cta: 'accommodation'
     },
     {
@@ -25,14 +25,14 @@ const PROBLEMS = [
     }
 ];
 
-// ΓöÇΓöÇ Feature highlights ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+// Feature highlights
 const FEATURES = [
-    { icon: Home, color: '#1d3d6e', bg: '#ebf2f7', label: 'Student Accommodation', desc: 'Hostels, single rooms, bed-sitters, apartments ΓÇö all sourced directly from landlords near your campus. No agents.', badge: 'Direct from Landlord' },
-    { icon: ShoppingBag, color: '#8cc63f', bg: '#f1f8e9', label: 'Campus Marketplace', desc: 'From textbooks to laptops, furniture to fashion ΓÇö buy and sell anything a student needs at honest prices.', badge: 'Comrade Prices' },
+    { icon: Home, color: '#1d3d6e', bg: '#ebf2f7', label: 'Student Accommodation', desc: 'Hostels, single rooms, bed-sitters, apartments — all sourced directly from landlords near your campus. No agents.', badge: 'Direct from Landlord' },
+    { icon: ShoppingBag, color: '#8cc63f', bg: '#f1f8e9', label: 'Campus Marketplace', desc: 'From textbooks to laptops, furniture to fashion — buy and sell anything a student needs at honest prices.', badge: 'Comrade Prices' },
     { icon: MessageCircle, color: '#ee1c24', bg: '#ffebee', label: 'Real-Time Chat', desc: 'Message sellers, landlords, and traders directly. Negotiate, ask questions, seal the deal. No calls needed.', badge: 'Instant Messaging' },
     { icon: MapPin, color: '#00aeef', bg: '#e1f5fe', label: 'GPS Location Pins', desc: 'Houses and rental listings show exact GPS pinpoints on a live mini-map so you never get lost finding your next home.', badge: 'Live Maps' },
     { icon: Shield, color: '#1d3d6e', bg: '#ebf2f7', label: 'Trusted Community', desc: 'Built on peer reviews and student ratings. Deal with people your fellow students have already vetted.', badge: 'Peer-Reviewed' },
-    { icon: Zap, color: '#8cc63f', bg: '#f1f8e9', label: '100% Free Always', desc: 'No listing fees, no commissions, no hidden charges. Post your goods or rooms completely free ΓÇö forever.', badge: 'Zero Fees' }
+    { icon: Zap, color: '#8cc63f', bg: '#f1f8e9', label: '100% Free Always', desc: 'No listing fees, no commissions, no hidden charges. Post your goods or rooms completely free — forever.', badge: 'Zero Fees' }
 ];
 
 const WhyCampusMart = () => {
@@ -49,7 +49,7 @@ const WhyCampusMart = () => {
         }}>
             <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
 
-                {/* ΓòÉΓòÉ SECTION 1 ΓÇö Problems We Solve ΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉ */}
+                {/* SECTION 1 — Problems We Solve */}
                 <div style={{ textAlign: 'center', marginBottom: isMobile ? '2.5rem' : '4rem' }}>
                     <div style={{
                         display: 'inline-block', background: '#fff9e6', border: '1px solid #8cc63f',
@@ -64,7 +64,7 @@ const WhyCampusMart = () => {
                         <span style={{ color: '#8cc63f' }}>student struggles.</span>
                     </h2>
                     <p style={{ fontSize: isMobile ? '0.95rem' : '1.1rem', color: '#64748b', maxWidth: '650px', margin: '0 auto', lineHeight: 1.7 }}>
-                        Every student faces the same pain ΓÇö overpriced goods, shady landlords, and nowhere trusted to turn. CampusMart ends that.
+                        Every student faces the same pain — overpriced goods, shady landlords, and nowhere trusted to turn. CampusMart ends that.
                     </p>
                 </div>
 
@@ -104,7 +104,7 @@ const WhyCampusMart = () => {
                     })}
                 </div>
 
-                {/* ΓòÉΓòÉ SECTION 2 ΓÇö Housing Hero ΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉ */}
+                {/* SECTION 2 — Housing Hero */}
                 <div style={{
                     display: 'flex',
                     flexDirection: 'column',
@@ -135,7 +135,7 @@ const WhyCampusMart = () => {
                             <span style={{ color: '#8cc63f' }}>Home. Fast. Free.</span>
                         </h2>
                         <p style={{ fontSize: isMobile ? '0.9rem' : '1.05rem', color: '#64748b', lineHeight: 1.65, marginBottom: '1.75rem', maxWidth: '620px', margin: '0 auto 1.75rem' }}>
-                            Stop wasting weekends physically searching. Browse <strong>hostels, single rooms, bed-sitters and fully furnished apartments</strong> listed by real landlords near your campus. See GPS maps, real photos, and contact details ΓÇö all in one tap.
+                            Stop wasting weekends physically searching. Browse <strong>hostels, single rooms, bed-sitters and fully furnished apartments</strong> listed by real landlords near your campus. See GPS maps, real photos, and contact details — all in one tap.
                         </p>
                         {/* Mini benefit checklist */}
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '2rem', alignItems: 'flex-start', maxWidth: '520px', margin: '0 auto 2rem' }}>
@@ -180,14 +180,14 @@ const WhyCampusMart = () => {
                     </div>
                 </div>
 
-                {/* ΓòÉΓòÉ SECTION 3 ΓÇö Features Grid ΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉ */}
+                {/* SECTION 3 — Features Grid */}
                 <div style={{ textAlign: 'center', marginBottom: isMobile ? '2rem' : '3rem' }}>
                     <h2 style={{ fontSize: isMobile ? '2rem' : '2.8rem', fontWeight: 900, color: '#1d3d6e', letterSpacing: '-1.2px', marginBottom: '0.85rem' }}>
                         Everything a student needs,{' '}
                         <span style={{ color: '#8cc63f' }}>one platform.</span>
                     </h2>
                     <p style={{ fontSize: '1.05rem', color: '#64748b', maxWidth: '650px', margin: '0 auto', lineHeight: 1.7 }}>
-                        We don't just list items ΓÇö we solve the real daily problems campus life throws at you.
+                        We don't just list items — we solve the real daily problems campus life throws at you.
                     </p>
                 </div>
 
@@ -221,7 +221,7 @@ const WhyCampusMart = () => {
                     })}
                 </div>
 
-                {/* ΓòÉΓòÉ FINAL CTA banner ΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉ */}
+                {/* FINAL CTA banner */}
                 <div style={{
                     background: 'linear-gradient(135deg, #1d3d6e 0%, #00aeef 100%)',
                     padding: isMobile ? '2.5rem 1.75rem' : '3.5rem',
@@ -240,7 +240,7 @@ const WhyCampusMart = () => {
                             <Users size={16} /> Traders & Landlords Welcome
                         </div>
                         <h3 style={{ fontSize: isMobile ? '1.6rem' : '2rem', fontWeight: 900, marginBottom: '0.5rem', lineHeight: 1.2, letterSpacing: '-0.5px' }}>
-                            Reach thousands of students ΓÇö for free.
+                            Reach thousands of students — for free.
                         </h3>
                         <p style={{ opacity: 0.85, fontSize: '0.95rem', maxWidth: '520px', lineHeight: 1.7, margin: 0 }}>
                             Post your goods, rooms, or services on CampusMart and connect with the largest pool of active student buyers in your area. No fees. No commission. Ever.
