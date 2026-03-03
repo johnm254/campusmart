@@ -1,11 +1,14 @@
-const CACHE_NAME = 'campusmart-v5';
+const CACHE_NAME = 'campusmart-v6';
 
 // Network-first strategy: always try live server, fallback to cache if offline
 self.addEventListener('fetch', (event) => {
-    // Skip non-GET and API requests (always live for data)
+    // Skip non-GET requests
     if (event.request.method !== 'GET') return;
 
     const url = new URL(event.request.url);
+
+    // Skip chrome-extension and other non-http(s) schemes
+    if (!url.protocol.startsWith('http')) return;
 
     // API calls: always go to network — never serve from cache
     if (url.pathname.startsWith('/api/')) {
@@ -17,11 +20,13 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
         fetch(event.request)
             .then((networkResponse) => {
-                // Cache fresh copy of static assets
-                const responseClone = networkResponse.clone();
-                caches.open(CACHE_NAME).then((cache) => {
-                    cache.put(event.request, responseClone);
-                });
+                // Only cache successful responses
+                if (networkResponse && networkResponse.status === 200) {
+                    const responseClone = networkResponse.clone();
+                    caches.open(CACHE_NAME).then((cache) => {
+                        cache.put(event.request, responseClone);
+                    });
+                }
                 return networkResponse;
             })
             .catch(() => {
