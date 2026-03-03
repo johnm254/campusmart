@@ -1,12 +1,9 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { X, MapPin, Shield, ShieldCheck, MessageCircle, Phone, Share2, Info, Camera, Flag, Tag, Heart, Send, Star } from 'lucide-react';
 import { useApp } from '../../AppContext';
 import { api } from '../../lib/api';
 import UserReviewModal from './UserReviewModal';
-<<<<<<< HEAD
-=======
 import { useMediaQuery } from '../../hooks/useMediaQuery';
->>>>>>> teammate/main
 
 const ProductDetailModal = ({ product, onClose }) => {
     const { user, addNotification, wishlist, toggleWishlist, setIsAuthModalOpen } = useApp();
@@ -20,10 +17,7 @@ const ProductDetailModal = ({ product, onClose }) => {
     const [showAllReviews, setShowAllReviews] = useState(false);
     const [selectedImgIndex, setSelectedImgIndex] = useState(0);
     const [reviewTarget, setReviewTarget] = useState({ id: product.seller_id, name: product.seller_name, parentId: null });
-<<<<<<< HEAD
-=======
     const isMobile = useMediaQuery('(max-width: 768px)');
->>>>>>> teammate/main
 
     const productImages = (() => {
         try {
@@ -93,11 +87,7 @@ const ProductDetailModal = ({ product, onClose }) => {
         try {
             const result = await api.sendMessage(product.seller_id, content, product.id);
             if (result && result.id) {
-<<<<<<< HEAD
-                addNotification('Message Sent! 💬', `Your message was delivered to ${product.seller_name || 'the seller'}.`, 'success');
-=======
                 addNotification('Message Sent!', `Your message was delivered to ${product.seller_name || 'the seller'}.`, 'success');
->>>>>>> teammate/main
                 setShowChat(false);
             } else {
                 const errMsg = result?.message || 'Failed to send message. Please try again.';
@@ -123,58 +113,33 @@ const ProductDetailModal = ({ product, onClose }) => {
 
 
     return (
-<<<<<<< HEAD
-        <div className="modal-overlay" onClick={onClose} style={{ zIndex: 300000, display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.85)', overflowY: 'auto', padding: '2rem 0' }}>
-=======
         <div className="modal-overlay" onClick={onClose} style={{ zIndex: 300000, display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.85)', overflowY: 'auto', padding: isMobile ? '0' : '2rem 0' }}>
->>>>>>> teammate/main
             <div
                 className="modal-content"
                 onClick={e => e.stopPropagation()}
                 style={{
-<<<<<<< HEAD
-                    maxWidth: '1200px',
-                    width: '95%',
-=======
                     maxWidth: isMobile ? '100%' : '1200px',
                     width: isMobile ? '100%' : '95%',
->>>>>>> teammate/main
                     padding: 0,
                     overflow: 'hidden',
                     display: 'flex',
                     flexDirection: 'column',
-<<<<<<< HEAD
-                    maxHeight: '95vh',
-                    borderRadius: '12px',
-=======
                     maxHeight: isMobile ? '100vh' : '95vh',
                     height: isMobile ? '100vh' : 'auto',
                     borderRadius: isMobile ? '0' : '12px',
->>>>>>> teammate/main
                     boxShadow: '0 30px 60px -12px rgba(0, 0, 0, 0.5)',
                     background: '#f4f4f4'
                 }}
             >
-<<<<<<< HEAD
-                <div style={{ padding: '0.75rem 1.5rem', borderBottom: '1px solid #ddd', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#fff', position: 'sticky', top: 0, zIndex: 20 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', fontWeight: 900, fontSize: '1.5rem', letterSpacing: '-1px' }}>
-=======
                 <div style={{ padding: isMobile ? '0.75rem 1rem' : '0.75rem 1.5rem', borderBottom: '1px solid #ddd', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#fff', position: 'sticky', top: 0, zIndex: 20 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                         <div style={{ display: 'flex', alignItems: 'center', fontWeight: 900, fontSize: isMobile ? '1.1rem' : '1.5rem', letterSpacing: '-1px' }}>
->>>>>>> teammate/main
                             <span style={{ color: '#1d3d6e' }}>Campus</span>
                             <span style={{ color: 'var(--jiji-green)' }}>Mart</span>
                         </div>
                     </div>
-<<<<<<< HEAD
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-                        {user ? (
-=======
                     <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '0.5rem' : '1.5rem' }}>
                         {user && !isMobile && (
->>>>>>> teammate/main
                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                                 <img
                                     src={user.avatar_url || user.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.full_name || user.name || 'U')}&background=28a745&color=fff`}
@@ -183,24 +148,6 @@ const ProductDetailModal = ({ product, onClose }) => {
                                 />
                                 <span style={{ fontSize: '0.85rem', fontWeight: 600, color: '#333' }}>{user.full_name || user.name}</span>
                             </div>
-<<<<<<< HEAD
-                        ) : (
-                            <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#333', cursor: 'pointer' }} onClick={() => { onClose(); setTimeout(() => setIsAuthModalOpen(true), 100); }}>
-                                Sign in | Register
-                            </div>
-                        )}
-                        <button style={{ background: 'var(--jiji-orange)', color: 'white', border: 'none', padding: '0.5rem 2rem', borderRadius: '4px', fontWeight: 700, cursor: 'pointer' }} onClick={() => { onClose(); setTimeout(() => setIsAuthModalOpen(true), 100); }}>SELL</button>
-                        <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0.5rem', display: 'flex' }}><X size={24} color="#333" /></button>
-                    </div>
-                </div>
-
-                <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem' }}>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 350px', gap: '1.5rem' }} className="product-detail-grid">
-
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                            <div style={{ background: 'white', borderRadius: '8px', padding: '1.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-                                <div style={{ position: 'relative', width: '100%', height: '500px', background: '#f0f0f0', borderRadius: '4px', overflow: 'hidden', marginBottom: '1rem' }}>
-=======
                         )}
                         <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0.5rem', display: 'flex' }}><X size={isMobile ? 20 : 24} color="#333" /></button>
                     </div>
@@ -212,7 +159,6 @@ const ProductDetailModal = ({ product, onClose }) => {
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                             <div style={{ background: 'white', borderRadius: '8px', padding: isMobile ? '1rem' : '1.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
                                 <div style={{ position: 'relative', width: '100%', height: isMobile ? '300px' : '500px', background: '#f0f0f0', borderRadius: '4px', overflow: 'hidden', marginBottom: '1rem' }}>
->>>>>>> teammate/main
                                     <img
                                         src={productImages[selectedImgIndex] || 'https://via.placeholder.com/800x600'}
                                         style={{ width: '100%', height: '100%', objectFit: 'contain' }}
@@ -248,19 +194,13 @@ const ProductDetailModal = ({ product, onClose }) => {
                                 </div>
                             </div>
 
-<<<<<<< HEAD
-                            <div style={{ background: 'white', borderRadius: '8px', padding: '1.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-                                <h1 style={{ fontSize: '1.75rem', fontWeight: 800, marginBottom: '0.75rem', color: '#1a1a1a' }}>{product.title}</h1>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', color: '#666', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
-=======
                             <div style={{ background: 'white', borderRadius: '8px', padding: isMobile ? '1rem' : '1.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
                                 <h1 style={{ fontSize: isMobile ? '1.3rem' : '1.75rem', fontWeight: 800, marginBottom: '0.75rem', color: '#1a1a1a' }}>{product.title}</h1>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '0.5rem' : '1rem', color: '#666', fontSize: isMobile ? '0.8rem' : '0.9rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
->>>>>>> teammate/main
                                     <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}><MapPin size={16} color="#888" /> {product.location || 'On Campus'}</span>
-                                    <span>•</span>
+                                    <span>ΓÇó</span>
                                     <span>{new Date(product.created_at || Date.now()).toLocaleDateString()}</span>
-                                    <span>•</span>
+                                    <span>ΓÇó</span>
                                     <span style={{
                                         color: 'var(--jiji-green)',
                                         fontWeight: 700,
@@ -273,11 +213,7 @@ const ProductDetailModal = ({ product, onClose }) => {
                                     </span>
                                 </div>
                                 <div style={{ borderTop: '1px solid #eee', paddingTop: '1.5rem', marginBottom: '1.5rem' }}>
-<<<<<<< HEAD
-                                    <h3 style={{ fontSize: '1.1rem', marginBottom: '0.75rem', color: '#333', fontWeight: 800 }}>
-=======
                                     <h3 style={{ fontSize: isMobile ? '1rem' : '1.1rem', marginBottom: '0.75rem', color: '#333', fontWeight: 800 }}>
->>>>>>> teammate/main
                                         {product.category === 'housing' ? 'House Details & Amenities' : 'Description'}
                                     </h3>
 
@@ -339,11 +275,7 @@ const ProductDetailModal = ({ product, onClose }) => {
                                                                     border: '1px solid rgba(61, 184, 58, 0.2)'
                                                                 }}
                                                             >
-<<<<<<< HEAD
-                                                                ✓ {amenity}
-=======
                                                                 {amenity}
->>>>>>> teammate/main
                                                             </span>
                                                         ));
                                                     } catch (e) { return null; }
@@ -418,22 +350,13 @@ const ProductDetailModal = ({ product, onClose }) => {
                                         </div>
                                     )}
 
-<<<<<<< HEAD
-                                    <p style={{ color: '#444', lineHeight: 1.6, whiteSpace: 'pre-line' }}>{product.description || 'No description provided.'}</p>
-=======
                                     <p style={{ color: '#444', lineHeight: 1.6, whiteSpace: 'pre-line', fontSize: isMobile ? '0.9rem' : '1rem' }}>{product.description || 'No description provided.'}</p>
->>>>>>> teammate/main
                                 </div>
 
                                 {/* Reviews Section */}
                                 <div style={{ borderTop: '1px solid #eee', paddingTop: '1.5rem' }}>
-<<<<<<< HEAD
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                                        <h3 style={{ fontSize: '1.1rem', fontWeight: 800, margin: 0 }}>Reviews for {product.seller_name}</h3>
-=======
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
                                         <h3 style={{ fontSize: isMobile ? '1rem' : '1.1rem', fontWeight: 800, margin: 0 }}>Reviews for {product.seller_name}</h3>
->>>>>>> teammate/main
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                                             <Star size={16} fill="#FFD700" color="#FFD700" />
                                             <span style={{ fontWeight: 800 }}>{(sellerRating?.average_rating || 0).toFixed(1)}</span>
@@ -541,11 +464,7 @@ const ProductDetailModal = ({ product, onClose }) => {
                         </div>
 
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-<<<<<<< HEAD
-                            <div style={{ background: 'white', borderRadius: '8px', padding: '1.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-=======
                             <div style={{ background: 'white', borderRadius: '8px', padding: isMobile ? '1rem' : '1.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
->>>>>>> teammate/main
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
                                     <img
                                         src={product.seller_avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(product.seller_name || 'Seller')}&background=random`}
@@ -630,13 +549,8 @@ const ProductDetailModal = ({ product, onClose }) => {
                                 )}
                             </div>
 
-<<<<<<< HEAD
-                            <div style={{ background: 'white', borderRadius: '8px', padding: '1.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', textAlign: 'center' }}>
-                                <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--jiji-green)', letterSpacing: '-0.5px' }}>
-=======
                             <div style={{ background: 'white', borderRadius: '8px', padding: isMobile ? '1rem' : '1.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', textAlign: 'center' }}>
                                 <div style={{ fontSize: isMobile ? '1.3rem' : '1.5rem', fontWeight: 800, color: 'var(--jiji-green)', letterSpacing: '-0.5px' }}>
->>>>>>> teammate/main
                                     KSh {Number(product.price || 0).toLocaleString()}
                                 </div>
 
@@ -695,15 +609,9 @@ const ProductDetailModal = ({ product, onClose }) => {
                                 </button>
                             </div>
 
-<<<<<<< HEAD
-                            <div style={{ background: 'white', borderRadius: '8px', padding: '1.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-                                <h3 style={{ fontSize: '1rem', fontWeight: 800, textAlign: 'center', marginBottom: '1.25rem' }}>Safety tips</h3>
-                                <ul style={{ fontSize: '0.875rem', color: '#333', paddingLeft: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.75rem', margin: 0 }}>
-=======
                             <div style={{ background: 'white', borderRadius: '8px', padding: isMobile ? '1rem' : '1.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
                                 <h3 style={{ fontSize: isMobile ? '0.95rem' : '1rem', fontWeight: 800, textAlign: 'center', marginBottom: '1.25rem' }}>Safety tips</h3>
                                 <ul style={{ fontSize: isMobile ? '0.8rem' : '0.875rem', color: '#333', paddingLeft: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.75rem', margin: 0 }}>
->>>>>>> teammate/main
                                     <li>Avoid sending any prepayments</li>
                                     <li>Meet with the seller at a safe public place</li>
                                     <li>Inspect what you're going to buy to make sure it's what you need</li>

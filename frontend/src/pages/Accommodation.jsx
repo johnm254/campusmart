@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useApp } from '../AppContext';
 import FilterSidebar from '../components/marketplace/FilterSidebar';
 import ProductGrid from '../components/marketplace/ProductGrid';

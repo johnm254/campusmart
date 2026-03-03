@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { api } from '../lib/api';
 import { useApp } from '../AppContext';
 import { Lock, Eye, EyeOff, CheckCircle, AlertCircle } from 'lucide-react';
@@ -89,7 +89,7 @@ const ResetPassword = () => {
                         <div style={{ position: 'relative' }}>
                             <input
                                 type={showPassword ? "text" : "password"}
-                                placeholder="••••••••"
+                                placeholder="ΓÇóΓÇóΓÇóΓÇóΓÇóΓÇóΓÇóΓÇó"
                                 value={newPassword}
                                 onChange={e => setNewPassword(e.target.value)}
                                 required
@@ -109,7 +109,7 @@ const ResetPassword = () => {
                         <label style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', fontSize: '0.9rem', fontWeight: 600 }}><Lock size={16} /> Confirm New Password</label>
                         <input
                             type="password"
-                            placeholder="••••••••"
+                            placeholder="ΓÇóΓÇóΓÇóΓÇóΓÇóΓÇóΓÇóΓÇó"
                             value={confirmPassword}
                             onChange={e => setConfirmPassword(e.target.value)}
                             required

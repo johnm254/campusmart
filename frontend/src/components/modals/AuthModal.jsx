@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { api } from '../../lib/api';
 import { useApp } from '../../AppContext';
 import { X, Eye, EyeOff, Lock, Mail, User, Phone } from 'lucide-react';
@@ -7,10 +7,7 @@ const AuthModal = ({ isOpen, onClose }) => {
     const { setUser, addNotification, showInfo } = useApp();
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
-<<<<<<< HEAD
-=======
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
->>>>>>> teammate/main
 
     // Form States
     const [email, setEmail] = useState('');
@@ -196,7 +193,7 @@ const AuthModal = ({ isOpen, onClose }) => {
                                         id="password"
                                         name="password"
                                         autoComplete={isLogin ? "current-password" : "new-password"}
-                                        placeholder="••••••••"
+                                        placeholder="ΓÇóΓÇóΓÇóΓÇóΓÇóΓÇóΓÇóΓÇó"
                                         value={password}
                                         onChange={e => setPassword(e.target.value)}
                                         required
@@ -215,26 +212,13 @@ const AuthModal = ({ isOpen, onClose }) => {
                             {!isLogin && (
                                 <div className="form-group">
                                     <label style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', fontSize: '0.9rem', fontWeight: 600 }}><Lock size={16} /> Confirm Password</label>
-<<<<<<< HEAD
-                                    <input
-                                        type="password"
-                                        id="confirmPassword"
-                                        name="confirmPassword"
-                                        autoComplete="new-password"
-                                        placeholder="••••••••"
-                                        value={confirmPassword}
-                                        onChange={e => setConfirmPassword(e.target.value)}
-                                        required
-                                        style={{ padding: '0.8rem 1rem' }}
-                                    />
-=======
                                     <div style={{ position: 'relative' }}>
                                         <input
                                             type={showConfirmPassword ? "text" : "password"}
                                             id="confirmPassword"
                                             name="confirmPassword"
                                             autoComplete="new-password"
-                                            placeholder="••••••••"
+                                            placeholder="ΓÇóΓÇóΓÇóΓÇóΓÇóΓÇóΓÇóΓÇó"
                                             value={confirmPassword}
                                             onChange={e => setConfirmPassword(e.target.value)}
                                             required
@@ -248,7 +232,6 @@ const AuthModal = ({ isOpen, onClose }) => {
                                             {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                                         </button>
                                     </div>
->>>>>>> teammate/main
                                 </div>
                             )}
 

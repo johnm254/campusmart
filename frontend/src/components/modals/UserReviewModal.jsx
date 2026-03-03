@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { X, Star, CheckCircle2 } from 'lucide-react';
 import { useApp } from '../../AppContext';
 import { api } from '../../lib/api';

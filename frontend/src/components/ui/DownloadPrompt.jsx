@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Download, X, Smartphone, Share } from 'lucide-react';
 
 const isIOS = () => {
@@ -31,8 +31,6 @@ const DownloadPrompt = () => {
                 setTimeout(() => setShowAndroid(true), 3000);
             };
 
-<<<<<<< HEAD
-=======
             const handleTrigger = () => {
                 if (isIOS()) setShowIOS(true);
                 else if (deferredPrompt) setShowAndroid(true);
@@ -40,7 +38,6 @@ const DownloadPrompt = () => {
             };
 
             window.addEventListener('trigger-pwa-install', handleTrigger);
->>>>>>> teammate/main
             window.addEventListener('beforeinstallprompt', handleBeforeInstall);
 
             window.addEventListener('appinstalled', () => {
@@ -48,14 +45,10 @@ const DownloadPrompt = () => {
                 setDeferredPrompt(null);
             });
 
-<<<<<<< HEAD
-            return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstall);
-=======
             return () => {
                 window.removeEventListener('beforeinstallprompt', handleBeforeInstall);
                 window.removeEventListener('trigger-pwa-install', handleTrigger);
             };
->>>>>>> teammate/main
         }
     }, []);
 
@@ -133,7 +126,7 @@ const DownloadPrompt = () => {
                     <div style={iconBox}><Smartphone size={24} /></div>
                     <div style={{ flex: 1 }}>
                         <div style={{ fontWeight: 800, fontSize: '0.95rem', color: '#1e293b' }}>Install CampusMart App</div>
-                        <div style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '2px' }}>Works offline · Fast · Home screen access</div>
+                        <div style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '2px' }}>Works offline ┬╖ Fast ┬╖ Home screen access</div>
                     </div>
                     <button
                         onClick={handleInstall}
@@ -172,7 +165,7 @@ const DownloadPrompt = () => {
                         <button style={dismissBtn} onClick={handleDismiss}><X size={16} /></button>
                     </div>
                     <div style={{ background: '#f8fafc', borderRadius: '14px', padding: '0.85rem 1rem', width: '100%', fontSize: '0.85rem', color: '#475569', lineHeight: 1.6 }}>
-                        Tap the <strong style={{ color: '#1d3d6e' }}>Share</strong> icon <span style={{ fontSize: '1rem' }}>⎦↑</span> at the bottom of your browser, then select <strong style={{ color: '#1d3d6e' }}>"Add to Home Screen"</strong>.
+                        Tap the <strong style={{ color: '#1d3d6e' }}>Share</strong> icon <span style={{ fontSize: '1rem' }}>ΓÄªΓåæ</span> at the bottom of your browser, then select <strong style={{ color: '#1d3d6e' }}>"Add to Home Screen"</strong>.
                     </div>
                 </div>
             )}

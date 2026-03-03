@@ -1,28 +1,18 @@
-<<<<<<< HEAD
-import React, { useState, useEffect } from 'react';
-=======
-import React, { useState, useEffect, useCallback } from 'react';
->>>>>>> teammate/main
+﻿import React, { useState, useEffect, useCallback } from 'react';
 import { useApp } from '../AppContext';
 import FilterSidebar from '../components/marketplace/FilterSidebar';
 import ProductGrid from '../components/marketplace/ProductGrid';
 import { api } from '../lib/api';
-<<<<<<< HEAD
-=======
 import { useMediaQuery } from '../hooks/useMediaQuery';
 import { SlidersHorizontal, X, Search } from 'lucide-react';
->>>>>>> teammate/main
 
 const Marketplace = () => {
     const { activeCategory, setActiveCategory } = useApp();
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [loading, setLoading] = useState(true);
-<<<<<<< HEAD
-=======
     const [showFilters, setShowFilters] = useState(false);
     const isMobile = useMediaQuery('(max-width: 768px)');
->>>>>>> teammate/main
     const [filters, setFilters] = useState({
         category: activeCategory || 'all',
         minPrice: '',
@@ -108,52 +98,6 @@ const Marketplace = () => {
     const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
 
     return (
-<<<<<<< HEAD
-        <div className="container" style={{ paddingTop: '2rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', marginBottom: '2rem', gap: '2rem' }}>
-                <h2 style={{ fontSize: '2rem', color: 'var(--jiji-green)', margin: 0 }}>Marketplace</h2>
-                <div style={{ flex: 1, maxWidth: '400px' }}>
-                    <input
-                        type="text"
-                        placeholder="Search for items..."
-                        value={filters.search}
-                        onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-                        style={{ width: '100%', padding: '0.75rem 1rem', border: '1px solid #eee', borderRadius: '12px', background: '#f8f9fa' }}
-                    />
-                </div>
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: '280px 1fr', gap: '2.5rem' }}>
-                <FilterSidebar
-                    filters={filters}
-                    setFilters={setFilters}
-                    availableCategories={availableCategories}
-                    availableLocations={availableLocations}
-                />
-                <main>
-                    {loading ? (
-                        <div style={{ textAlign: 'center', padding: '4rem' }}>Loading products...</div>
-                    ) : (
-                        <>
-                            <ProductGrid products={currentProducts} />
-
-                            {totalPages > 1 && (
-                                <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginTop: '3rem', alignItems: 'center' }}>
-                                    <button
-                                        disabled={currentPageIndex === 1}
-                                        onClick={() => setCurrentPageIndex(prev => prev - 1)}
-                                        className="btn btn-secondary"
-                                        style={{ padding: '0.5rem 1rem', opacity: currentPageIndex === 1 ? 0.5 : 1 }}
-                                    >
-                                        Previous
-                                    </button>
-                                    <span style={{ fontWeight: 600 }}>Page {currentPageIndex} of {totalPages}</span>
-                                    <button
-                                        disabled={currentPageIndex === totalPages}
-                                        onClick={() => setCurrentPageIndex(prev => prev + 1)}
-                                        className="btn btn-secondary"
-                                        style={{ padding: '0.5rem 1rem', opacity: currentPageIndex === totalPages ? 0.5 : 1 }}
-=======
         <div className="container" style={{ paddingTop: isMobile ? '1.5rem' : '2.5rem', flex: 1, display: 'flex', flexDirection: 'column', paddingBottom: '5rem', minHeight: '100%' }}>
             {/* Header Section */}
             <div style={{
@@ -318,17 +262,12 @@ const Marketplace = () => {
                                         onClick={() => { setCurrentPageIndex(prev => prev + 1); window.scrollTo(0, 0); }}
                                         className="btn btn-secondary"
                                         style={{ padding: '0.6rem 1.25rem', opacity: currentPageIndex === totalPages ? 0.5 : 1, borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
->>>>>>> teammate/main
                                     >
                                         Next
                                     </button>
                                 </div>
                             )}
-<<<<<<< HEAD
-                        </>
-=======
                         </div>
->>>>>>> teammate/main
                     )}
                 </main>
             </div>

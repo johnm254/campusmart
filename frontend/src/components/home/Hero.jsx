@@ -1,11 +1,7 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useApp } from '../../AppContext';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
-<<<<<<< HEAD
-import { ShoppingBag, Home, ArrowRight, Zap, Users, Star, TrendingUp, Search, MessageSquare, HelpingHand } from 'lucide-react';
-=======
 import { ShoppingBag, Home, ArrowRight, Zap, Users, Star, TrendingUp, Search, MessageSquare, Handshake } from 'lucide-react';
->>>>>>> teammate/main
 
 const AnimatedStat = ({ end, label, color, prefix = '', suffix = '' }) => {
     const [count, setCount] = useState(0);
@@ -35,13 +31,9 @@ const Hero = () => {
     const isTablet = useMediaQuery('(max-width: 900px)');
 
     return (
-<<<<<<< HEAD
-        <div style={{ maxWidth: '1400px', margin: '0 auto', padding: isMobile ? '1.5rem 1rem 2rem' : isTablet ? '2.5rem 1.5rem 3rem' : '4rem 2rem 5rem' }}>
-=======
         <div style={{ width: '100%', padding: isMobile ? '1.5rem 1rem 2rem' : isTablet ? '2.5rem 1.5rem 3rem' : '4rem 4% 5rem' }}>
->>>>>>> teammate/main
 
-            {/* ── Top badge ── */}
+            {/* ΓöÇΓöÇ Top badge ΓöÇΓöÇ */}
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: isMobile ? '1.5rem' : '2.5rem' }}>
                 <div style={{
                     display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
@@ -55,7 +47,7 @@ const Hero = () => {
                 </div>
             </div>
 
-            {/* ── Main tagline ── */}
+            {/* ΓöÇΓöÇ Main tagline ΓöÇΓöÇ */}
             <div style={{ textAlign: 'center', marginBottom: isMobile ? '1.75rem' : '3rem' }}>
                 <h1 style={{
                     fontSize: isMobile ? '2rem' : isTablet ? '2.8rem' : '4rem',
@@ -77,12 +69,12 @@ const Hero = () => {
                 }}>
                     CampusMart bridges the gap between <strong style={{ color: 'var(--campus-blue)' }}>students</strong>,{' '}
                     <strong style={{ color: 'var(--jiji-green)' }}>campus traders</strong>, and{' '}
-                    <strong style={{ color: 'var(--jiji-orange)' }}>landlords</strong> — ending the hustle of house hunting
+                    <strong style={{ color: 'var(--jiji-orange)' }}>landlords</strong> ΓÇö ending the hustle of house hunting
                     and bringing every market good under one roof.
                 </p>
             </div>
 
-            {/* ── Dual CTA buttons ── */}
+            {/* ΓöÇΓöÇ Dual CTA buttons ΓöÇΓöÇ */}
             <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap', marginBottom: isMobile ? '2.5rem' : '4rem' }}>
                 <button
                     className="btn btn-primary"
@@ -118,7 +110,7 @@ const Hero = () => {
                 </button>
             </div>
 
-            {/* ── 3-step How it Works ribbon ── */}
+            {/* ΓöÇΓöÇ 3-step How it Works ribbon ΓöÇΓöÇ */}
             <div style={{
                 display: 'grid',
                 gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
@@ -134,14 +126,10 @@ const Hero = () => {
                     {
                         step: '02', Icon: MessageSquare, color: '#8cc63f', bg: '#f1f8e9', border: '#8cc63f',
                         title: 'Connect Directly',
-                        desc: 'Message sellers, traders and landlords in real-time. No agents, no commission, no middlemen — ever.'
+                        desc: 'Message sellers, traders and landlords in real-time. No agents, no commission, no middlemen ΓÇö ever.'
                     },
                     {
-<<<<<<< HEAD
-                        step: '03', Icon: HelpingHand, color: '#ee1c24', bg: '#ffebee', border: '#ee1c24',
-=======
                         step: '03', Icon: Handshake, color: '#ee1c24', bg: '#ffebee', border: '#ee1c24',
->>>>>>> teammate/main
                         title: 'Deal at Campus Rates',
                         desc: 'Negotiate honest prices with people who understand the student hustle. Save more, stress less.'
                     }
@@ -159,16 +147,6 @@ const Hero = () => {
                             transition: 'all 0.3s ease',
                             cursor: 'pointer'
                         }}
-<<<<<<< HEAD
-                        onMouseOver={e => {
-                            e.currentTarget.style.transform = 'translateY(-8px)';
-                            e.currentTarget.style.boxShadow = `0 12px 32px ${item.color}30`;
-                        }}
-                        onMouseOut={e => {
-                            e.currentTarget.style.transform = 'translateY(0)';
-                            e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.05)';
-                        }}>
-=======
                             onMouseOver={e => {
                                 e.currentTarget.style.transform = 'translateY(-8px)';
                                 e.currentTarget.style.boxShadow = `0 12px 32px ${item.color}30`;
@@ -177,7 +155,6 @@ const Hero = () => {
                                 e.currentTarget.style.transform = 'translateY(0)';
                                 e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.05)';
                             }}>
->>>>>>> teammate/main
                             <div style={{
                                 position: 'absolute', top: '1.25rem', right: '1.25rem',
                                 fontSize: '0.7rem', fontWeight: 800, color: item.color,
@@ -200,7 +177,7 @@ const Hero = () => {
                 })}
             </div>
 
-            {/* ── Stats bar ── */}
+            {/* ΓöÇΓöÇ Stats bar ΓöÇΓöÇ */}
             <div style={{
                 background: 'linear-gradient(135deg, #1d3d6e 0%, #00aeef 100%)',
                 borderRadius: '20px',
@@ -212,11 +189,11 @@ const Hero = () => {
             }}>
                 <AnimatedStat end={0} suffix="% Fees" label="Zero Commissions" color="#8cc63f" />
                 <AnimatedStat end={5} suffix=" Photos" label="Free Per Listing" color="#ffffff" />
-                <AnimatedStat end={3} suffix=" Sections" label="Market · Housing · Community" color="#8cc63f" />
+                <AnimatedStat end={3} suffix=" Sections" label="Market ┬╖ Housing ┬╖ Community" color="#8cc63f" />
                 <AnimatedStat end={100} suffix="%" label="Student Driven" color="#ffffff" />
             </div>
 
-            {/* ── Seller / Landlord CTA ── */}
+            {/* ΓöÇΓöÇ Seller / Landlord CTA ΓöÇΓöÇ */}
             <div style={{
                 marginTop: isMobile ? '2rem' : '3rem',
                 display: 'flex', flexDirection: isMobile ? 'column' : 'row',

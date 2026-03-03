@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { X, Check, Shield, Rocket, Zap, Star, Flame, Camera, ArrowRight, Bookmark, Phone, Loader2 } from 'lucide-react';
 import { useApp } from '../../AppContext';
 import { api } from '../../lib/api';
@@ -22,17 +22,10 @@ const PremiumModal = ({ isOpen, onClose }) => {
             power: 'Medium',
             color: '#00aeef', // Blue
             icon: <Rocket size={24} />,
-<<<<<<< HEAD
-            badge: '🥉 Starter',
-            features: [
-                'Listing appears above free posts',
-                'Highlighted blue badge (⭐ Boosted)',
-=======
             badge: 'Starter',
             features: [
                 'Listing appears above free posts',
                 'Highlighted blue badge (Boosted)',
->>>>>>> teammate/main
                 'Stays boosted for 14 days',
                 'Up to 5 photos per listing',
                 'Priority in search results'
@@ -46,16 +39,12 @@ const PremiumModal = ({ isOpen, onClose }) => {
             power: 'High',
             color: '#FFD700', // Gold
             icon: <Zap size={24} />,
-<<<<<<< HEAD
-            badge: '🥈 Power',
-=======
             badge: 'Power',
->>>>>>> teammate/main
             isPopular: false,
             features: [
                 'EVERYTHING in Starter + extra power',
                 'Top placement in category',
-                '“🔥 Urgent Sale” badge',
+                'ΓÇ£≡ƒöÑ Urgent SaleΓÇ¥ badge',
                 'Boost lasts 28 days',
                 'Up to 10 photos per listing',
                 'Featured on homepage',
@@ -70,7 +59,7 @@ const PremiumModal = ({ isOpen, onClose }) => {
             power: 'Supreme (15x Views)',
             color: '#1d3d6e', // Dark Blue
             icon: <Shield size={24} />,
-            badge: '🥇 Premium',
+            badge: '≡ƒÑç Premium',
             isPopular: true,
             features: [
                 'EVERYTHING in Power + Verification',

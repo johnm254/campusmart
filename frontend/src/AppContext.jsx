@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
+﻿import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { api } from './lib/api';
 
 const AppContext = createContext();
@@ -6,7 +6,7 @@ const AppContext = createContext();
 export const useApp = () => useContext(AppContext);
 
 export const AppProvider = ({ children }) => {
-    // ── Core State ───────────────────────────────────────────────
+    // ΓöÇΓöÇ Core State ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
     const [user, setUser] = useState(null);
     const [wishlist, setWishlist] = useState([]);
     const [currentPage, setCurrentPage] = useState('home');
@@ -17,14 +17,11 @@ export const AppProvider = ({ children }) => {
     const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
     const [isSellModalOpen, setIsSellModalOpen] = useState(false);
     const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
-<<<<<<< HEAD
-=======
     const [isAdminLockModalOpen, setIsAdminLockModalOpen] = useState(false);
->>>>>>> teammate/main
     const [infoModal, setInfoModal] = useState({ isOpen: false, title: '', content: null });
     const prevUnreadRef = useRef(0);
 
-    // ── Notifications ─────────────────────────────────────────────
+    // ΓöÇΓöÇ Notifications ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
     const addNotification = (title, message, type = 'success', icon = 'check-circle') => {
         const id = Date.now();
         setNotifications(prev => [...prev, { id, title, message, type, icon }]);
@@ -33,17 +30,17 @@ export const AppProvider = ({ children }) => {
 
     const removeNotification = (id) => setNotifications(prev => prev.filter(n => n.id !== id));
 
-    // ── Info Modal ────────────────────────────────────────────────
+    // ΓöÇΓöÇ Info Modal ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
     const showInfo = (title, content) => setInfoModal({ isOpen: true, title, content });
     const closeInfo = () => setInfoModal(prev => ({ ...prev, isOpen: false }));
 
-    // ── Navigation helper ─────────────────────────────────────────
+    // ΓöÇΓöÇ Navigation helper ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
     const navigateWithFilter = (page, category = 'all') => {
         setActiveCategory(category);
         setCurrentPage(page);
     };
 
-    // ── Auth ──────────────────────────────────────────────────────
+    // ΓöÇΓöÇ Auth ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
     const logout = () => {
         localStorage.removeItem('user');
         localStorage.removeItem('token');
@@ -54,7 +51,7 @@ export const AppProvider = ({ children }) => {
         addNotification('Signed out', 'You have been successfully logged out.', 'info');
     };
 
-    // ── Wishlist ──────────────────────────────────────────────────
+    // ΓöÇΓöÇ Wishlist ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
     const toggleWishlist = async (product) => {
         if (!user) { setIsAuthModalOpen(true); return; }
         try {
@@ -71,7 +68,7 @@ export const AppProvider = ({ children }) => {
         }
     };
 
-    // ── Effects ───────────────────────────────────────────────────
+    // ΓöÇΓöÇ Effects ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 
     // Helper: decode JWT payload (no signature check, just read expiry)
     const decodeJwtExpiry = (token) => {
@@ -93,7 +90,7 @@ export const AppProvider = ({ children }) => {
             if (token) {
                 const expiry = decodeJwtExpiry(token);
                 if (expiry && Date.now() > expiry) {
-                    // Token expired — clear session silently
+                    // Token expired ΓÇö clear session silently
                     localStorage.removeItem('user');
                     localStorage.removeItem('token');
                     return;
@@ -150,11 +147,7 @@ export const AppProvider = ({ children }) => {
                 const data = await api.getUnreadCount();
                 if (data && typeof data.count === 'number') {
                     if (data.count > prevUnreadRef.current) {
-<<<<<<< HEAD
-                        addNotification('💬 New Message', `You have ${data.count} unread message${data.count > 1 ? 's' : ''}.`, 'info');
-=======
                         addNotification('New Message', `You have ${data.count} unread message${data.count > 1 ? 's' : ''}.`, 'info');
->>>>>>> teammate/main
                     }
                     prevUnreadRef.current = data.count;
                     setUnreadCount(data.count);
@@ -166,7 +159,7 @@ export const AppProvider = ({ children }) => {
         return () => clearInterval(interval);
     }, [user]);
 
-    // ── Context value ─────────────────────────────────────────────
+    // ΓöÇΓöÇ Context value ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
     return (
         <AppContext.Provider value={{
             user, setUser,
@@ -178,10 +171,7 @@ export const AppProvider = ({ children }) => {
             logout,
             isAuthModalOpen, setIsAuthModalOpen,
             isSellModalOpen, setIsSellModalOpen,
-<<<<<<< HEAD
-=======
             isAdminLockModalOpen, setIsAdminLockModalOpen,
->>>>>>> teammate/main
             unreadCount, setUnreadCount,
             siteSettings, setSiteSettings,
         }}>

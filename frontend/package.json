@@ -1,27 +1,4 @@
 {
-<<<<<<< HEAD
-  "name": "campus-mart-frontend",
-  "version": "1.0.0",
-  "description": "Frontend for CampusMart",
-  "private": true,
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "serve": "vite preview"
-  },
-  "dependencies": {
-    "cropperjs": "^1.5.13",
-    "lucide-react": "^0.269.0",
-    "react": "^18.2.0",
-    "react-cropper": "^2.3.3",
-    "react-dom": "^18.2.0"
-  },
-  "devDependencies": {
-    "@vitejs/plugin-react": "^5.1.4",
-    "vite": "^7.3.1"
-  }
-}
-=======
     "name": "campus-mart-frontend",
     "private": true,
     "version": "1.0.0",
@@ -52,4 +29,3 @@
         "vite": "^5.2.0"
     }
 }
->>>>>>> teammate/main

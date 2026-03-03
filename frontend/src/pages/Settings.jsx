@@ -1,11 +1,7 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useApp } from '../AppContext';
 import { api } from '../lib/api';
-<<<<<<< HEAD
-import ImageCropperModal from '../components/modals/ImageCropperModal';
-=======
 import ImageCropperModal from '../components/ui/ImageCropperModal';
->>>>>>> teammate/main
 import { Camera, Save, User, Phone, Mail, ShieldCheck, Star } from 'lucide-react';
 
 const Settings = () => {
@@ -148,7 +144,7 @@ const Settings = () => {
                 </form>
             </div>
 
-            {/* Removed Verification Section — Platform is now free for all */}
+            {/* Removed Verification Section ΓÇö Platform is now free for all */}
 
             {showCropper && (
                 <ImageCropperModal

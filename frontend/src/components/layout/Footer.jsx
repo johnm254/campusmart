@@ -1,11 +1,6 @@
-import React from 'react';
+﻿import React from 'react';
 import { useApp } from '../../AppContext';
 import { Facebook, Instagram, Twitter, MessageCircle, MapPin, Mail, Phone } from 'lucide-react';
-<<<<<<< HEAD
-
-const Footer = () => {
-    const { setCurrentPage, showInfo, navigateWithFilter } = useApp();
-=======
 import { useMediaQuery } from '../../hooks/useMediaQuery';
 
 const Footer = () => {
@@ -15,7 +10,6 @@ const Footer = () => {
     const triggerAdminPrompt = () => {
         setIsAdminLockModalOpen(true);
     };
->>>>>>> teammate/main
 
     return (
         <footer style={{ background: 'var(--campus-blue)', color: 'white', padding: 0 }}>
@@ -78,12 +72,8 @@ const Footer = () => {
                                 <ul>
                                     <li><strong>Meet in Public:</strong> Use the Juja Stage, Posta, or inside the school gates.</li>
                                     <li><strong>Verify the Item:</strong> Test electronics and check clothes for tears before paying.</li>
-<<<<<<< HEAD
-                                    <li><strong>Trust your Gut:</strong> If a deal looks too good to be true (e.g. an iPhone for 5k), it probably is a scam.</li>
-=======
                                     <li><strong>Trust your Gut:</strong> If a deal looks too good to be true, it probably is a scam.</li>
->>>>>>> teammate/main
-                                    <li><strong>Never Go Alone:</strong> Use the "Comrade Power" rule—bring a friend!</li>
+                                    <li><strong>Never Go Alone:</strong> Use the "Comrade Power" ruleΓÇöbring a friend!</li>
                                 </ul>
                             </div>
                         ))}>Safety Tips</span></li>
@@ -94,11 +84,7 @@ const Footer = () => {
                                     <li>Be honest about the condition of your items.</li>
                                     <li>No selling of illegal substances or school property.</li>
                                     <li>Respect your fellow buyers and sellers.</li>
-<<<<<<< HEAD
-                                    <li>CampusMart is a platform; we are not responsible for transactions gone wrong, but we will ban scammers from the platform.</li>
-=======
                                     <li>CampusMart is a platform; we are not responsible for transactions gone wrong.</li>
->>>>>>> teammate/main
                                 </ol>
                             </div>
                         ))}>Terms & Conditions</span></li>
@@ -124,12 +110,7 @@ const Footer = () => {
                             <div>
                                 <p>Need help with a trade or found a bug? Reach out to us!</p>
                                 <p><strong>Email:</strong> campusmart.care@gmail.com</p>
-<<<<<<< HEAD
-                                <p><strong>WhatsApp:</strong> +254 108 254 465 (Available 8am - 6pm)</p>
-                                <p>Our student support team typically responds within 2 hours during day time.</p>
-=======
                                 <p><strong>WhatsApp:</strong> +254 108 254 465</p>
->>>>>>> teammate/main
                             </div>
                         ))}><Phone size={16} /> Contact Support</span></li>
                     </ul>
@@ -138,24 +119,6 @@ const Footer = () => {
 
             {/* Socials and Copyright */}
             <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', padding: '1.5rem 0', background: 'var(--campus-blue)' }}>
-<<<<<<< HEAD
-                <div className="container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '0 2rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', flexWrap: 'wrap', justifyContent: 'center' }}>
-                        <a href="https://play.google.com/store" target="_blank" rel="noreferrer">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" style={{ height: '40px' }} />
-                        </a>
-
-                        <p
-                            style={{ opacity: 0.9, fontSize: '0.95rem', fontWeight: 500, color: 'white', margin: 0, cursor: 'default' }}
-                            onDoubleClick={() => {
-                                const code = prompt("Enter Administrator Secret Access Code:");
-                                if (code === "CAMPUS_ADMIN_2026") {
-                                    sessionStorage.setItem('admin_access_unlocked', 'true');
-                                    setCurrentPage('admin');
-                                } else if (code) {
-                                    alert("Invalid Access Code.");
-                                }
-=======
                 <div style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', padding: isMobile ? '0 1rem' : '0 4%' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', flexWrap: 'wrap', justifyContent: 'center' }}>
                         <div
@@ -203,10 +166,9 @@ const Footer = () => {
                             onDoubleClick={(e) => {
                                 e.stopPropagation();
                                 triggerAdminPrompt();
->>>>>>> teammate/main
                             }}
                         >
-                            © 2026 Campus Student Marketplace. All rights reserved.
+                            ┬⌐ 2026 Campus Student Marketplace. All rights reserved.
                         </p>
 
                         <div style={{ display: 'flex', gap: '0.8rem', alignItems: 'center' }}>

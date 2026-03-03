@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+﻿const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 export const api = {
     baseUrl: API_URL,
@@ -21,8 +21,6 @@ export const api = {
             window.dispatchEvent(new CustomEvent('session-expired'));
         }
 
-<<<<<<< HEAD
-=======
         // Throw on non-OK responses so catch blocks in callers work correctly
         if (!res.ok) {
             const err = new Error(data?.message || `Request failed with status ${res.status}`);
@@ -31,7 +29,6 @@ export const api = {
             throw err;
         }
 
->>>>>>> teammate/main
         return data;
     },
 
@@ -88,8 +85,6 @@ export const api = {
         return this.handleResponse(res);
     },
 
-<<<<<<< HEAD
-=======
     async markProductAsSold(productId) {
         const token = localStorage.getItem('token');
         const res = await fetch(`${API_URL}/products/${productId}/sold`, {
@@ -99,7 +94,6 @@ export const api = {
         return this.handleResponse(res);
     },
 
->>>>>>> teammate/main
     async updateUser(data) {
         const token = localStorage.getItem('token');
         const res = await fetch(`${API_URL}/auth/update`, {
@@ -315,11 +309,7 @@ export const api = {
         const token = localStorage.getItem('token');
         const headers = { 'Authorization': `Bearer ${token}` };
         if (sessionStorage.getItem('admin_access_unlocked') === 'true') {
-<<<<<<< HEAD
-            headers['X-Admin-Secret'] = import.meta.env.VITE_ADMIN_SECRET || 'CAMPUS_ADMIN_2026';
-=======
             headers['X-Admin-Secret'] = sessionStorage.getItem('admin_secret_key') || import.meta.env.VITE_ADMIN_SECRET || 'CAMPUS_ADMIN_2026';
->>>>>>> teammate/main
         }
         return headers;
     },
@@ -434,8 +424,6 @@ export const api = {
         return this.handleResponse(res);
     },
 
-<<<<<<< HEAD
-=======
     async deleteAdminProduct(productId) {
         const res = await fetch(`${API_URL}/admin/products/${productId}`, {
             method: 'DELETE',
@@ -464,7 +452,6 @@ export const api = {
         return this.handleResponse(res);
     },
 
->>>>>>> teammate/main
     async submitReview(data) {
         const token = localStorage.getItem('token');
         const res = await fetch(`${API_URL}/reviews`, {

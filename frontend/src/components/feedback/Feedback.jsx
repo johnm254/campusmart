@@ -1,11 +1,8 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { MessageSquare, Send, X, Star, CheckCircle2, ThumbsUp, AlertCircle, MessageCircle } from 'lucide-react';
 import { useApp } from '../../AppContext';
 import { api } from '../../lib/api';
-<<<<<<< HEAD
-=======
 import { useMediaQuery } from '../../hooks/useMediaQuery';
->>>>>>> teammate/main
 
 const Feedback = () => {
     const { user, addNotification, setIsAuthModalOpen } = useApp();
@@ -16,10 +13,7 @@ const Feedback = () => {
     const [rating, setRating] = useState(0);
     const [hoverRating, setHoverRating] = useState(0);
     const [type, setType] = useState('general');
-<<<<<<< HEAD
-=======
     const isMobile = useMediaQuery('(max-width: 768px)');
->>>>>>> teammate/main
 
     // Reset state when closing
     useEffect(() => {
@@ -53,11 +47,7 @@ const Feedback = () => {
 
         setIsSubmitting(true);
         try {
-<<<<<<< HEAD
-            const feedbackText = `[${type.toUpperCase()}] Rating: ${rating}/5\n${'⭐'.repeat(rating)}\n\nMessage: ${content}`;
-=======
-            const feedbackText = `[${type.toUpperCase()}] Rating: ${rating}/5\n${Array(rating).fill('★').join('')}\n\nMessage: ${content}`;
->>>>>>> teammate/main
+            const feedbackText = `[${type.toUpperCase()}] Rating: ${rating}/5\n${Array(rating).fill('Γÿà').join('')}\n\nMessage: ${content}`;
             const res = await api.sendFeedback(feedbackText);
 
             if (res.message === 'Feedback submitted successfully') {
@@ -80,15 +70,6 @@ const Feedback = () => {
     ];
 
     return (
-<<<<<<< HEAD
-        <div style={{ position: 'fixed', bottom: '30px', right: '30px', zIndex: 5000 }}>
-            {isOpen ? (
-                <div style={{
-                    width: '360px',
-                    background: 'rgba(255, 255, 255, 0.98)',
-                    backdropFilter: 'blur(10px)',
-                    borderRadius: '24px',
-=======
         <div style={{ position: 'fixed', bottom: isMobile ? '15px' : '30px', right: isMobile ? '15px' : '30px', zIndex: 5000 }}>
             {isOpen ? (
                 <div style={{
@@ -97,18 +78,13 @@ const Feedback = () => {
                     background: 'rgba(255, 255, 255, 0.98)',
                     backdropFilter: 'blur(10px)',
                     borderRadius: isMobile ? '20px' : '24px',
->>>>>>> teammate/main
                     boxShadow: '0 20px 50px rgba(0,0,0,0.15)',
                     display: 'flex',
                     flexDirection: 'column',
                     overflow: 'hidden',
                     border: '1px solid rgba(255, 255, 255, 0.2)',
                     animation: 'slideUp 0.3s ease-out',
-<<<<<<< HEAD
-                    maxHeight: '80vh'
-=======
                     maxHeight: isMobile ? '85vh' : '80vh'
->>>>>>> teammate/main
                 }}>
                     <style>{`
                         @keyframes slideUp {
@@ -121,23 +97,14 @@ const Feedback = () => {
                     <div style={{
                         background: '#1d3d6e',
                         color: 'white',
-<<<<<<< HEAD
-                        padding: '1.25rem 1.5rem',
-=======
                         padding: isMobile ? '1rem 1.25rem' : '1.25rem 1.5rem',
->>>>>>> teammate/main
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'space-between'
                     }}>
                         <div>
-<<<<<<< HEAD
-                            <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800 }}>Feedback Center</h3>
-                            <p style={{ margin: '0.1rem 0 0', fontSize: '0.75rem', opacity: 0.7 }}>Share your thoughts with us</p>
-=======
                             <h3 style={{ margin: 0, fontSize: isMobile ? '1rem' : '1.1rem', fontWeight: 800 }}>Feedback Center</h3>
                             <p style={{ margin: '0.1rem 0 0', fontSize: isMobile ? '0.7rem' : '0.75rem', opacity: 0.7 }}>Share your thoughts with us</p>
->>>>>>> teammate/main
                         </div>
                         <button
                             onClick={() => setIsOpen(false)}
@@ -158,11 +125,7 @@ const Feedback = () => {
                         </button>
                     </div>
 
-<<<<<<< HEAD
-                    <div style={{ padding: '1.5rem', overflowY: 'auto' }}>
-=======
                     <div style={{ padding: isMobile ? '1rem' : '1.5rem', overflowY: 'auto' }}>
->>>>>>> teammate/main
                         {step === 'form' ? (
                             <form onSubmit={handleSubmit}>
                                 {/* Category */}
@@ -198,11 +161,7 @@ const Feedback = () => {
 
                                 {/* Rating */}
                                 <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
-<<<<<<< HEAD
-                                    <div style={{ display: 'flex', justifyContent: 'center', gap: '0.35rem' }}>
-=======
                                     <div style={{ display: 'flex', justifyContent: 'center', gap: isMobile ? '0.25rem' : '0.35rem' }}>
->>>>>>> teammate/main
                                         {[1, 2, 3, 4, 5].map((star) => (
                                             <button
                                                 key={star}
@@ -213,11 +172,7 @@ const Feedback = () => {
                                                 style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0.2rem' }}
                                             >
                                                 <Star
-<<<<<<< HEAD
-                                                    size={28}
-=======
                                                     size={isMobile ? 24 : 28}
->>>>>>> teammate/main
                                                     fill={(hoverRating || rating) >= star ? "#FFD700" : "none"}
                                                     color={(hoverRating || rating) >= star ? "#FFD700" : "#cbd5e0"}
                                                     style={{ transition: '0.1s' }}
@@ -240,15 +195,6 @@ const Feedback = () => {
                                         onChange={e => setContent(e.target.value)}
                                         style={{
                                             width: '100%',
-<<<<<<< HEAD
-                                            height: '110px',
-                                            border: '1.5px solid #e2e8f0',
-                                            borderRadius: '14px',
-                                            padding: '0.85rem',
-                                            outline: 'none',
-                                            resize: 'none',
-                                            fontSize: '0.9rem',
-=======
                                             height: isMobile ? '90px' : '110px',
                                             border: '1.5px solid #e2e8f0',
                                             borderRadius: '14px',
@@ -256,7 +202,6 @@ const Feedback = () => {
                                             outline: 'none',
                                             resize: 'none',
                                             fontSize: isMobile ? '0.85rem' : '0.9rem',
->>>>>>> teammate/main
                                             background: '#f8fafc',
                                             lineHeight: '1.4',
                                             transition: '0.2s'
@@ -336,17 +281,10 @@ const Feedback = () => {
                 <div
                     onClick={() => setIsOpen(true)}
                     style={{
-<<<<<<< HEAD
-                        width: '60px',
-                        height: '60px',
-                        background: '#1d3d6e',
-                        borderRadius: '18px',
-=======
                         width: isMobile ? '50px' : '60px',
                         height: isMobile ? '50px' : '60px',
                         background: '#1d3d6e',
                         borderRadius: isMobile ? '15px' : '18px',
->>>>>>> teammate/main
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -365,11 +303,7 @@ const Feedback = () => {
                         e.currentTarget.style.background = '#1d3d6e';
                     }}
                 >
-<<<<<<< HEAD
-                    <MessageSquare size={24} />
-=======
                     <MessageSquare size={isMobile ? 20 : 24} />
->>>>>>> teammate/main
                     <span style={{
                         position: 'absolute',
                         top: '-10px',

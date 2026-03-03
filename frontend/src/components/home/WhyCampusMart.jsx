@@ -1,18 +1,14 @@
-<<<<<<< HEAD
-import React, { useState, useEffect } from 'react';
-=======
-import React from 'react';
->>>>>>> teammate/main
+﻿import React from 'react';
 import { Home, ShoppingBag, MessageCircle, MapPin, Shield, Zap, Users, TrendingUp } from 'lucide-react';
 import { useApp } from '../../AppContext';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
 
-// ── Pain-point cards ─────────────────────────────────────────────
+// ΓöÇΓöÇ Pain-point cards ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 const PROBLEMS = [
     {
         color: '#ee1c24', bg: '#ffebee', border: '#ee1c24',
         problem: 'House Hunting Nightmares',
-        solution: 'Scroll verified landlord listings, see real photos, GPS maps & contact them directly — zero agents.',
+        solution: 'Scroll verified landlord listings, see real photos, GPS maps & contact them directly ΓÇö zero agents.',
         cta: 'accommodation'
     },
     {
@@ -29,14 +25,14 @@ const PROBLEMS = [
     }
 ];
 
-// ── Feature highlights ────────────────────────────────────────────
+// ΓöÇΓöÇ Feature highlights ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 const FEATURES = [
-    { icon: Home, color: '#1d3d6e', bg: '#ebf2f7', label: 'Student Accommodation', desc: 'Hostels, single rooms, bed-sitters, apartments — all sourced directly from landlords near your campus. No agents.', badge: 'Direct from Landlord' },
-    { icon: ShoppingBag, color: '#8cc63f', bg: '#f1f8e9', label: 'Campus Marketplace', desc: 'From textbooks to laptops, furniture to fashion — buy and sell anything a student needs at honest prices.', badge: 'Comrade Prices' },
+    { icon: Home, color: '#1d3d6e', bg: '#ebf2f7', label: 'Student Accommodation', desc: 'Hostels, single rooms, bed-sitters, apartments ΓÇö all sourced directly from landlords near your campus. No agents.', badge: 'Direct from Landlord' },
+    { icon: ShoppingBag, color: '#8cc63f', bg: '#f1f8e9', label: 'Campus Marketplace', desc: 'From textbooks to laptops, furniture to fashion ΓÇö buy and sell anything a student needs at honest prices.', badge: 'Comrade Prices' },
     { icon: MessageCircle, color: '#ee1c24', bg: '#ffebee', label: 'Real-Time Chat', desc: 'Message sellers, landlords, and traders directly. Negotiate, ask questions, seal the deal. No calls needed.', badge: 'Instant Messaging' },
     { icon: MapPin, color: '#00aeef', bg: '#e1f5fe', label: 'GPS Location Pins', desc: 'Houses and rental listings show exact GPS pinpoints on a live mini-map so you never get lost finding your next home.', badge: 'Live Maps' },
     { icon: Shield, color: '#1d3d6e', bg: '#ebf2f7', label: 'Trusted Community', desc: 'Built on peer reviews and student ratings. Deal with people your fellow students have already vetted.', badge: 'Peer-Reviewed' },
-    { icon: Zap, color: '#8cc63f', bg: '#f1f8e9', label: '100% Free Always', desc: 'No listing fees, no commissions, no hidden charges. Post your goods or rooms completely free — forever.', badge: 'Zero Fees' }
+    { icon: Zap, color: '#8cc63f', bg: '#f1f8e9', label: '100% Free Always', desc: 'No listing fees, no commissions, no hidden charges. Post your goods or rooms completely free ΓÇö forever.', badge: 'Zero Fees' }
 ];
 
 const WhyCampusMart = () => {
@@ -44,25 +40,6 @@ const WhyCampusMart = () => {
     const isMobile = useMediaQuery('(max-width: 640px)');
     const isTablet = useMediaQuery('(max-width: 900px)');
 
-<<<<<<< HEAD
-    // Slider Logic
-    const [currentImageIndex, setCurrentImageIndex] = useState(0);
-    const sliderImages = [
-        '/accommodation-hero.jpg',
-        '/1.webp',
-        '/2.webp',
-        '/4.jpg'
-    ];
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setCurrentImageIndex(prev => (prev + 1) % sliderImages.length);
-        }, 3000);
-        return () => clearInterval(interval);
-    }, [sliderImages.length]);
-
-=======
->>>>>>> teammate/main
     return (
         <section style={{
             padding: isMobile ? '3rem 1rem 4rem' : '5rem 2rem 6rem',
@@ -72,7 +49,7 @@ const WhyCampusMart = () => {
         }}>
             <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
 
-                {/* ══ SECTION 1 — Problems We Solve ══════════════════════════════ */}
+                {/* ΓòÉΓòÉ SECTION 1 ΓÇö Problems We Solve ΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉ */}
                 <div style={{ textAlign: 'center', marginBottom: isMobile ? '2.5rem' : '4rem' }}>
                     <div style={{
                         display: 'inline-block', background: '#fff9e6', border: '1px solid #8cc63f',
@@ -87,7 +64,7 @@ const WhyCampusMart = () => {
                         <span style={{ color: '#8cc63f' }}>student struggles.</span>
                     </h2>
                     <p style={{ fontSize: isMobile ? '0.95rem' : '1.1rem', color: '#64748b', maxWidth: '650px', margin: '0 auto', lineHeight: 1.7 }}>
-                        Every student faces the same pain — overpriced goods, shady landlords, and nowhere trusted to turn. CampusMart ends that.
+                        Every student faces the same pain ΓÇö overpriced goods, shady landlords, and nowhere trusted to turn. CampusMart ends that.
                     </p>
                 </div>
 
@@ -127,53 +104,8 @@ const WhyCampusMart = () => {
                     })}
                 </div>
 
-                {/* ══ SECTION 2 — Housing Hero ════════════════════════════════════ */}
+                {/* ΓòÉΓòÉ SECTION 2 ΓÇö Housing Hero ΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉ */}
                 <div style={{
-<<<<<<< HEAD
-                    marginBottom: isMobile ? '3rem' : '6rem',
-                    display: 'grid',
-                    gridTemplateColumns: isTablet ? '1fr' : '1fr 1fr',
-                    gap: isTablet ? '1.5rem' : '4rem',
-                    alignItems: 'center',
-                }}>
-                    {/* Image Column */}
-                    <div style={{
-                        order: isTablet ? 1 : 2,
-                        borderRadius: '24px', overflow: 'hidden',
-                        boxShadow: '0 20px 60px rgba(0,0,0,0.12)',
-                        height: isMobile ? '250px' : isTablet ? '350px' : '480px',
-                        position: 'relative', background: '#f1f5f9'
-                    }}>
-                        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,0.28))', zIndex: 2, pointerEvents: 'none' }} />
-                        {sliderImages.map((img, idx) => (
-                            <img key={idx} src={img} alt={`Campus Housing ${idx + 1}`} style={{
-                                width: '100%', height: '100%', objectFit: 'cover',
-                                position: 'absolute', top: 0, left: 0,
-                                opacity: currentImageIndex === idx ? 1 : 0,
-                                transition: 'opacity 1.2s ease-in-out',
-                                zIndex: currentImageIndex === idx ? 1 : 0
-                            }} onError={e => { e.target.src = 'https://images.unsplash.com/photo-1555854817-5b2260d1502b?w=800&q=80'; }} />
-                        ))}
-                        {/* Dots */}
-                        <div style={{ position: 'absolute', bottom: '20px', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '8px', zIndex: 10 }}>
-                            {sliderImages.map((_, idx) => (
-                                <div key={idx} onClick={() => setCurrentImageIndex(idx)} style={{
-                                    width: currentImageIndex === idx ? '28px' : '9px', height: '9px',
-                                    borderRadius: '5px', background: currentImageIndex === idx ? 'white' : 'rgba(255,255,255,0.45)',
-                                    cursor: 'pointer', transition: 'all 0.4s cubic-bezier(0.4,0,0.2,1)'
-                                }} />
-                            ))}
-                        </div>
-                        {/* Overlay badge */}
-                        <div style={{ position: 'absolute', bottom: '3.5rem', left: '1.25rem', zIndex: 10, background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(10px)', borderRadius: '14px', padding: '0.7rem 1.15rem', color: 'white', fontSize: '0.82rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                            <Home size={16} />
-                            Direct from Landlord · No Agents · 0% Commission
-                        </div>
-                    </div>
-
-                    {/* Content Column */}
-                    <div style={{ order: isTablet ? 2 : 1 }}>
-=======
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
@@ -184,7 +116,6 @@ const WhyCampusMart = () => {
                 }}>
                     {/* Content Column */}
                     <div>
->>>>>>> teammate/main
                         <div style={{
                             display: 'inline-flex', alignItems: 'center',
                             background: '#f1f8e9', color: '#8cc63f',
@@ -203,19 +134,11 @@ const WhyCampusMart = () => {
                             Find Your Student<br />
                             <span style={{ color: '#8cc63f' }}>Home. Fast. Free.</span>
                         </h2>
-<<<<<<< HEAD
-                        <p style={{ fontSize: isMobile ? '0.9rem' : '1.05rem', color: '#64748b', lineHeight: 1.65, marginBottom: '1.75rem', maxWidth: '520px' }}>
-                            Stop wasting weekends physically searching. Browse <strong>hostels, single rooms, bed-sitters and fully furnished apartments</strong> listed by real landlords near your campus. See GPS maps, real photos, and contact details — all in one tap.
-                        </p>
-                        {/* Mini benefit checklist */}
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '2rem' }}>
-=======
                         <p style={{ fontSize: isMobile ? '0.9rem' : '1.05rem', color: '#64748b', lineHeight: 1.65, marginBottom: '1.75rem', maxWidth: '620px', margin: '0 auto 1.75rem' }}>
-                            Stop wasting weekends physically searching. Browse <strong>hostels, single rooms, bed-sitters and fully furnished apartments</strong> listed by real landlords near your campus. See GPS maps, real photos, and contact details — all in one tap.
+                            Stop wasting weekends physically searching. Browse <strong>hostels, single rooms, bed-sitters and fully furnished apartments</strong> listed by real landlords near your campus. See GPS maps, real photos, and contact details ΓÇö all in one tap.
                         </p>
                         {/* Mini benefit checklist */}
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '2rem', alignItems: 'flex-start', maxWidth: '520px', margin: '0 auto 2rem' }}>
->>>>>>> teammate/main
                             {[
                                 { icon: MapPin, text: 'GPS pinpointed exact locations' },
                                 { icon: TrendingUp, text: 'Compare prices & amenities side-by-side' },
@@ -233,11 +156,7 @@ const WhyCampusMart = () => {
                                 );
                             })}
                         </div>
-<<<<<<< HEAD
-                        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-=======
                         <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
->>>>>>> teammate/main
                             <button onClick={() => setCurrentPage('accommodation')} className="btn btn-primary" style={{ borderRadius: '12px', padding: '0.9rem 1.75rem', boxShadow: '0 8px 20px rgba(140,198,63,0.3)', background: '#8cc63f' }}>
                                 Browse All Listings
                             </button>
@@ -246,11 +165,7 @@ const WhyCampusMart = () => {
                             </button>
                         </div>
                         {/* Stats row */}
-<<<<<<< HEAD
-                        <div style={{ display: 'flex', gap: '2rem', marginTop: '2rem', flexWrap: 'wrap' }}>
-=======
                         <div style={{ display: 'flex', gap: '2rem', marginTop: '2rem', flexWrap: 'wrap', justifyContent: 'center' }}>
->>>>>>> teammate/main
                             {[
                                 { value: '0%', label: 'Commission Fees', color: '#8cc63f' },
                                 { value: 'GPS', label: 'Exact Location', color: '#1d3d6e' },
@@ -265,14 +180,14 @@ const WhyCampusMart = () => {
                     </div>
                 </div>
 
-                {/* ══ SECTION 3 — Features Grid ═══════════════════════════════════ */}
+                {/* ΓòÉΓòÉ SECTION 3 ΓÇö Features Grid ΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉ */}
                 <div style={{ textAlign: 'center', marginBottom: isMobile ? '2rem' : '3rem' }}>
                     <h2 style={{ fontSize: isMobile ? '2rem' : '2.8rem', fontWeight: 900, color: '#1d3d6e', letterSpacing: '-1.2px', marginBottom: '0.85rem' }}>
                         Everything a student needs,{' '}
                         <span style={{ color: '#8cc63f' }}>one platform.</span>
                     </h2>
                     <p style={{ fontSize: '1.05rem', color: '#64748b', maxWidth: '650px', margin: '0 auto', lineHeight: 1.7 }}>
-                        We don't just list items — we solve the real daily problems campus life throws at you.
+                        We don't just list items ΓÇö we solve the real daily problems campus life throws at you.
                     </p>
                 </div>
 
@@ -306,7 +221,7 @@ const WhyCampusMart = () => {
                     })}
                 </div>
 
-                {/* ══ FINAL CTA banner ════════════════════════════════════════════ */}
+                {/* ΓòÉΓòÉ FINAL CTA banner ΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉ */}
                 <div style={{
                     background: 'linear-gradient(135deg, #1d3d6e 0%, #00aeef 100%)',
                     padding: isMobile ? '2.5rem 1.75rem' : '3.5rem',
@@ -325,7 +240,7 @@ const WhyCampusMart = () => {
                             <Users size={16} /> Traders & Landlords Welcome
                         </div>
                         <h3 style={{ fontSize: isMobile ? '1.6rem' : '2rem', fontWeight: 900, marginBottom: '0.5rem', lineHeight: 1.2, letterSpacing: '-0.5px' }}>
-                            Reach thousands of students — for free.
+                            Reach thousands of students ΓÇö for free.
                         </h3>
                         <p style={{ opacity: 0.85, fontSize: '0.95rem', maxWidth: '520px', lineHeight: 1.7, margin: 0 }}>
                             Post your goods, rooms, or services on CampusMart and connect with the largest pool of active student buyers in your area. No fees. No commission. Ever.

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { ShieldCheck, X, ChevronRight, Lock } from 'lucide-react';
 import { useApp } from '../../AppContext';
 

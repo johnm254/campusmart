@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+﻿import React, { useState, useEffect, useRef } from 'react';
 import { useApp } from '../AppContext';
 import { api } from '../lib/api';
 import { Send, Search, MessageSquare, Phone, MoreVertical, CheckCheck, Check, Star } from 'lucide-react';
@@ -330,7 +330,7 @@ const Messages = () => {
                         <div ref={messagesContainerRef} style={{ flex: 1, padding: '1.5rem', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                             {messages.length === 0 ? (
                                 <div style={{ textAlign: 'center', color: '#bbb', marginTop: '3rem' }}>
-                                    <p>No messages yet. Say hello! 👋</p>
+                                    <p>No messages yet. Say hello! ≡ƒæï</p>
                                 </div>
                             ) : (
                                 messages.map(msg => {

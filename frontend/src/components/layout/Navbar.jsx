@@ -1,18 +1,10 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useApp } from '../../AppContext';
-<<<<<<< HEAD
-import { Menu, X, ShoppingCart, User, LogOut, LayoutDashboard, Tag, MessageSquare, Settings as SettingsIcon, Heart, Users } from 'lucide-react';
-import { useMediaQuery } from '../../hooks/useMediaQuery';
-
-const Navbar = ({ onOpenAuth, onOpenSell }) => {
-    const { user, wishlist, setCurrentPage, currentPage, logout, unreadCount } = useApp();
-=======
 import { Menu, X, ShoppingCart, User, LogOut, LayoutDashboard, Tag, MessageSquare, Settings as SettingsIcon, Heart, Users, Home, Store, Building2, DoorOpen, ShieldCheck } from 'lucide-react';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
 
 const Navbar = ({ onOpenAuth, onOpenSell }) => {
     const { user, wishlist, setCurrentPage, currentPage, logout, unreadCount, setIsAdminLockModalOpen } = useApp();
->>>>>>> teammate/main
     const [showAccountMenu, setShowAccountMenu] = useState(false);
     const [showMobileMenu, setShowMobileMenu] = useState(false);
     const isMobile = useMediaQuery('(max-width: 768px)');
@@ -23,11 +15,7 @@ const Navbar = ({ onOpenAuth, onOpenSell }) => {
         setShowMobileMenu(false);
     };
 
-<<<<<<< HEAD
-    const navLink = (page, label) => (
-=======
     const navLink = (page, label, icon = null) => (
->>>>>>> teammate/main
         <a
             href="#"
             onClick={(e) => { e.preventDefault(); setCurrentPage(page); setShowMobileMenu(false); }}
@@ -35,28 +23,18 @@ const Navbar = ({ onOpenAuth, onOpenSell }) => {
                 color: currentPage === page ? 'var(--jiji-green)' : 'var(--text-primary)',
                 textDecoration: 'none',
                 fontWeight: 700,
-<<<<<<< HEAD
-                fontSize: isMobile ? '1.1rem' : '1.15rem',
-                padding: isMobile ? '0.75rem 0' : '0.5rem 0.25rem',
-                borderBottom: isMobile ? '1px solid #f5f5f5' : 'none',
-                display: 'block',
-=======
                 fontSize: isMobile ? '1rem' : '1.15rem',
                 padding: isMobile ? '0.75rem 0' : '0.5rem 0.25rem',
                 borderBottom: isMobile ? '1px solid #f5f5f5' : 'none',
                 display: isMobile ? 'flex' : 'block',
                 alignItems: 'center',
                 gap: isMobile ? '0.75rem' : '0',
->>>>>>> teammate/main
                 transition: 'all 0.2s'
             }}
             onMouseOver={e => e.currentTarget.style.color = 'var(--jiji-green)'}
             onMouseOut={e => e.currentTarget.style.color = currentPage === page ? 'var(--jiji-green)' : 'var(--text-primary)'}
         >
-<<<<<<< HEAD
-=======
             {isMobile && icon && <span style={{ display: 'flex', alignItems: 'center' }}>{icon}</span>}
->>>>>>> teammate/main
             {label}
         </a>
     );
@@ -72,28 +50,15 @@ const Navbar = ({ onOpenAuth, onOpenSell }) => {
             borderBottom: '1px solid #eee'
         }}>
             {/* Main bar */}
-<<<<<<< HEAD
-            <div style={{ maxWidth: '1400px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '2rem' }}>
-=======
             <div style={{ width: '100%', margin: '0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '2rem' }}>
->>>>>>> teammate/main
 
                 {/* Logo */}
                 <div onClick={() => setCurrentPage('home')} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
                     <img src="/logo.png" alt="CampusMart Logo" style={{ height: isMobile ? '30px' : '38px', objectFit: 'contain' }} />
-<<<<<<< HEAD
-                    {!isMobile && (
-                        <span style={{ fontSize: '1.5rem', fontWeight: 800, letterSpacing: '-0.5px' }}>
-                            <span style={{ color: 'var(--campus-blue)' }}>CAMPUS</span>
-                            <span style={{ color: 'var(--jiji-green)' }}>MART</span>
-                        </span>
-                    )}
-=======
                     <span style={{ fontSize: isMobile ? '1.1rem' : '1.5rem', fontWeight: 800, letterSpacing: '-0.5px' }}>
                         <span style={{ color: 'var(--campus-blue)' }}>CAMPUS</span>
                         <span style={{ color: 'var(--jiji-green)' }}>MART</span>
                     </span>
->>>>>>> teammate/main
                 </div>
 
                 {/* Desktop nav links - Moved next to right side actions */}
@@ -108,7 +73,7 @@ const Navbar = ({ onOpenAuth, onOpenSell }) => {
 
                 {/* Right side actions */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '0.5rem' : '1rem' }}>
-                    {/* Sell button — visible on all screens */}
+                    {/* Sell button ΓÇö visible on all screens */}
                     <button
                         className="btn btn-primary"
                         onClick={() => user ? onOpenSell() : onOpenAuth()}
@@ -174,8 +139,6 @@ const Navbar = ({ onOpenAuth, onOpenSell }) => {
                                         ))}
 
                                         <div style={{ height: '1px', background: '#f5f5f5', margin: '0.5rem 0' }} />
-<<<<<<< HEAD
-=======
                                         <div
                                             onClick={() => { setIsAdminLockModalOpen(true); setShowAccountMenu(false); }}
                                             className="menu-item-premium"
@@ -185,7 +148,6 @@ const Navbar = ({ onOpenAuth, onOpenSell }) => {
                                         </div>
 
                                         <div style={{ height: '1px', background: '#f5f5f5', margin: '0.5rem 0' }} />
->>>>>>> teammate/main
                                         <div onClick={handleLogout} style={{ color: 'var(--jiji-orange)' }} className="menu-item-premium">
                                             <LogOut size={16} /> Sign Out
                                         </div>
@@ -202,7 +164,7 @@ const Navbar = ({ onOpenAuth, onOpenSell }) => {
                         </button>
                     )}
 
-                    {/* Hamburger — mobile only */}
+                    {/* Hamburger ΓÇö mobile only */}
                     {isMobile && (
                         <button
                             style={{ background: '#f8fafc', border: 'none', cursor: 'pointer', padding: '0.45rem', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
@@ -229,24 +191,6 @@ const Navbar = ({ onOpenAuth, onOpenSell }) => {
                     borderTop: '1px solid #f0f0f0'
                 }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
-<<<<<<< HEAD
-                        {navLink('home', '🏠  Discover')}
-                        {navLink('marketplace', '🛍️  Marketplace')}
-                        {navLink('accommodation', '🏠  Accommodation')}
-                        {navLink('community', '👥  Community')}
-
-                        {user ? (
-                            <>
-                                {navLink('dashboard', '📊  My Dashboard')}
-                                {navLink('messages', `💬  Messages${unreadCount > 0 ? ` (${unreadCount})` : ''}`)}
-                                {navLink('wishlist', `❤️  Wishlist${wishlist.length > 0 ? ` (${wishlist.length})` : ''}`)}
-                                {navLink('settings', '⚙️  Settings')}
-                                <button
-                                    onClick={handleLogout}
-                                    style={{ marginTop: '0.75rem', width: '100%', padding: '0.75rem', background: '#fff5f5', border: 'none', borderRadius: '10px', color: 'var(--jiji-orange)', fontWeight: 800, fontSize: '1rem', cursor: 'pointer', textAlign: 'left' }}
-                                >
-                                    🚪  Sign Out
-=======
                         {navLink('home', 'Discover', <Home size={20} />)}
                         {navLink('marketplace', 'Marketplace', <Store size={20} />)}
                         {navLink('accommodation', 'Accommodation', <Building2 size={20} />)}
@@ -269,7 +213,6 @@ const Navbar = ({ onOpenAuth, onOpenSell }) => {
                                     style={{ marginTop: '0.5rem', width: '100%', padding: '0.75rem', background: '#fff5f5', border: 'none', borderRadius: '10px', color: 'var(--jiji-orange)', fontWeight: 800, fontSize: '1rem', cursor: 'pointer', textAlign: 'left', display: 'flex', alignItems: 'center', gap: '0.75rem' }}
                                 >
                                     <DoorOpen size={20} /> Sign Out
->>>>>>> teammate/main
                                 </button>
                             </>
                         ) : (

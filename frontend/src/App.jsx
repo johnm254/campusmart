@@ -1,4 +1,4 @@
-import React from 'react'
+﻿import React from 'react'
 import { AppProvider, useApp } from './AppContext'
 import Navbar from './components/layout/Navbar'
 import Home from './pages/Home'
@@ -13,10 +13,7 @@ import Community from './pages/Community'
 import Accommodation from './pages/Accommodation'
 import AuthModal from './components/modals/AuthModal'
 import SellModal from './components/modals/SellModal'
-<<<<<<< HEAD
-=======
 import AdminLockModal from './components/modals/AdminLockModal'
->>>>>>> teammate/main
 import NotificationContainer from './components/ui/NotificationContainer'
 import Feedback from './components/feedback/Feedback'
 import Chatbot from './components/support/Chatbot'
@@ -35,13 +32,9 @@ const AppContent = () => {
         isAuthModalOpen,
         setIsAuthModalOpen,
         isSellModalOpen,
-<<<<<<< HEAD
-        setIsSellModalOpen
-=======
         setIsSellModalOpen,
         isAdminLockModalOpen,
         setIsAdminLockModalOpen
->>>>>>> teammate/main
     } = useApp();
 
     React.useEffect(() => {
@@ -57,11 +50,7 @@ const AppContent = () => {
         if (siteSettings.maintenance_mode === 'true' && !user?.is_admin && currentPage !== 'admin') {
             return (
                 <div style={{ textAlign: 'center', padding: '150px 20px' }}>
-<<<<<<< HEAD
-                    <h1 style={{ fontSize: '3rem', color: '#1d3d6e', marginBottom: '1rem' }}>Slight Turbulence! ✈️</h1>
-=======
                     <h1 style={{ fontSize: '3rem', color: '#1d3d6e', marginBottom: '1rem' }}>Slight Turbulence!</h1>
->>>>>>> teammate/main
                     <p style={{ fontSize: '1.25rem', color: '#64748b', maxWidth: '600px', margin: '0 auto' }}>
                         CampusMart is currently undergoing scheduled maintenance to improve your experience. We'll be back shortly!
                     </p>
@@ -93,30 +82,18 @@ const AppContent = () => {
     };
 
     return (
-<<<<<<< HEAD
-        <div className="app">
-            {siteSettings.announcement && (
-                <div style={{ background: '#1d3d6e', color: 'white', padding: '0.75rem', textAlign: 'center', fontSize: '0.9rem', fontWeight: 700, letterSpacing: '0.02em' }}>
-=======
         <div className="app" style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
             {siteSettings.announcement && (
                 <div style={{ background: '#1d3d6e', color: 'white', padding: '0.75rem', textAlign: 'center', fontSize: '0.9rem', fontWeight: 700, letterSpacing: '0.02em', flexShrink: 0 }}>
->>>>>>> teammate/main
                     {siteSettings.announcement}
                 </div>
             )}
             <Navbar onOpenAuth={() => setIsAuthModalOpen(true)} onOpenSell={() => setIsSellModalOpen(true)} />
-<<<<<<< HEAD
-            <main>
-                {renderPage()}
-            </main>
-=======
 
             <main style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                 {renderPage()}
             </main>
 
->>>>>>> teammate/main
             <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
             <SellModal isOpen={isSellModalOpen} onClose={() => setIsSellModalOpen(false)} />
             <InfoModal
@@ -125,25 +102,18 @@ const AppContent = () => {
                 title={infoModal.title}
                 content={infoModal.content}
             />
-<<<<<<< HEAD
-=======
             <NotificationContainer />
             <AdminLockModal
                 isOpen={isAdminLockModalOpen}
                 onClose={() => setIsAdminLockModalOpen(false)}
             />
->>>>>>> teammate/main
             <DownloadPrompt />
             <Chatbot />
             <Feedback />
             <NotificationContainer />
             <Footer />
         </div>
-<<<<<<< HEAD
-    )
-=======
     );
->>>>>>> teammate/main
 };
 
 function App() {

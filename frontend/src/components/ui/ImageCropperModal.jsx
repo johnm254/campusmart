@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+﻿import React, { useRef } from "react";
 import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
 import { X, Check, Crop } from "lucide-react";
@@ -71,7 +71,7 @@ const ImageCropperModal = ({ image, onCrop, onClose, aspectRatio = 1 }) => {
                 </div>
 
                 <p style={{ color: '#999', fontSize: '0.8rem', textAlign: 'center', margin: '0 0 1rem' }}>
-                    Drag to reposition • Scroll to zoom • Drag corners to resize crop
+                    Drag to reposition ΓÇó Scroll to zoom ΓÇó Drag corners to resize crop
                 </p>
 
                 <div style={{ display: "flex", gap: "1rem" }}>
