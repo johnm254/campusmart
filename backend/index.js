@@ -1,4 +1,4 @@
-const express = require('express');
+﻿const express = require('express');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const cors = require('cors');
@@ -7,57 +7,22 @@ const jwt = require('jsonwebtoken');
 const axios = require('axios');
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
-<<<<<<< HEAD
-const { Pool } = require('pg');
-
-// ─── Database Configuration ──────────────────────────────────────────────
-const pool = process.env.DATABASE_URL
-    ? new Pool({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } })
-    : new Pool({
-        host: process.env.DB_HOST,
-        user: process.env.DB_USER,
-        password: process.env.DB_PASS,
-        database: process.env.DB_NAME,
-        port: process.env.DB_PORT || 5432,
-    });
-
-const db = {
-    query: (text, params) => pool.query(text, params),
-    pool
-};
-
-// ─── Auto-Initialize Schema ──────────────────────────────────────────────
-const initSchema = async () => {
-    try {
-        console.log('Ensuring database schema is up to date...');
-
-        // Sanity check: ensure we can connect to the DB before running DDL.
-        try {
-            const client = await pool.connect();
-            client.release();
-            console.log('Database connection successful.');
-        } catch (connErr) {
-            console.error('❌ Database connection failed:', connErr);
-            throw connErr;
-        }
-=======
 const db = require('./db');
 
 const PORT = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET;
 
-// ─── Auto-Initialize Schema ──────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Auto-Initialize Schema ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 const initSchema = async () => {
     // Skip auto-init if using MySQL - use init-database-mysql.js instead
     if (db.dbType === 'mysql') {
-        console.log('⚠️  MySQL detected - skipping auto-init.');
+        console.log('ΓÜá∩╕Å  MySQL detected - skipping auto-init.');
         console.log('   Run: node init-database-mysql.js to initialize schema');
         return;
     }
 
     try {
         console.log('Ensuring database schema is up to date...');
->>>>>>> teammate/main
         await db.query(`CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY, full_name VARCHAR(255), email VARCHAR(255) UNIQUE, password VARCHAR(255), whatsapp VARCHAR(20), avatar_url TEXT, is_admin BOOLEAN DEFAULT FALSE, is_banned BOOLEAN DEFAULT FALSE, is_verified BOOLEAN DEFAULT FALSE, verified_until TIMESTAMP, boost_type VARCHAR(50), last_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)`);
         await db.query(`CREATE TABLE IF NOT EXISTS products (id SERIAL PRIMARY KEY, title VARCHAR(255) NOT NULL, category VARCHAR(100), price DECIMAL(10, 2), location VARCHAR(255), latitude DECIMAL(10, 8), longitude DECIMAL(11, 8), metadata JSONB, contact_phone VARCHAR(20), security_features TEXT, image_url TEXT, images JSONB, seller_id INTEGER REFERENCES users(id) ON DELETE CASCADE, condition_text VARCHAR(50) DEFAULT 'second-hand', description TEXT, views INTEGER DEFAULT 0, is_approved BOOLEAN DEFAULT TRUE, is_featured BOOLEAN DEFAULT FALSE, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)`);
         await db.query(`CREATE TABLE IF NOT EXISTS messages (id SERIAL PRIMARY KEY, sender_id INTEGER REFERENCES users(id) ON DELETE CASCADE, receiver_id INTEGER REFERENCES users(id) ON DELETE CASCADE, product_id INTEGER REFERENCES products(id) ON DELETE SET NULL, content TEXT NOT NULL, is_delivered BOOLEAN DEFAULT FALSE, is_read BOOLEAN DEFAULT FALSE, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)`);
@@ -75,29 +40,11 @@ const initSchema = async () => {
         await db.query(`ALTER TABLE products ADD COLUMN IF NOT EXISTS contact_phone VARCHAR(20)`);
         await db.query(`ALTER TABLE products ADD COLUMN IF NOT EXISTS security_features TEXT`);
         await db.query(`ALTER TABLE products ADD COLUMN IF NOT EXISTS latitude DECIMAL(10, 8), ADD COLUMN IF NOT EXISTS longitude DECIMAL(11, 8)`);
-<<<<<<< HEAD
-        console.log('✅ Database schema verified.');
-    } catch (err) {
-        console.error('❌ Schema initialization error:', err);
-        if (err && err.stack) console.error(err.stack);
-    }
-};
-initSchema();
-
-const app = express();
-app.use(cors());
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ limit: '10mb', extended: true }));
-
-const PORT = process.env.PORT || 5000;
-const JWT_SECRET = process.env.JWT_SECRET;
-
-=======
         await db.query(`ALTER TABLE products ADD COLUMN IF NOT EXISTS slug VARCHAR(255) UNIQUE`);
         await db.query(`ALTER TABLE products ADD COLUMN IF NOT EXISTS status VARCHAR(50) DEFAULT 'available'`);
-        console.log('✅ Database schema verified.');
+        console.log('Γ£à Database schema verified.');
     } catch (err) {
-        console.error('❌ Schema initialization error:', err.message);
+        console.error('Γ¥î Schema initialization error:', err.message);
     }
 };
 
@@ -136,7 +83,6 @@ app.use((req, res, next) => {
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
->>>>>>> teammate/main
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -145,11 +91,6 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-<<<<<<< HEAD
-// Middleware to protect routes
-const verifyToken = (req, res, next) => {
-    const token = req.headers['authorization']?.split(' ')[1];
-=======
 // Health check / Home route
 app.get('/', (req, res) => {
     res.json({
@@ -164,7 +105,6 @@ app.get('/', (req, res) => {
 const verifyToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader ? authHeader.split(' ')[1] : undefined;
->>>>>>> teammate/main
     if (!token) return res.status(401).json({ message: 'No token provided' });
 
     jwt.verify(token, JWT_SECRET, async (err, decoded) => {
@@ -189,27 +129,6 @@ const verifyToken = (req, res, next) => {
     });
 };
 
-<<<<<<< HEAD
-const verifyAdminToken = (req, res, next) => {
-    const adminSecret = req.headers['x-admin-secret'];
-    const isSecretValid = adminSecret === (process.env.ADMIN_SECRET || 'CAMPUS_ADMIN_2026');
-
-    if (isSecretValid) {
-        req.user = { is_admin: true, id: null };
-        return next();
-    }
-
-    const token = req.headers['authorization']?.split(' ')[1];
-    if (!token) return res.status(401).json({ message: 'No token provided' });
-
-    jwt.verify(token, JWT_SECRET, (err, decoded) => {
-        if (err) return res.status(403).json({ message: 'Invalid token' });
-        if (!decoded.is_admin) return res.status(403).json({ message: 'Admin access required' });
-
-        req.user = decoded;
-        next();
-    });
-=======
 const verifyAdminToken = async (req, res, next) => {
     const adminSecret = req.headers['x-admin-secret'];
     const validSecrets = [
@@ -227,7 +146,7 @@ const verifyAdminToken = async (req, res, next) => {
     if (token) {
         jwt.verify(token, JWT_SECRET, async (err, decoded) => {
             if (err) {
-                // JWT invalid — fall back to secret key only
+                // JWT invalid ΓÇö fall back to secret key only
                 if (isSecretValid) {
                     req.user = { is_admin: true, id: null };
                     return next();
@@ -235,7 +154,7 @@ const verifyAdminToken = async (req, res, next) => {
                 return res.status(403).json({ message: 'Invalid token' });
             }
 
-            // JWT is valid — always re-check is_admin from DB (handles stale tokens)
+            // JWT is valid ΓÇö always re-check is_admin from DB (handles stale tokens)
             try {
                 const dbUser = await db.query('SELECT is_admin, is_banned FROM users WHERE id = $1', [decoded.id]);
                 if (dbUser.rows.length === 0) {
@@ -263,7 +182,6 @@ const verifyAdminToken = async (req, res, next) => {
     } else {
         res.status(401).json({ message: 'No token provided' });
     }
->>>>>>> teammate/main
 };
 
 const logActivity = async (userId, action, metadata = {}) => {
@@ -393,7 +311,7 @@ app.post('/api/auth/forgot-password', async (req, res) => {
                     <p>This link will expire in 1 hour.</p>
                     <p>If you didn't request this, please ignore this email.</p>
                     <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
-                    <p style="font-size: 0.8rem; color: #888;">© ${new Date().getFullYear()} CampusMart. Student Marketplace.</p>
+                    <p style="font-size: 0.8rem; color: #888;">┬⌐ ${new Date().getFullYear()} CampusMart. Student Marketplace.</p>
                 </div>
             `
         };
@@ -470,11 +388,7 @@ app.get('/api/products', async (req, res) => {
         const result = await db.query(`
             SELECT p.id, p.title, p.category, p.price, p.location, p.image_url,
                    p.seller_id, p.condition_text as condition, p.description,
-<<<<<<< HEAD
-                   p.created_at, p.views,
-=======
                    p.created_at, p.views, p.slug, p.status,
->>>>>>> teammate/main
                    u.full_name as seller_name, u.whatsapp, u.avatar_url as seller_avatar,
                    u.last_seen as seller_last_seen, 
                    u.boost_type,
@@ -485,11 +399,8 @@ app.get('/api/products', async (req, res) => {
                    p.latitude, p.longitude, p.metadata, p.contact_phone, p.security_features
             FROM products p 
             LEFT JOIN users u ON p.seller_id = u.id 
-<<<<<<< HEAD
-=======
             WHERE (p.status = 'available' OR p.status IS NULL OR p.status = '')
             AND p.is_approved = TRUE
->>>>>>> teammate/main
             ORDER BY 
               CASE 
                 WHEN u.is_verified = TRUE AND (u.verified_until IS NULL OR u.verified_until >= NOW()) AND u.boost_type = 'power' THEN 2
@@ -528,11 +439,6 @@ app.post('/api/products', verifyToken, async (req, res) => {
         const { title, category, price, location, image_url, images, condition, description, latitude, longitude, metadata, contact_phone, security_features } = req.body;
         const seller_id = req.user.id;
 
-<<<<<<< HEAD
-        console.log(`Creating product: ${title} with lat: ${latitude}, lng: ${longitude}`);
-        await db.query(
-            'INSERT INTO products (title, category, price, location, image_url, images, seller_id, condition_text, description, latitude, longitude, metadata, contact_phone, security_features) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)',
-=======
         const slug = title.toLowerCase()
             .replace(/[^\w ]+/g, '')
             .replace(/ +/g, '-') + '-' + Math.random().toString(36).substring(2, 7);
@@ -540,7 +446,6 @@ app.post('/api/products', verifyToken, async (req, res) => {
         console.log(`Creating product: ${title} with slug: ${slug}`);
         await db.query(
             'INSERT INTO products (title, category, price, location, image_url, images, seller_id, condition_text, description, latitude, longitude, metadata, contact_phone, security_features, slug, status) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)',
->>>>>>> teammate/main
             [
                 title,
                 category,
@@ -555,13 +460,9 @@ app.post('/api/products', verifyToken, async (req, res) => {
                 longitude === undefined ? null : longitude,
                 metadata || null,
                 contact_phone || null,
-<<<<<<< HEAD
-                security_features || null
-=======
                 security_features || null,
                 slug,
                 'available'
->>>>>>> teammate/main
             ]
         );
         logActivity(seller_id, 'product_create', { title });
@@ -598,8 +499,6 @@ app.delete('/api/products/:id', verifyToken, async (req, res) => {
     }
 });
 
-<<<<<<< HEAD
-=======
 // Mark product as sold
 app.post('/api/products/:id/sold', verifyToken, async (req, res) => {
     try {
@@ -627,7 +526,6 @@ app.post('/api/products/:id/sold', verifyToken, async (req, res) => {
     }
 });
 
->>>>>>> teammate/main
 // Increment product views
 app.post('/api/products/:id/view', async (req, res) => {
     try {
@@ -659,23 +557,16 @@ app.get('/api/user/stats', verifyToken, async (req, res) => {
             WHERE reviewee_id = $1
         `, [userId]);
 
-<<<<<<< HEAD
-=======
         const salesRes = await db.query("SELECT COUNT(*) as count FROM products WHERE seller_id = $1 AND status = 'sold'", [userId]);
 
->>>>>>> teammate/main
         res.json({
             active_listings: parseInt(listingsRes.rows[0].count) || 0,
             total_views: parseInt(viewsRes.rows[0].count) || 0,
             saved_items: parseInt(wishlistRes.rows[0].count) || 0,
             total_messages: parseInt(messagesRes.rows[0].count) || 0,
             average_rating: parseFloat(ratingRes.rows[0].average_rating) || 0,
-<<<<<<< HEAD
-            review_count: parseInt(ratingRes.rows[0].review_count) || 0
-=======
             review_count: parseInt(ratingRes.rows[0].review_count) || 0,
             successful_sales: parseInt(salesRes.rows[0].count) || 0
->>>>>>> teammate/main
         });
     } catch (error) {
         console.error('Stats error:', error);
@@ -683,7 +574,7 @@ app.get('/api/user/stats', verifyToken, async (req, res) => {
     }
 });
 
-// ─── User Reviews Routes ──────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ User Reviews Routes ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 
 // Get user average rating and count
 app.get('/api/user/:userId/rating', async (req, res) => {
@@ -778,7 +669,7 @@ app.post('/api/reviews', verifyToken, async (req, res) => {
     }
 });
 
-// ─── Messages Routes ────────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Messages Routes ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 
 // Send a message
 app.post('/api/messages', verifyToken, async (req, res) => {
@@ -850,7 +741,7 @@ app.post('/api/user-feedback', verifyToken, async (req, res) => {
         const userName = user.rows[0]?.full_name || 'A user';
         const userEmail = user.rows[0]?.email || '';
 
-        const feedbackMessage = `📢 OFFICIAL FEEDBACK\n━━━━━━━━━━━━━━━\n👤 From: ${userName} (${userEmail})\n\n${content}\n\n━━━━━━━━━━━━━━━\nSent via Feedback Center`;
+        const feedbackMessage = `≡ƒôó OFFICIAL FEEDBACK\nΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöü\n≡ƒæñ From: ${userName} (${userEmail})\n\n${content}\n\nΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöü\nSent via Feedback Center`;
 
         // Send message to each admin
         const promises = admins.rows.map(admin => {
@@ -959,7 +850,7 @@ app.get('/api/messages/unread/count', verifyToken, async (req, res) => {
     }
 });
 
-// ─── Wishlist Routes ────────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Wishlist Routes ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 
 // Get user's wishlist
 app.get('/api/wishlist', verifyToken, async (req, res) => {
@@ -1004,21 +895,17 @@ app.post('/api/wishlist/:productId', verifyToken, async (req, res) => {
     }
 });
 
-// ─── Community Routes ────────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Community Routes ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 
 // Get all community posts
 app.get('/api/community/posts', async (req, res) => {
     try {
-<<<<<<< HEAD
-        const userId = req.headers['authorization'] ? jwt.decode(req.headers['authorization'].split(' ')[1])?.id : null;
-=======
         const authHeader = req.headers['authorization'];
         let userId = null;
         if (authHeader) {
             const decodedToken = jwt.decode(authHeader.split(' ')[1]);
             userId = decodedToken ? decodedToken.id : null;
         }
->>>>>>> teammate/main
 
         const result = await db.query(`
             SELECT cp.*, u.full_name as author_name, u.avatar_url as author_avatar, u.is_admin,
@@ -1050,14 +937,9 @@ app.post('/api/community/posts', verifyToken, async (req, res) => {
         const is_admin = req.user.is_admin;
 
         // Fetch current user status from DB to ensure verification hasn't expired
-<<<<<<< HEAD
-        const userStatus = await db.query('SELECT is_verified, verified_until FROM users WHERE id = $1', [author_id]);
-        const is_verified = userStatus.rows[0]?.is_verified && (userStatus.rows[0]?.verified_until === null || new Date(userStatus.rows[0]?.verified_until) >= new Date());
-=======
         const userStatusResult = await db.query('SELECT is_verified, verified_until FROM users WHERE id = $1', [author_id]);
         const userStatus = userStatusResult.rows[0];
         const is_verified = userStatus && userStatus.is_verified && (userStatus.verified_until === null || new Date(userStatus.verified_until) >= new Date());
->>>>>>> teammate/main
 
         // Restriction: Only admins and verified users can post events and announcements
         if ((type === 'announcement' || type === 'events') && !is_admin && !is_verified) {
@@ -1130,19 +1012,14 @@ app.post('/api/community/posts/:id/comments', verifyToken, async (req, res) => {
         if (postAuthor.rows.length > 0 && postAuthor.rows[0].author_id !== userId) {
             const authorId = postAuthor.rows[0].author_id;
             const postPreview = postAuthor.rows[0].post_content.substring(0, 40);
-<<<<<<< HEAD
-            const commenterName = await db.query('SELECT full_name FROM users WHERE id = $1', [userId]);
-            const name = commenterName.rows[0]?.full_name || 'Someone';
-=======
             const commenterResult = await db.query('SELECT full_name FROM users WHERE id = $1', [userId]);
             const name = (commenterResult.rows[0] && commenterResult.rows[0].full_name) || 'Someone';
->>>>>>> teammate/main
 
             // Insert a message into the messages table
             await db.query(
                 `INSERT INTO messages (sender_id, receiver_id, content, is_read, is_delivered)
                  VALUES ($1, $2, $3, false, false)`,
-                [userId, authorId, `💬 Commented on your post "${postPreview}...":\n\n"${content}"`]
+                [userId, authorId, `≡ƒÆ¼ Commented on your post "${postPreview}...":\n\n"${content}"`]
             );
 
             logActivity(authorId, 'new_comment_on_post', {
@@ -1234,7 +1111,7 @@ app.post('/api/user/verify', verifyToken, async (req, res) => {
 
 
 
-// ─── M-Pesa Logic ─────────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ M-Pesa Logic ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 const getTimestamp = () => {
     const date = new Date();
     const YYYY = date.getFullYear();
@@ -1313,13 +1190,13 @@ const mpesaController = {
     }
 };
 
-// ─── M-Pesa Routes ────────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ M-Pesa Routes ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 
 // Route: POST /api/mpesa/stkpush
-// Flow: verifyToken → getAccessToken (fetches Safaricom token) → stkPush
+// Flow: verifyToken ΓåÆ getAccessToken (fetches Safaricom token) ΓåÆ stkPush
 app.post('/api/mpesa/stkpush', verifyToken, mpesaController.getAccessToken, mpesaController.stkPush);
 
-// Route: GET /api/mpesa/status — Check if M-Pesa credentials are valid (no auth needed)
+// Route: GET /api/mpesa/status ΓÇö Check if M-Pesa credentials are valid (no auth needed)
 app.get('/api/mpesa/status', async (req, res) => {
     const consumer_key = process.env.MPESA_CONSUMER_KEY;
     const consumer_secret = process.env.MPESA_CONSUMER_SECRET;
@@ -1333,20 +1210,16 @@ app.get('/api/mpesa/status', async (req, res) => {
             headers: { 'Authorization': `Basic ${creds}` }, timeout: 10000
         });
         if (r.data && r.data.access_token) {
-            return res.json({ status: 'ok', message: 'M-Pesa credentials are valid ✅' });
+            return res.json({ status: 'ok', message: 'M-Pesa credentials are valid Γ£à' });
         }
         return res.json({ status: 'unknown', message: 'Unexpected response from Safaricom', data: r.data });
     } catch (e) {
-<<<<<<< HEAD
-        const httpStatus = e.response?.status;
-=======
         const httpStatus = e.response ? e.response.status : undefined;
->>>>>>> teammate/main
         if (httpStatus === 400 || httpStatus === 401) {
             return res.json({
                 status: 'invalid',
                 message: `Credentials rejected by Safaricom (HTTP ${httpStatus}). They may have expired.`,
-                hint: 'Go to https://developer.safaricom.co.ke → My Apps → regenerate credentials and update server/.env'
+                hint: 'Go to https://developer.safaricom.co.ke ΓåÆ My Apps ΓåÆ regenerate credentials and update server/.env'
             });
         }
         return res.json({ status: 'error', message: e.message, code: e.code });
@@ -1390,12 +1263,12 @@ app.post('/api/mpesa/callback', async (req, res) => {
                 `, [boostType, boostUntil, user_id]);
 
                 logActivity(user_id, 'boost_purchase_auto', { plan, checkoutRequestID });
-                console.log(`✅ Boost ${plan} auto-activated for user ${user_id}`);
+                console.log(`Γ£à Boost ${plan} auto-activated for user ${user_id}`);
             }
         } else {
             // Payment FAILED
             await db.query('UPDATE transactions SET status = $1 WHERE checkout_request_id = $2', ['failed', checkoutRequestID]);
-            console.log(`❌ Payment failed for ID: ${checkoutRequestID}`);
+            console.log(`Γ¥î Payment failed for ID: ${checkoutRequestID}`);
         }
 
         res.json({ result: "success" });
@@ -1433,7 +1306,7 @@ app.post('/api/mpesa/simulate-success', async (req, res) => {
     }
 });
 
-// ─── Admin Dashboard Routes ───────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Admin Dashboard Routes ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 
 app.get('/api/admin/stats', verifyAdminToken, async (req, res) => {
     try {
@@ -1445,18 +1318,12 @@ app.get('/api/admin/stats', verifyAdminToken, async (req, res) => {
             WHERE t.status = $1
         `, ['completed']);
         const pendingApprovals = await db.query('SELECT COUNT(*) FROM products WHERE is_approved = FALSE');
-<<<<<<< HEAD
-=======
         const successfulSalesCount = await db.query("SELECT COUNT(*) FROM products WHERE status = 'sold'");
->>>>>>> teammate/main
 
         // New active stats
         const usersToday = await db.query('SELECT COUNT(*) FROM users WHERE created_at >= CURRENT_DATE');
         const productsToday = await db.query('SELECT COUNT(*) FROM products WHERE created_at >= CURRENT_DATE');
-<<<<<<< HEAD
-=======
         const salesToday = await db.query("SELECT COUNT(*) FROM products WHERE status = 'sold' AND created_at >= CURRENT_DATE");
->>>>>>> teammate/main
 
         const recentUsers = await db.query('SELECT full_name, email, created_at FROM users ORDER BY created_at DESC LIMIT 5');
         const recentTransactions = await db.query(`
@@ -1473,15 +1340,10 @@ app.get('/api/admin/stats', verifyAdminToken, async (req, res) => {
                 total_products: parseInt(productsCount.rows[0].count),
                 total_revenue: parseFloat(revenueTotal.rows[0].sum || 0),
                 pending_approvals: parseInt(pendingApprovals.rows[0].count),
-<<<<<<< HEAD
-                users_today: parseInt(usersToday.rows[0].count),
-                products_today: parseInt(productsToday.rows[0].count)
-=======
                 successful_sales: parseInt(successfulSalesCount.rows[0].count),
                 users_today: parseInt(usersToday.rows[0].count),
                 products_today: parseInt(productsToday.rows[0].count),
                 sales_today: parseInt(salesToday.rows[0].count)
->>>>>>> teammate/main
             },
             recent_users: recentUsers.rows,
             recent_transactions: recentTransactions.rows
@@ -1555,8 +1417,6 @@ app.post('/api/admin/products/:id/toggle-approval', verifyAdminToken, async (req
     }
 });
 
-<<<<<<< HEAD
-=======
 app.delete('/api/admin/products/:id', verifyAdminToken, async (req, res) => {
     try {
         const { id } = req.params;
@@ -1570,7 +1430,6 @@ app.delete('/api/admin/products/:id', verifyAdminToken, async (req, res) => {
     }
 });
 
->>>>>>> teammate/main
 app.get('/api/admin/logs', verifyAdminToken, async (req, res) => {
     try {
         const result = await db.query(`
@@ -1593,10 +1452,7 @@ app.get('/api/settings', async (req, res) => {
         result.rows.forEach(row => settings[row.key] = row.value);
         res.json(settings);
     } catch (error) {
-<<<<<<< HEAD
-=======
         console.error('Settings fetch error:', error);
->>>>>>> teammate/main
         res.status(500).json({ message: 'Error fetching settings' });
     }
 });
@@ -1659,8 +1515,6 @@ app.post('/api/admin/users/:id/update-role', verifyAdminToken, async (req, res) 
     }
 });
 
-<<<<<<< HEAD
-=======
 app.delete('/api/admin/users/:id', verifyAdminToken, async (req, res) => {
     try {
         const { id } = req.params;
@@ -1693,7 +1547,6 @@ app.delete('/api/admin/users/:id', verifyAdminToken, async (req, res) => {
     }
 });
 
->>>>>>> teammate/main
 app.post('/api/admin/users/:id/verify', verifyAdminToken, async (req, res) => {
     try {
         const { id } = req.params;
@@ -1731,12 +1584,7 @@ app.get('/api/admin/community/posts', verifyAdminToken, async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: 'Error fetching community posts' });
     }
-<<<<<<< HEAD
-});
-
-=======
 })
->>>>>>> teammate/main
 app.post('/api/admin/community/posts/:id/delete', verifyAdminToken, async (req, res) => {
     try {
         const { id } = req.params;
@@ -1748,14 +1596,7 @@ app.post('/api/admin/community/posts/:id/delete', verifyAdminToken, async (req, 
     }
 });
 
-<<<<<<< HEAD
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-    // Test M-Pesa credentials on startup so you know immediately if they're expired
-    // mpesaController.testCredentials();
-});
-=======
-// ─── Admin: Post Announcement ─────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Admin: Post Announcement ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 // Uses verifyAdminToken (checks DB, not just JWT) so it always works for current admins.
 app.post('/api/admin/announcements', verifyAdminToken, async (req, res) => {
     try {
@@ -1789,7 +1630,7 @@ app.post('/api/admin/announcements', verifyAdminToken, async (req, res) => {
     }
 });
 
-// ─── Crawler & SEO Routes ───────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Crawler & SEO Routes ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 
 // Robots.txt
 app.get('/robots.txt', (req, res) => {
@@ -1828,14 +1669,13 @@ const startServer = async () => {
     const listenTarget = process.env.PORT || 5000;
 
     app.listen(listenTarget, () => {
-        console.log(`✅ CampusMart Server Live on ${listenTarget}`);
+        console.log(`Γ£à CampusMart Server Live on ${listenTarget}`);
 
         // Run database init in background so it doesn't block the site from opening
         initSchema().catch(err => {
-            console.error('❌ Background Schema Init Error:', err);
+            console.error('Γ¥î Background Schema Init Error:', err);
         });
     });
 };
 
 startServer();
->>>>>>> teammate/main
