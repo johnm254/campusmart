@@ -1,0 +1,13 @@
+/* TEAM */
+Developer: CampusMart Team
+Site: https://campusmart.co.ke
+Location: Nairobi, Kenya
+
+/* SITE */
+Last update: 2026/03/03
+Standards: HTML5, CSS3, JavaScript ES6+
+Components: React, Vite
+Software: VS Code, Git
+
+/* THANKS */
+To all Kenyan students making campus life better!
