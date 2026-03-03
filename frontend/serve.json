@@ -1,37 +1,5 @@
 {
   "public": "dist",
-  "rewrites": [
-    {
-      "source": "/sitemap.xml",
-      "destination": "/sitemap.xml"
-    },
-    {
-      "source": "/robots.txt",
-      "destination": "/robots.txt"
-    },
-    {
-      "source": "**",
-      "destination": "/index.html"
-    }
-  ],
-  "headers": [
-    {
-      "source": "**/*.xml",
-      "headers": [
-        {
-          "key": "Content-Type",
-          "value": "application/xml"
-        }
-      ]
-    },
-    {
-      "source": "**/*.txt",
-      "headers": [
-        {
-          "key": "Content-Type",
-          "value": "text/plain"
-        }
-      ]
-    }
-  ]
+  "cleanUrls": false,
+  "trailingSlash": false
 }
