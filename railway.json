@@ -5,7 +5,7 @@
     "buildCommand": "cd frontend && npm install && npm run build"
   },
   "deploy": {
-    "startCommand": "cd frontend && npx serve -s dist -l 3000",
+    "startCommand": "cd frontend && npm start",
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 10
   }
