@@ -5,7 +5,7 @@ import {
     Users, ShoppingBag, Settings, ShieldAlert, MessageSquare,
     Search, CheckCircle, AlertTriangle, Activity,
     LayoutDashboard, Megaphone, Trash2, RefreshCw, LogOut,
-    TrendingUp, Package, X, EyeOff, Zap
+    TrendingUp, Package, X, EyeOff, Zap, Moon, Sun
 } from 'lucide-react';
 
 // ΓöÇΓöÇΓöÇ Sidebar Nav ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
@@ -20,28 +20,30 @@ const NAV_ITEMS = [
 ];
 
 // ΓöÇΓöÇΓöÇ Shared SearchBar with Toggle UI ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
-const AdminHeader = ({ activeTab, search, setSearch, onLogout, onRefresh, isLoading, isMobile, toggleMobileMenu }) => {
+const AdminHeader = ({ activeTab, search, setSearch, onLogout, onRefresh, isLoading, isMobile, toggleMobileMenu, isDarkMode, toggleTheme }) => {
     const activeItem = NAV_ITEMS.find(n => n.id === activeTab) || NAV_ITEMS[0];
     const HeaderIcon = activeItem.icon;
 
     return (
         <div style={{
             display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-            marginBottom: isMobile ? '1rem' : '2.5rem', background: 'white',
-            padding: isMobile ? '1rem' : '1.25rem 2rem', borderBottom: '1px solid #e2e8f0',
-            boxShadow: '0 4px 15px rgba(0,0,0,0.02)', position: 'sticky', top: 0, zIndex: 100,
-            flexWrap: 'wrap', gap: '1rem'
+            marginBottom: isMobile ? '1rem' : '2.5rem', background: isDarkMode ? '#1e293b' : 'white',
+            padding: isMobile ? '1rem' : '1.25rem 2rem', borderBottom: `1px solid ${isDarkMode ? '#334155' : '#e2e8f0'}`,
+            boxShadow: isDarkMode ? '0 4px 15px rgba(0,0,0,0.3)' : '0 4px 15px rgba(0,0,0,0.02)', 
+            position: 'sticky', top: 0, zIndex: 100,
+            flexWrap: 'wrap', gap: '1rem',
+            transition: 'all 0.3s ease'
         }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                {isMobile && <button onClick={toggleMobileMenu} style={{ background: 'transparent', border: 'none', color: '#1d3d6e', display: 'flex', alignItems: 'center' }}><Zap size={24} /></button>}
+                {isMobile && <button onClick={toggleMobileMenu} style={{ background: 'transparent', border: 'none', color: isDarkMode ? '#60a5fa' : '#1d3d6e', display: 'flex', alignItems: 'center' }}><Zap size={24} /></button>}
                 {!isMobile && (
-                    <div style={{ width: 45, height: 45, borderRadius: 12, background: 'linear-gradient(135deg, #1d3d6e, #2d5fa0)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
+                    <div style={{ width: 45, height: 45, borderRadius: 12, background: isDarkMode ? 'linear-gradient(135deg, #3b82f6, #60a5fa)' : 'linear-gradient(135deg, #1d3d6e, #2d5fa0)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
                         {HeaderIcon && <HeaderIcon size={24} />}
                     </div>
                 )}
                 <div>
-                    <h1 style={{ fontSize: isMobile ? '1.1rem' : '1.25rem', fontWeight: 900, color: '#111827', margin: 0 }}>{activeItem.label}</h1>
-                    {!isMobile && <div style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.5 }}>System Administration Console</div>}
+                    <h1 style={{ fontSize: isMobile ? '1.1rem' : '1.25rem', fontWeight: 900, color: isDarkMode ? '#f1f5f9' : '#111827', margin: 0 }}>{activeItem.label}</h1>
+                    {!isMobile && <div style={{ fontSize: '0.75rem', color: isDarkMode ? '#94a3b8' : '#64748b', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.5 }}>System Administration Console</div>}
                 </div>
             </div>
 
@@ -52,20 +54,52 @@ const AdminHeader = ({ activeTab, search, setSearch, onLogout, onRefresh, isLoad
                     value={search}
                     onChange={e => setSearch(e.target.value)}
                     placeholder={`Search in ${activeItem.label}...`}
-                    style={{ width: '100%', padding: '0.85rem 1rem 0.85rem 3.5rem', borderRadius: 16, border: '1.5px solid #e2e8f0', background: '#fcfdfe', outline: 'none', fontSize: '0.95rem', fontWeight: 600, transition: '0.2s', boxSizing: 'border-box' }}
+                    style={{ 
+                        width: '100%', 
+                        padding: '0.85rem 1rem 0.85rem 3.5rem', 
+                        borderRadius: 16, 
+                        border: `1.5px solid ${isDarkMode ? '#334155' : '#e2e8f0'}`, 
+                        background: isDarkMode ? '#0f172a' : '#fcfdfe', 
+                        color: isDarkMode ? '#f1f5f9' : '#111827',
+                        outline: 'none', 
+                        fontSize: '0.95rem', 
+                        fontWeight: 600, 
+                        transition: '0.2s', 
+                        boxSizing: 'border-box' 
+                    }}
                 />
                 {search && (
-                    <button onClick={() => setSearch('')} style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: '#f1f5f9', border: 'none', borderRadius: '50%', width: 24, height: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#64748b' }}>
+                    <button onClick={() => setSearch('')} style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: isDarkMode ? '#334155' : '#f1f5f9', border: 'none', borderRadius: '50%', width: 24, height: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#64748b' }}>
                         <X size={14} />
                     </button>
                 )}
             </div>
 
             <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-                <button onClick={onRefresh} disabled={isLoading} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem', borderRadius: 12, border: '1.5px solid #e2e8f0', background: 'white', color: '#1d3d6e', fontWeight: 800, fontSize: '0.85rem', cursor: 'pointer' }}>
+                <button 
+                    onClick={toggleTheme} 
+                    style={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        gap: '0.5rem', 
+                        padding: '0.75rem', 
+                        borderRadius: 12, 
+                        border: `1.5px solid ${isDarkMode ? '#334155' : '#e2e8f0'}`, 
+                        background: isDarkMode ? '#0f172a' : 'white', 
+                        color: isDarkMode ? '#fbbf24' : '#1d3d6e', 
+                        fontWeight: 800, 
+                        fontSize: '0.85rem', 
+                        cursor: 'pointer',
+                        transition: 'all 0.3s ease'
+                    }}
+                    title={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+                >
+                    {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
+                </button>
+                <button onClick={onRefresh} disabled={isLoading} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem', borderRadius: 12, border: `1.5px solid ${isDarkMode ? '#334155' : '#e2e8f0'}`, background: isDarkMode ? '#0f172a' : 'white', color: isDarkMode ? '#60a5fa' : '#1d3d6e', fontWeight: 800, fontSize: '0.85rem', cursor: 'pointer' }}>
                     <RefreshCw size={18} className={isLoading ? 'spin' : ''} />
                 </button>
-                <button onClick={onLogout} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem', borderRadius: 12, border: '1.5px solid #fee2e2', background: '#fff1f2', color: '#dc2626', fontWeight: 800, fontSize: '0.85rem', cursor: 'pointer', transition: '0.2s' }}>
+                <button onClick={onLogout} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem', borderRadius: 12, border: `1.5px solid ${isDarkMode ? '#7f1d1d' : '#fee2e2'}`, background: isDarkMode ? '#450a0a' : '#fff1f2', color: '#dc2626', fontWeight: 800, fontSize: '0.85rem', cursor: 'pointer', transition: '0.2s' }}>
                     <LogOut size={18} />
                 </button>
             </div>
@@ -91,8 +125,21 @@ const AdminDashboard = () => {
     const [isAccessDenied, setIsAccessDenied] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
+    const [isDarkMode, setIsDarkMode] = useState(() => {
+        const saved = localStorage.getItem('admin_theme');
+        return saved === 'dark';
+    });
 
     const hasSecretAccess = sessionStorage.getItem('admin_access_unlocked') === 'true';
+
+    // Toggle theme
+    const toggleTheme = () => {
+        setIsDarkMode(prev => {
+            const newMode = !prev;
+            localStorage.setItem('admin_theme', newMode ? 'dark' : 'light');
+            return newMode;
+        });
+    };
 
     // ΓöÇΓöÇ Load data per tab ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
     const loadData = useCallback(async () => {
@@ -366,10 +413,18 @@ const AdminDashboard = () => {
                     isLoading={isLoading}
                     isMobile={isMobile}
                     toggleMobileMenu={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                    isDarkMode={isDarkMode}
+                    toggleTheme={toggleTheme}
                 />
 
                 {/* Content Area */}
-                <div style={{ flex: 1, overflowY: 'auto', padding: '2rem 2.5rem' }}>
+                <div style={{ 
+                    flex: 1, 
+                    overflowY: 'auto', 
+                    padding: '2rem 2.5rem',
+                    background: isDarkMode ? '#0f172a' : '#f8fafc',
+                    transition: 'background 0.3s ease'
+                }}>
                     {isLoading ? (
                         <div style={{ textAlign: 'center', padding: '8rem 0' }}>
                             <div className="spinner" style={{ margin: '0 auto 2rem' }} />
