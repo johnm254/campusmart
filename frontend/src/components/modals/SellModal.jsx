@@ -378,7 +378,7 @@ const SellModal = ({ isOpen, onClose }) => {
 
                             <div style={{ background: '#f0fdf4', padding: '0.75rem 1rem', borderRadius: '10px', border: '1px solid #bbf7d0', marginTop: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                 <Shield size={16} color="#059669" />
-                                <p style={{ fontSize: '0.75rem', color: '#059669', fontWeight: 700, margin: 0 }}>Up to 5 photos ΓÇö completely free for everyone</p>
+                                <p style={{ fontSize: '0.75rem', color: '#059669', fontWeight: 700, margin: 0 }}>Up to 5 photos — completely free for everyone</p>
                             </div>
                         </div>
 
@@ -463,7 +463,7 @@ const SellModal = ({ isOpen, onClose }) => {
                             <div className="form-group">
                                 <label style={{ fontSize: '0.9rem', fontWeight: 700, color: '#334155', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                     {formData.category === 'housing' ? (
-                                        <><Building2 size={16} color="var(--campus-blue)" /> Select House Type<span style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 500 }}>ΓÇö auto-fills details</span></>
+                                        <><Building2 size={16} color="var(--campus-blue)" /> Select House Type<span style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 500 }}> — auto-fills details</span></>
                                     ) : 'Condition'}
                                 </label>
 

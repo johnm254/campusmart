@@ -73,7 +73,7 @@ const Footer = () => {
                                     <li><strong>Meet in Public:</strong> Use the Juja Stage, Posta, or inside the school gates.</li>
                                     <li><strong>Verify the Item:</strong> Test electronics and check clothes for tears before paying.</li>
                                     <li><strong>Trust your Gut:</strong> If a deal looks too good to be true, it probably is a scam.</li>
-                                    <li><strong>Never Go Alone:</strong> Use the "Comrade Power" ruleΓÇöbring a friend!</li>
+                                    <li><strong>Never Go Alone:</strong> Use the "Comrade Power" rule — bring a friend!</li>
                                 </ul>
                             </div>
                         ))}>Safety Tips</span></li>

@@ -1,12 +1,16 @@
-﻿import React, { useState, useEffect, useCallback } from 'react';
+﻿import React, { useState, useEffect, useCallback, memo } from 'react';
 import { useApp } from '../AppContext';
 import { api } from '../lib/api';
 import {
-    Users, ShoppingBag, Settings, ShieldAlert, MessageSquare,
-    Search, CheckCircle, AlertTriangle, Activity,
-    LayoutDashboard, Megaphone, Trash2, RefreshCw, LogOut,
-    TrendingUp, Package, X, EyeOff, Zap, Moon, Sun
+    Users, ShoppingBag, Settings, MessageSquare,
+    Search, Activity, LayoutDashboard, Megaphone, 
+    Trash2, RefreshCw, LogOut, X, Moon, Sun
 } from 'lucide-react';
+
+// Memoized Icon Wrapper to prevent unnecessary re-renders
+const IconWrapper = memo(({ Icon, size = 20, color, ...props }) => (
+    <Icon size={size} color={color} {...props} />
+));
 
 // Sidebar Nav
 const NAV_ITEMS = [
@@ -35,10 +39,10 @@ const AdminHeader = ({ activeTab, search, setSearch, onLogout, onRefresh, isLoad
             transition: 'all 0.3s ease'
         }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                {isMobile && <button onClick={toggleMobileMenu} style={{ background: 'transparent', border: 'none', color: isDarkMode ? '#60a5fa' : '#1d3d6e', display: 'flex', alignItems: 'center' }}><Zap size={24} /></button>}
+                {isMobile && <button onClick={toggleMobileMenu} style={{ background: 'transparent', border: 'none', color: isDarkMode ? '#60a5fa' : '#1d3d6e', display: 'flex', alignItems: 'center' }}><LayoutDashboard size={24} /></button>}
                 {!isMobile && (
                     <div style={{ width: 45, height: 45, borderRadius: 12, background: isDarkMode ? 'linear-gradient(135deg, #3b82f6, #60a5fa)' : 'linear-gradient(135deg, #1d3d6e, #2d5fa0)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
-                        {HeaderIcon && <HeaderIcon size={24} />}
+                        {HeaderIcon && <IconWrapper Icon={HeaderIcon} size={24} />}
                     </div>
                 )}
                 <div>
@@ -447,54 +451,135 @@ const AdminDashboard = () => {
     );
 };
 
-// ΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉ
-//  OVERVIEW (Enhanced for Seamless Management)
-// ΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉ
+// Overview (Optimized for Performance - Reduced Icon Count)
 const Overview = ({ stats, setActiveTab }) => {
     if (!stats) return <EmptyState text="No stats available." />;
 
+    // Use CSS-based indicators instead of icons where possible
+    const StatCard = memo(({ label, value, color, bg, note, showIcon = false, IconComponent }) => (
+        <div 
+            style={{ 
+                background: 'white', 
+                borderRadius: 18, 
+                padding: '1.5rem', 
+                border: '1px solid #e2e8f0', 
+                transition: '0.2s', 
+                cursor: 'default' 
+            }} 
+            onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-4px)'} 
+            onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
+        >
+            {showIcon && IconComponent ? (
+                <div style={{ width: 40, height: 40, borderRadius: 12, background: bg, display: 'flex', alignItems: 'center', justifyContent: 'center', color, marginBottom: '1rem' }}>
+                    <IconWrapper Icon={IconComponent} size={20} />
+                </div>
+            ) : (
+                <div style={{ width: 40, height: 40, borderRadius: 12, background: bg, marginBottom: '1rem' }} />
+            )}
+            <div style={{ fontSize: '0.8rem', fontWeight: 800, color: '#64748b', textTransform: 'uppercase', letterSpacing: 0.5 }}>{label}</div>
+            <div style={{ fontSize: '1.75rem', fontWeight: 900, color: '#111827', margin: '0.25rem 0' }}>{value.toLocaleString()}</div>
+            <div style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 600 }}>{note}</div>
+        </div>
+    ));
+
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-            {/* Top Row: Metric Cards */}
+            {/* Top Row: Metric Cards - Only show icons for first 3 cards */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.25rem' }}>
-                {[
-                    { label: 'Platform Users', value: stats.overview?.total_users ?? 0, icon: Users, color: '#4f46e5', bg: '#eef2ff', note: 'Registered members' },
-                    { label: 'Market Inventory', value: stats.overview?.total_products ?? 0, icon: ShoppingBag, color: '#059669', bg: '#ecfdf5', note: 'Active listings' },
-                    { label: 'Trade Success', value: stats.overview?.successful_sales ?? 0, icon: CheckCircle, color: '#16a34a', bg: '#dcfce7', note: 'Completed deals' },
-                    { label: 'Pending Safety', value: stats.overview?.pending_approvals ?? 0, icon: EyeOff, color: '#d97706', bg: '#fffbeb', note: 'Requires attention' },
-                    { label: 'Recent Velocity', value: (stats.overview?.users_today ?? 0) + (stats.overview?.products_today ?? 0), icon: TrendingUp, color: '#0ea5e9', bg: '#f0f9ff', note: 'New items today' },
-                ].map((c, i) => (
-                    <div key={i} style={{ background: 'white', borderRadius: 18, padding: '1.5rem', border: '1px solid #e2e8f0', transition: '0.2s', cursor: 'default' }} onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-4px)'} onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}>
-                        <div style={{ width: 40, height: 40, borderRadius: 12, background: c.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', color: c.color, marginBottom: '1rem' }}>
-                            <c.icon size={20} />
-                        </div>
-                        <div style={{ fontSize: '0.8rem', fontWeight: 800, color: '#64748b', textTransform: 'uppercase', letterSpacing: 0.5 }}>{c.label}</div>
-                        <div style={{ fontSize: '1.75rem', fontWeight: 900, color: '#111827', margin: '0.25rem 0' }}>{c.value.toLocaleString()}</div>
-                        <div style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 600 }}>{c.note}</div>
-                    </div>
-                ))}
+                <StatCard 
+                    label="Platform Users" 
+                    value={stats.overview?.total_users ?? 0} 
+                    color="#4f46e5" 
+                    bg="#eef2ff" 
+                    note="Registered members"
+                    showIcon={true}
+                    IconComponent={Users}
+                />
+                <StatCard 
+                    label="Market Inventory" 
+                    value={stats.overview?.total_products ?? 0} 
+                    color="#059669" 
+                    bg="#ecfdf5" 
+                    note="Active listings"
+                    showIcon={true}
+                    IconComponent={ShoppingBag}
+                />
+                <StatCard 
+                    label="Trade Success" 
+                    value={stats.overview?.successful_sales ?? 0} 
+                    color="#16a34a" 
+                    bg="#dcfce7" 
+                    note="Completed deals"
+                    showIcon={true}
+                    IconComponent={Activity}
+                />
+                <StatCard 
+                    label="Pending Safety" 
+                    value={stats.overview?.pending_approvals ?? 0} 
+                    color="#d97706" 
+                    bg="#fffbeb" 
+                    note="Requires attention"
+                    showIcon={false}
+                />
+                <StatCard 
+                    label="Recent Velocity" 
+                    value={(stats.overview?.users_today ?? 0) + (stats.overview?.products_today ?? 0)} 
+                    color="#0ea5e9" 
+                    bg="#f0f9ff" 
+                    note="New items today"
+                    showIcon={false}
+                />
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
                 {/* Left Column */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                    {/* Console Actions */}
+                    {/* Console Actions - Simplified without icons */}
                     <div style={{ background: 'white', borderRadius: 24, padding: '1.75rem', border: '1px solid #e2e8f0' }}>
-                        <h3 style={{ fontWeight: 800, fontSize: '1.1rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                            <Zap size={20} color="#1d3d6e" /> Quick Actions
+                        <h3 style={{ fontWeight: 800, fontSize: '1.1rem', marginBottom: '1.5rem', color: '#1d3d6e' }}>
+                            Quick Actions
                         </h3>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                            {[
-                                { label: 'Broadcast', icon: Megaphone, color: '#4f46e5', tab: 'announcements' },
-                                { label: 'Security', icon: Activity, color: '#0ea5e9', tab: 'logs' },
-                            ].map((btn, idx) => (
-                                <button key={idx} onClick={() => setActiveTab(btn.tab)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem', padding: '1.25rem', borderRadius: 18, border: '1px solid #f1f5f9', background: '#fcfdfe', cursor: 'pointer', transition: '0.2s' }}>
-                                    <div style={{ width: 44, height: 44, borderRadius: 14, background: `${btn.color}12`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: btn.color }}>
-                                        <btn.icon size={22} />
-                                    </div>
-                                    <span style={{ fontSize: '0.85rem', fontWeight: 800, color: '#374151' }}>{btn.label}</span>
-                                </button>
-                            ))}
+                            <button 
+                                onClick={() => setActiveTab('announcements')} 
+                                style={{ 
+                                    display: 'flex', 
+                                    flexDirection: 'column', 
+                                    alignItems: 'center', 
+                                    gap: '0.75rem', 
+                                    padding: '1.25rem', 
+                                    borderRadius: 18, 
+                                    border: '1px solid #f1f5f9', 
+                                    background: '#fcfdfe', 
+                                    cursor: 'pointer', 
+                                    transition: '0.2s' 
+                                }}
+                            >
+                                <div style={{ width: 44, height: 44, borderRadius: 14, background: '#4f46e512', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <IconWrapper Icon={Megaphone} size={22} color="#4f46e5" />
+                                </div>
+                                <span style={{ fontSize: '0.85rem', fontWeight: 800, color: '#374151' }}>Broadcast</span>
+                            </button>
+                            <button 
+                                onClick={() => setActiveTab('logs')} 
+                                style={{ 
+                                    display: 'flex', 
+                                    flexDirection: 'column', 
+                                    alignItems: 'center', 
+                                    gap: '0.75rem', 
+                                    padding: '1.25rem', 
+                                    borderRadius: 18, 
+                                    border: '1px solid #f1f5f9', 
+                                    background: '#fcfdfe', 
+                                    cursor: 'pointer', 
+                                    transition: '0.2s' 
+                                }}
+                            >
+                                <div style={{ width: 44, height: 44, borderRadius: 14, background: '#0ea5e912', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <IconWrapper Icon={Activity} size={22} color="#0ea5e9" />
+                                </div>
+                                <span style={{ fontSize: '0.85rem', fontWeight: 800, color: '#374151' }}>Security</span>
+                            </button>
                         </div>
                     </div>
 
@@ -504,7 +589,7 @@ const Overview = ({ stats, setActiveTab }) => {
                     </div>
                 </div>
 
-                {/* Right Column */}
+                {/* Right Column - Simplified data display without icons */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                     <div style={{
                         background: 'linear-gradient(135deg, #1d3d6e 0%, #2d5fa0 100%)',
@@ -512,21 +597,20 @@ const Overview = ({ stats, setActiveTab }) => {
                         position: 'relative', overflow: 'hidden',
                         boxShadow: '0 10px 25px rgba(29,61,110,0.15)'
                     }}>
-                        <Activity size={120} style={{ position: 'absolute', right: '-20px', bottom: '-20px', opacity: 0.1, color: 'white' }} />
-                        <h3 style={{ fontWeight: 800, fontSize: '1.1rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                            <Activity size={20} /> Data Overview
+                        <h3 style={{ fontWeight: 800, fontSize: '1.1rem', marginBottom: '1.5rem' }}>
+                            Data Overview
                         </h3>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', position: 'relative', zIndex: 1 }}>
                             {[
-                                { label: 'Active Members', value: stats.overview?.total_users ?? 0, icon: Users, color: '#fcd34d' },
-                                { label: 'Daily Signups', value: stats.overview?.users_today ?? 0, icon: Users, color: '#93c5fd' },
-                                { label: 'Trade Success', value: stats.overview?.successful_sales ?? 0, icon: CheckCircle, color: '#4ade80' },
-                                { label: 'New Listings', value: stats.overview?.products_today ?? 0, icon: Package, color: '#93c5fd' },
-                                { label: 'Flagged Items', value: stats.overview?.pending_approvals ?? 0, icon: EyeOff, color: '#f87171' },
+                                { label: 'Active Members', value: stats.overview?.total_users ?? 0, color: '#fcd34d' },
+                                { label: 'Daily Signups', value: stats.overview?.users_today ?? 0, color: '#93c5fd' },
+                                { label: 'Trade Success', value: stats.overview?.successful_sales ?? 0, color: '#4ade80' },
+                                { label: 'New Listings', value: stats.overview?.products_today ?? 0, color: '#93c5fd' },
+                                { label: 'Flagged Items', value: stats.overview?.pending_approvals ?? 0, color: '#f87171' },
                             ].map((row, i) => (
                                 <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.75rem', borderRadius: '12px', background: 'rgba(255,255,255,0.05)' }}>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                                        <row.icon size={14} style={{ opacity: 0.7, color: row.color }} />
+                                        <div style={{ width: 8, height: 8, borderRadius: '50%', background: row.color }} />
                                         <span style={{ opacity: 0.9, fontSize: '0.8rem', fontWeight: 600 }}>{row.label}</span>
                                     </div>
                                     <span style={{ fontWeight: 900, fontSize: '1.1rem' }}>{row.value}</span>
