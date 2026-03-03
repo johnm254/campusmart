@@ -193,7 +193,7 @@ const AuthModal = ({ isOpen, onClose }) => {
                                         id="password"
                                         name="password"
                                         autoComplete={isLogin ? "current-password" : "new-password"}
-                                        placeholder="ΓÇóΓÇóΓÇóΓÇóΓÇóΓÇóΓÇóΓÇó"
+                                        placeholder="••••••••"
                                         value={password}
                                         onChange={e => setPassword(e.target.value)}
                                         required
@@ -218,7 +218,7 @@ const AuthModal = ({ isOpen, onClose }) => {
                                             id="confirmPassword"
                                             name="confirmPassword"
                                             autoComplete="new-password"
-                                            placeholder="ΓÇóΓÇóΓÇóΓÇóΓÇóΓÇóΓÇóΓÇó"
+                                            placeholder="••••••••"
                                             value={confirmPassword}
                                             onChange={e => setConfirmPassword(e.target.value)}
                                             required
