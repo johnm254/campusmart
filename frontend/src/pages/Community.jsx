@@ -255,7 +255,7 @@ const Community = () => {
                                                         <span style={{ fontWeight: 800, color: '#b8860b' }}>{(Number(post.author_rating) || 0).toFixed(1)}</span>
                                                     </>
                                                 )}
-                                                {formatTime(post.created_at)} ΓÇó {getTypeLabel(post.type)}
+                                                {formatTime(post.created_at)} • {getTypeLabel(post.type)}
                                             </span>
                                             <span style={{ fontSize: '0.7rem', padding: '0.1rem 0.5rem', background: '#f0f0f0', color: '#666', borderRadius: '4px', fontWeight: 600 }}>
                                                 {post.is_admin ? 'Admin' : 'Member'}
@@ -469,7 +469,7 @@ const Community = () => {
                                     >
                                         <ImagePlus size={36} color="#bbb" style={{ marginBottom: '0.5rem' }} />
                                         <p style={{ color: '#999', fontSize: '0.9rem', margin: 0 }}>Click to upload a photo</p>
-                                        <p style={{ color: '#ccc', fontSize: '0.75rem', margin: '0.25rem 0 0' }}>Max 5MB ΓÇó JPG, PNG, GIF</p>
+                                        <p style={{ color: '#ccc', fontSize: '0.75rem', margin: '0.25rem 0 0' }}>Max 5MB • JPG, PNG, GIF</p>
                                     </div>
                                 ) : (
                                     <div style={{ position: 'relative', borderRadius: '16px', overflow: 'hidden' }}>
