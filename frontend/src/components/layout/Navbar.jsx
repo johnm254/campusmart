@@ -245,17 +245,11 @@ const Navbar = ({ onOpenAuth, onOpenSell }) => {
                                 {navLink('wishlist', `Wishlist${wishlist.length > 0 ? ` (${wishlist.length})` : ''}`, <Heart size={20} />)}
                                 {navLink('settings', 'Settings', <SettingsIcon size={20} />)}
                                 
-                                {/* Admin & Actions Section */}
+                                {/* Actions Section */}
                                 <div style={{ marginTop: '0.75rem', paddingTop: '0.75rem', borderTop: '1px solid #f5f5f5' }}>
                                     <button
-                                        onClick={() => { setIsAdminLockModalOpen(true); setShowMobileMenu(false); }}
-                                        style={{ width: '100%', padding: '0.75rem', background: '#ebf2f7', border: 'none', borderRadius: '10px', color: '#1d3d6e', fontWeight: 800, fontSize: '1rem', cursor: 'pointer', textAlign: 'left', display: 'flex', alignItems: 'center', gap: '0.75rem' }}
-                                    >
-                                        <ShieldCheck size={20} /> Admin Console
-                                    </button>
-                                    <button
                                         onClick={handleLogout}
-                                        style={{ marginTop: '0.5rem', width: '100%', padding: '0.75rem', background: '#fff5f5', border: 'none', borderRadius: '10px', color: 'var(--jiji-orange)', fontWeight: 800, fontSize: '1rem', cursor: 'pointer', textAlign: 'left', display: 'flex', alignItems: 'center', gap: '0.75rem' }}
+                                        style={{ width: '100%', padding: '0.75rem', background: '#fff5f5', border: 'none', borderRadius: '10px', color: 'var(--jiji-orange)', fontWeight: 800, fontSize: '1rem', cursor: 'pointer', textAlign: 'left', display: 'flex', alignItems: 'center', gap: '0.75rem' }}
                                     >
                                         <DoorOpen size={20} /> Sign Out
                                     </button>

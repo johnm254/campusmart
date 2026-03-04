@@ -146,8 +146,17 @@ export const AppProvider = ({ children }) => {
             try {
                 const data = await api.getUnreadCount();
                 if (data && typeof data.count === 'number') {
-                    if (data.count > prevUnreadRef.current) {
-                        addNotification('New Message', `You have ${data.count} unread message${data.count > 1 ? 's' : ''}.`, 'info');
+                    if (data.count > prevUnreadRef.current && data.count > 0) {
+                        // Show notification with sender name(s)
+                        if (data.recent_senders && data.recent_senders.length > 0) {
+                            const senderNames = data.recent_senders.map(s => s.sender_name).join(', ');
+                            const messageText = data.recent_senders.length === 1 
+                                ? `New message from ${senderNames}`
+                                : `New messages from ${senderNames}${data.recent_senders.length < data.count ? ' and others' : ''}`;
+                            addNotification('New Message', messageText, 'info', 'message-square');
+                        } else {
+                            addNotification('New Message', `You have ${data.count} unread message${data.count > 1 ? 's' : ''}.`, 'info', 'message-square');
+                        }
                     }
                     prevUnreadRef.current = data.count;
                     setUnreadCount(data.count);

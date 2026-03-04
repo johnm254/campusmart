@@ -843,7 +843,25 @@ app.get('/api/messages/unread/count', verifyToken, async (req, res) => {
             `SELECT COUNT(*) as count FROM messages WHERE receiver_id = $1 AND is_read = false`,
             [userId]
         );
-        res.json({ count: parseInt(result.rows[0].count) });
+        
+        // Get the most recent unread message sender info
+        const recentUnread = await db.query(
+            `SELECT DISTINCT ON (sender_id) 
+                m.sender_id, 
+                u.full_name as sender_name,
+                m.created_at
+            FROM messages m
+            JOIN users u ON m.sender_id = u.id
+            WHERE m.receiver_id = $1 AND m.is_read = false
+            ORDER BY m.sender_id, m.created_at DESC
+            LIMIT 3`,
+            [userId]
+        );
+        
+        res.json({ 
+            count: parseInt(result.rows[0].count),
+            recent_senders: recentUnread.rows
+        });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Error fetching unread count' });
