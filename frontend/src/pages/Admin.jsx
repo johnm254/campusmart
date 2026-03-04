@@ -4,7 +4,8 @@ import { api } from '../lib/api';
 import {
     Users, ShoppingBag, Settings, MessageSquare,
     Search, Activity, LayoutDashboard, Megaphone, 
-    Trash2, RefreshCw, LogOut, X, Moon, Sun, ShieldAlert
+    Trash2, RefreshCw, LogOut, X, Moon, Sun, ShieldAlert,
+    AlertTriangle, CheckCircle
 } from 'lucide-react';
 
 // Memoized Icon Wrapper to prevent unnecessary re-renders
@@ -166,7 +167,16 @@ const AdminDashboard = () => {
                 setLogs(Array.isArray(data) ? data : []);
             } else if (activeTab === 'settings') {
                 const data = await api.getAdminSettings();
-                setSettings(prev => ({ ...prev, ...data }));
+                console.log('Settings loaded from API:', data);
+                // Ensure all fields have values
+                const mergedSettings = {
+                    site_name: data.site_name || 'CampusMart',
+                    maintenance_mode: data.maintenance_mode || 'false',
+                    contact_email: data.contact_email || '',
+                    announcement: data.announcement || 'Welcome to CampusMart!'
+                };
+                console.log('Merged settings:', mergedSettings);
+                setSettings(mergedSettings);
             }
             // If we get here without throwing, access is confirmed
             setIsAccessDenied(false);
