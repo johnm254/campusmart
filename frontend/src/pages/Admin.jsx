@@ -4,7 +4,7 @@ import { api } from '../lib/api';
 import {
     Users, ShoppingBag, Settings, MessageSquare,
     Search, Activity, LayoutDashboard, Megaphone, 
-    Trash2, RefreshCw, LogOut, X, Moon, Sun
+    Trash2, RefreshCw, LogOut, X, Moon, Sun, ShieldAlert
 } from 'lucide-react';
 
 // Memoized Icon Wrapper to prevent unnecessary re-renders
