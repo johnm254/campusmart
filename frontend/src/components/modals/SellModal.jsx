@@ -2,7 +2,6 @@
 import { api } from '../../lib/api';
 import { useApp } from '../../AppContext';
 import { X, Camera, Plus, Trash2, Shield, Home, Clock, DoorOpen, MapPin, ShieldCheck, Phone, Check, Users, Building2, Bed, Star } from 'lucide-react';
-import ImageCropperModal from '../ui/ImageCropperModal';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
 
 // ΓöÇΓöÇ Housing Catalog Definitions ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
@@ -137,7 +136,6 @@ const SellModal = ({ isOpen, onClose }) => {
     });
 
     const [tempImage, setTempImage] = useState(null);
-    const [showCropper, setShowCropper] = useState(false);
 
     // Auto-select housing category if on accommodation page
     useEffect(() => {
@@ -158,24 +156,24 @@ const SellModal = ({ isOpen, onClose }) => {
                 addNotification('Limit Reached', `You can upload up to ${photoLimit} photos per listing.`, 'warning');
                 return;
             }
+            
+            // Check file size (max 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                addNotification('File Too Large', 'Please upload an image smaller than 5MB.', 'warning');
+                return;
+            }
+            
             const reader = new FileReader();
             reader.onload = () => {
-                setTempImage(reader.result);
-                setShowCropper(true);
+                const newImages = [...formData.images, reader.result];
+                setFormData({
+                    ...formData,
+                    images: newImages,
+                    image_url: formData.image_url || reader.result // Set first image as main
+                });
             };
             reader.readAsDataURL(file);
         }
-    };
-
-    const handleCrop = (croppedImage) => {
-        const newImages = [...formData.images, croppedImage];
-        setFormData({
-            ...formData,
-            images: newImages,
-            image_url: formData.image_url || croppedImage // Set first image as main
-        });
-        setShowCropper(false);
-        setTempImage(null);
     };
 
     const removeImage = (index) => {
@@ -327,15 +325,15 @@ const SellModal = ({ isOpen, onClose }) => {
                     }} style={{ padding: isMobile ? '0.4rem' : '0.5rem' }}><X size={isMobile ? 20 : 24} /></button>
                 </div>
 
-                <form onSubmit={handleSubmit} style={{ padding: isMobile ? '1.25rem' : '2rem', maxHeight: isMobile ? 'none' : '80vh', overflowY: 'auto' }}>
-                    <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'minmax(0, 1fr) 1.2fr', gap: isMobile ? '1.5rem' : '2rem' }} className="sell-modal-grid">
+                <form onSubmit={handleSubmit} style={{ padding: isMobile ? '1rem' : isSmallMobile ? '0.75rem' : '2rem', maxHeight: isMobile ? 'none' : '80vh', overflowY: 'auto' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'minmax(0, 1fr) 1.2fr', gap: isMobile ? '1.25rem' : '2rem' }} className="sell-modal-grid">
                         {/* Image Sector */}
                         <div>
-                            <label style={{ fontSize: isMobile ? '0.85rem' : '0.9rem', fontWeight: 700, color: '#334155', display: 'block', marginBottom: '1rem' }}>
+                            <label style={{ fontSize: isMobile ? '0.8rem' : '0.9rem', fontWeight: 700, color: '#334155', display: 'block', marginBottom: isMobile ? '0.75rem' : '1rem' }}>
                                 Photos ({formData.images.length}/{photoLimit})
                             </label>
 
-                            <div style={{ display: 'grid', gridTemplateColumns: isSmallMobile ? 'repeat(3, 1fr)' : isMobile ? 'repeat(4, 1fr)' : 'repeat(auto-fill, minmax(100px, 1fr))', gap: isMobile ? '0.5rem' : '0.75rem', marginBottom: '1rem' }}>
+                            <div style={{ display: 'grid', gridTemplateColumns: isSmallMobile ? 'repeat(2, 1fr)' : isMobile ? 'repeat(3, 1fr)' : 'repeat(auto-fill, minmax(100px, 1fr))', gap: isMobile ? '0.5rem' : '0.75rem', marginBottom: isMobile ? '0.75rem' : '1rem' }}>
                                 {formData.images.map((img, index) => (
                                     <div key={index} style={{ position: 'relative', aspectRatio: '1', borderRadius: '12px', overflow: 'hidden', border: '1px solid #e2e8f0', background: '#f8fafc' }}>
                                         <img src={img} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -376,33 +374,33 @@ const SellModal = ({ isOpen, onClose }) => {
 
                             <input type="file" id="product-image-input" hidden accept="image/*" onChange={handleFileChange} />
 
-                            <div style={{ background: '#f0fdf4', padding: '0.75rem 1rem', borderRadius: '10px', border: '1px solid #bbf7d0', marginTop: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                <Shield size={16} color="#059669" />
-                                <p style={{ fontSize: '0.75rem', color: '#059669', fontWeight: 700, margin: 0 }}>Up to 5 photos — completely free for everyone</p>
+                            <div style={{ background: '#f0fdf4', padding: isMobile ? '0.6rem 0.75rem' : '0.75rem 1rem', borderRadius: '10px', border: '1px solid #bbf7d0', marginTop: isMobile ? '0.75rem' : '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                <Shield size={isMobile ? 14 : 16} color="#059669" />
+                                <p style={{ fontSize: isMobile ? '0.7rem' : '0.75rem', color: '#059669', fontWeight: 700, margin: 0 }}>Up to 5 photos — completely free for everyone</p>
                             </div>
                         </div>
 
                         {/* Details Sector */}
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? '1rem' : '1.25rem' }}>
                             <div className="form-group">
-                                <label style={{ fontSize: '0.9rem', fontWeight: 700, color: '#334155' }}>Item Title</label>
+                                <label style={{ fontSize: isMobile ? '0.85rem' : '0.9rem', fontWeight: 700, color: '#334155' }}>Item Title</label>
                                 <input
                                     type="text"
                                     placeholder={formData.category === 'housing' ? "Catchy Title: e.g. Cozy Single Room in Westlands" : "What are you selling?"}
                                     value={formData.title}
                                     onChange={e => setFormData({ ...formData, title: e.target.value })}
                                     required
-                                    style={{ padding: '0.8rem 1rem', borderRadius: '12px', border: '2px solid #e2e8f0', fontSize: '0.95rem' }}
+                                    style={{ padding: isMobile ? '0.7rem 0.85rem' : '0.8rem 1rem', borderRadius: '12px', border: '2px solid #e2e8f0', fontSize: isMobile ? '0.9rem' : '0.95rem' }}
                                 />
                             </div>
 
-                            <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '1rem' }}>
+                            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.2fr 1fr', gap: isMobile ? '1rem' : '1rem' }}>
                                 <div className="form-group">
-                                    <label style={{ fontSize: '0.9rem', fontWeight: 700, color: '#334155' }}>Category</label>
+                                    <label style={{ fontSize: isMobile ? '0.85rem' : '0.9rem', fontWeight: 700, color: '#334155' }}>Category</label>
                                     <select
                                         value={formData.category}
                                         onChange={e => setFormData({ ...formData, category: e.target.value })}
-                                        style={{ padding: '0.8rem 1rem', borderRadius: '12px', border: '2px solid #e2e8f0', background: 'white', marginTop: '0.25rem' }}
+                                        style={{ padding: isMobile ? '0.7rem 0.85rem' : '0.8rem 1rem', borderRadius: '12px', border: '2px solid #e2e8f0', background: 'white', marginTop: '0.25rem', fontSize: isMobile ? '0.9rem' : '1rem' }}
                                     >
                                         <option value="electronics">Electronics</option>
                                         <option value="books">Books</option>
@@ -415,7 +413,7 @@ const SellModal = ({ isOpen, onClose }) => {
                                     </select>
                                 </div>
                                 <div className="form-group">
-                                    <label style={{ fontSize: '0.9rem', fontWeight: 700, color: '#334155' }}>
+                                    <label style={{ fontSize: isMobile ? '0.85rem' : '0.9rem', fontWeight: 700, color: '#334155' }}>
                                         {formData.category === 'housing' ? 'Rent (pm @ KSh)' : 'Price (KSh)'}
                                     </label>
                                     <input
@@ -424,14 +422,14 @@ const SellModal = ({ isOpen, onClose }) => {
                                         value={formData.price}
                                         onChange={e => setFormData({ ...formData, price: e.target.value })}
                                         required
-                                        style={{ padding: '0.8rem 1rem', borderRadius: '12px', border: '2px solid #e2e8f0' }}
+                                        style={{ padding: isMobile ? '0.7rem 0.85rem' : '0.8rem 1rem', borderRadius: '12px', border: '2px solid #e2e8f0', fontSize: isMobile ? '0.9rem' : '1rem' }}
                                     />
                                 </div>
                             </div>
 
                             {/* Housing Specific Details: Distance & Vacancy */}
                             {formData.category === 'housing' && (
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', background: '#f8fafc', padding: '1rem', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
+                                <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: isMobile ? '0.75rem' : '1rem', background: '#f8fafc', padding: isMobile ? '0.85rem' : '1rem', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
                                     <div className="form-group" style={{ marginBottom: 0 }}>
                                         <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#334155', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                                             <Clock size={14} /> Distance to Campus
@@ -461,16 +459,16 @@ const SellModal = ({ isOpen, onClose }) => {
 
                             {/* ΓöÇΓöÇ CATALOG ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */}
                             <div className="form-group">
-                                <label style={{ fontSize: '0.9rem', fontWeight: 700, color: '#334155', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                <label style={{ fontSize: isMobile ? '0.85rem' : '0.9rem', fontWeight: 700, color: '#334155', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                     {formData.category === 'housing' ? (
-                                        <><Building2 size={16} color="var(--campus-blue)" /> Select House Type<span style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 500 }}> — auto-fills details</span></>
+                                        <><Building2 size={isMobile ? 14 : 16} color="var(--campus-blue)" /> Select House Type<span style={{ fontSize: isMobile ? '0.65rem' : '0.7rem', color: '#94a3b8', fontWeight: 500 }}> — auto-fills details</span></>
                                     ) : 'Condition'}
                                 </label>
 
                                 {formData.category === 'housing' ? (
                                     <>
                                         {/* Rich visual catalog grid */}
-                                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.75rem', marginTop: '0.5rem' }}>
+                                        <div style={{ display: 'grid', gridTemplateColumns: isSmallMobile ? '1fr' : isMobile ? 'repeat(2, 1fr)' : 'repeat(2, 1fr)', gap: isMobile ? '0.6rem' : '0.75rem', marginTop: '0.5rem' }}>
                                             {HOUSE_CATALOG.map(cat => {
                                                 const isSelected = formData.condition === cat.id;
                                                 return (
@@ -489,7 +487,7 @@ const SellModal = ({ isOpen, onClose }) => {
                                                         }}
                                                         style={{
                                                             position: 'relative',
-                                                            padding: '1rem',
+                                                            padding: isMobile ? '0.85rem' : '1rem',
                                                             borderRadius: '14px',
                                                             border: isSelected ? `2px solid ${cat.accentColor}` : `1.5px solid ${cat.border}`,
                                                             background: isSelected ? cat.color : 'white',
@@ -533,12 +531,12 @@ const SellModal = ({ isOpen, onClose }) => {
                                                         </div>
 
                                                         {/* Title */}
-                                                        <div style={{ fontSize: '1rem', fontWeight: 800, color: isSelected ? cat.accentColor : '#1e293b', marginBottom: '0.25rem' }}>
+                                                        <div style={{ fontSize: isMobile ? '0.9rem' : '1rem', fontWeight: 800, color: isSelected ? cat.accentColor : '#1e293b', marginBottom: '0.25rem' }}>
                                                             {cat.label}
                                                         </div>
 
                                                         {/* Description */}
-                                                        <div style={{ fontSize: '0.7rem', color: '#64748b', lineHeight: 1.4 }}>
+                                                        <div style={{ fontSize: isMobile ? '0.65rem' : '0.7rem', color: '#64748b', lineHeight: 1.4 }}>
                                                             {cat.description}
                                                         </div>
 
@@ -663,14 +661,14 @@ const SellModal = ({ isOpen, onClose }) => {
                             </div>
 
                             <div className="form-group">
-                                <label style={{ fontSize: '0.9rem', fontWeight: 700, color: '#334155' }}>
+                                <label style={{ fontSize: isMobile ? '0.85rem' : '0.9rem', fontWeight: 700, color: '#334155' }}>
                                     {formData.category === 'housing' ? 'House Details & Rules' : 'Description'}
                                 </label>
                                 <textarea
                                     placeholder={formData.category === 'housing' ? "Describe the house, rules, shared areas, etc." : "Provide more details about your item..."}
                                     value={formData.description}
                                     onChange={e => setFormData({ ...formData, description: e.target.value })}
-                                    style={{ padding: '0.8rem 1rem', minHeight: '100px', borderRadius: '12px', border: '2px solid #e2e8f0', resize: 'none' }}
+                                    style={{ padding: isMobile ? '0.7rem 0.85rem' : '0.8rem 1rem', minHeight: isMobile ? '80px' : '100px', borderRadius: '12px', border: '2px solid #e2e8f0', resize: 'none', fontSize: isMobile ? '0.9rem' : '1rem' }}
                                 />
                             </div>
 
@@ -707,8 +705,8 @@ const SellModal = ({ isOpen, onClose }) => {
                             {/* Housing Amenities Checkboxes */}
                             {formData.category === 'housing' && (
                                 <div className="form-group">
-                                    <label style={{ fontSize: '0.9rem', fontWeight: 700, color: '#334155', display: 'block', marginBottom: '0.5rem' }}>House Amenities</label>
-                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+                                    <label style={{ fontSize: isMobile ? '0.85rem' : '0.9rem', fontWeight: 700, color: '#334155', display: 'block', marginBottom: '0.5rem' }}>House Amenities</label>
+                                    <div style={{ display: 'grid', gridTemplateColumns: isSmallMobile ? '1fr' : isMobile ? '1fr' : '1fr 1fr', gap: isMobile ? '0.4rem' : '0.5rem' }}>
                                         {['Free WiFi', 'Secure Fence', 'Water 24/7', 'Tokens Electricity', 'Tiles Floors', 'In-built Wardrobe', 'Balcony', 'Near Main Road'].map(amenity => (
                                             <div
                                                 key={amenity}
@@ -719,12 +717,12 @@ const SellModal = ({ isOpen, onClose }) => {
                                                     setFormData({ ...formData, amenities: newAmenities });
                                                 }}
                                                 style={{
-                                                    padding: '0.5rem 0.75rem',
+                                                    padding: isMobile ? '0.45rem 0.6rem' : '0.5rem 0.75rem',
                                                     borderRadius: '8px',
                                                     border: '1px solid #e2e8f0',
                                                     background: formData.amenities.includes(amenity) ? 'rgba(0,174,239,0.1)' : 'white',
                                                     color: formData.amenities.includes(amenity) ? 'var(--campus-blue)' : '#64748b',
-                                                    fontSize: '0.75rem',
+                                                    fontSize: isMobile ? '0.7rem' : '0.75rem',
                                                     fontWeight: 600,
                                                     cursor: 'pointer',
                                                     display: 'flex',
@@ -746,15 +744,15 @@ const SellModal = ({ isOpen, onClose }) => {
                             )}
 
                             <div className="form-group">
-                                <label style={{ fontSize: '0.9rem', fontWeight: 700, color: '#334155' }}>Location & Landmarks</label>
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                                <label style={{ fontSize: isMobile ? '0.85rem' : '0.9rem', fontWeight: 700, color: '#334155' }}>Location & Landmarks</label>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? '0.6rem' : '0.75rem' }}>
                                     <input
                                         type="text"
                                         placeholder="Specific Location e.g. Westlands, Nairobi"
                                         value={formData.location}
                                         onChange={e => setFormData({ ...formData, location: e.target.value })}
                                         required
-                                        style={{ padding: '0.8rem 1rem', borderRadius: '12px', border: '2px solid #e2e8f0' }}
+                                        style={{ padding: isMobile ? '0.7rem 0.85rem' : '0.8rem 1rem', borderRadius: '12px', border: '2px solid #e2e8f0', fontSize: isMobile ? '0.9rem' : '1rem' }}
                                     />
                                     {formData.category === 'housing' && (
                                         <input
@@ -762,7 +760,7 @@ const SellModal = ({ isOpen, onClose }) => {
                                             placeholder="Landmarks or Nearby Universities"
                                             value={formData.landmarks}
                                             onChange={e => setFormData({ ...formData, landmarks: e.target.value })}
-                                            style={{ padding: '0.8rem 1rem', borderRadius: '12px', border: '2px solid #e2e8f0', fontSize: '0.85rem' }}
+                                            style={{ padding: isMobile ? '0.7rem 0.85rem' : '0.8rem 1rem', borderRadius: '12px', border: '2px solid #e2e8f0', fontSize: isMobile ? '0.8rem' : '0.85rem' }}
                                         />
                                     )}
                                 </div>
@@ -939,9 +937,9 @@ const SellModal = ({ isOpen, onClose }) => {
                         className="btn-primary"
                         style={{
                             width: '100%',
-                            marginTop: '2.5rem',
-                            padding: '1.2rem',
-                            fontSize: '1.1rem',
+                            marginTop: isMobile ? '1.5rem' : '2.5rem',
+                            padding: isMobile ? '1rem' : '1.2rem',
+                            fontSize: isMobile ? '1rem' : '1.1rem',
                             borderRadius: '16px',
                             background: 'var(--campus-blue)',
                             color: 'white',
@@ -956,15 +954,6 @@ const SellModal = ({ isOpen, onClose }) => {
                     </button>
                 </form>
             </div>
-
-            {showCropper && (
-                <ImageCropperModal
-                    image={tempImage}
-                    onCrop={handleCrop}
-                    onClose={() => setShowCropper(false)}
-                    aspectRatio={4 / 3}
-                />
-            )}
         </div>
     );
 };
