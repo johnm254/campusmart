@@ -326,9 +326,15 @@ app.post('/api/auth/forgot-password', async (req, res) => {
             `
         };
 
-        // Send Email with proper error handling
+        // Send Email with proper error handling and timeout
         try {
-            const info = await transporter.sendMail(mailOptions);
+            // Set a timeout for email sending (10 seconds)
+            const emailPromise = transporter.sendMail(mailOptions);
+            const timeoutPromise = new Promise((_, reject) => 
+                setTimeout(() => reject(new Error('Email timeout')), 10000)
+            );
+            
+            const info = await Promise.race([emailPromise, timeoutPromise]);
             console.log('✓ Reset email sent successfully to:', email);
             console.log('Message ID:', info.messageId);
             res.json({
@@ -337,10 +343,11 @@ app.post('/api/auth/forgot-password', async (req, res) => {
         } catch (mailError) {
             console.error('✗ Email sending failed:', mailError);
             console.error('Error details:', mailError.message);
-            // Return the link in response as fallback
+            // Still return success but with the link as fallback
             res.json({
-                message: 'Email service temporarily unavailable. Please use this link to reset your password:',
-                resetLink: resetLink
+                message: 'Password reset link generated. Please check your email or use the link below if email delivery is delayed.',
+                resetLink: resetLink,
+                note: 'Email service may be experiencing delays. You can use the link above to reset your password.'
             });
         }
     } catch (error) {

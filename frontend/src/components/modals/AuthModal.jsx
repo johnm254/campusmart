@@ -74,10 +74,18 @@ const AuthModal = ({ isOpen, onClose }) => {
             try {
                 const res = await api.forgotPassword(email);
                 addNotification('Success', res.message, 'success');
+                
+                // If reset link is provided (email failed), show it to user
+                if (res.resetLink) {
+                    console.log('Reset link:', res.resetLink);
+                    addNotification('Reset Link', 'Email may be delayed. Check console or contact support.', 'info');
+                }
+                
                 setIsForgot(false);
                 setIsLogin(true);
             } catch (error) {
-                addNotification('Error', error.message, 'warning');
+                console.error('Forgot password error:', error);
+                addNotification('Error', error.message || 'Failed to send reset link. Please try again.', 'warning');
             } finally {
                 setLoading(false);
             }
