@@ -338,29 +338,32 @@ app.post('/api/auth/forgot-password', async (req, res) => {
         };
 
         // Send Email with proper error handling and timeout
+        // Note: Email may not work in all hosting environments due to SMTP port restrictions
+        let emailSent = false;
         try {
-            // Set a timeout for email sending (10 seconds)
+            // Set a timeout for email sending (5 seconds)
             const emailPromise = transporter.sendMail(mailOptions);
             const timeoutPromise = new Promise((_, reject) => 
-                setTimeout(() => reject(new Error('Email timeout')), 10000)
+                setTimeout(() => reject(new Error('Email timeout')), 5000)
             );
             
             const info = await Promise.race([emailPromise, timeoutPromise]);
             console.log('✓ Reset email sent successfully to:', email);
             console.log('Message ID:', info.messageId);
-            res.json({
-                message: 'A password reset link has been sent to your email address. Please check your inbox and spam folder.'
-            });
+            emailSent = true;
         } catch (mailError) {
-            console.error('✗ Email sending failed:', mailError);
-            console.error('Error details:', mailError.message);
-            // Still return success but with the link as fallback
-            res.json({
-                message: 'Password reset link generated. Please check your email or use the link below if email delivery is delayed.',
-                resetLink: resetLink,
-                note: 'Email service may be experiencing delays. You can use the link above to reset your password.'
-            });
+            console.error('✗ Email sending failed:', mailError.message);
+            emailSent = false;
         }
+
+        // Always return success with the reset link as fallback
+        res.json({
+            message: emailSent 
+                ? 'A password reset link has been sent to your email address. Please check your inbox and spam folder.'
+                : 'Password reset link generated. Email service is currently unavailable, but you can use the link below.',
+            resetLink: resetLink,
+            emailSent: emailSent
+        });
     } catch (error) {
         console.error('Forgot password error:', error);
         res.status(500).json({ message: 'Error during forgot password process: ' + error.message });

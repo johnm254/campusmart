@@ -74,19 +74,27 @@ const AuthModal = ({ isOpen, onClose }) => {
             try {
                 const res = await api.forgotPassword(email);
                 
-                // If reset link is provided (email failed or delayed), show it to user
+                // Always show the reset link since email may not work
                 if (res.resetLink) {
                     console.log('=== PASSWORD RESET LINK ===');
                     console.log(res.resetLink);
                     console.log('===========================');
                     
-                    // Show notification with instructions
-                    addNotification('Reset Link Generated', 'Email may be delayed. Check browser console (F12) for the reset link, or contact support.', 'info');
-                    
-                    // Also try to open the link in a new tab
-                    if (window.confirm('Email delivery may be delayed. Would you like to open the password reset page now?')) {
-                        window.location.href = res.resetLink;
-                        return;
+                    if (!res.emailSent) {
+                        // Email failed - offer to open reset page directly
+                        addNotification('Reset Link Ready', res.message, 'info');
+                        
+                        setTimeout(() => {
+                            if (window.confirm('Email service is currently unavailable. Would you like to open the password reset page now?')) {
+                                window.location.href = res.resetLink;
+                            } else {
+                                addNotification('Reset Link', 'Check browser console (F12) for the reset link', 'info');
+                            }
+                        }, 500);
+                    } else {
+                        // Email sent successfully
+                        addNotification('Success', res.message, 'success');
+                        console.log('Backup reset link available in console if email is delayed');
                     }
                 } else {
                     addNotification('Success', res.message, 'success');
@@ -96,7 +104,7 @@ const AuthModal = ({ isOpen, onClose }) => {
                 setIsLogin(true);
             } catch (error) {
                 console.error('Forgot password error:', error);
-                addNotification('Error', error.message || 'Failed to send reset link. Please try again.', 'error');
+                addNotification('Error', error.message || 'Failed to generate reset link. Please try again.', 'error');
             } finally {
                 setLoading(false);
             }
