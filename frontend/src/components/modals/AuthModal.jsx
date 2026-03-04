@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { api } from '../../lib/api';
 import { useApp } from '../../AppContext';
 import { X, Eye, EyeOff, Lock, Mail, User, Phone, ArrowRight, ArrowLeft, CheckCircle } from 'lucide-react';
@@ -20,8 +20,21 @@ const AuthModal = ({ isOpen, onClose }) => {
     const [isForgot, setIsForgot] = useState(false);
     const [signupStep, setSignupStep] = useState(1); // Multi-step signup
 
+    // Prevent background scroll when modal is open
+    useEffect(() => {
+        if (isOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+        
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [isOpen]);
+
     // Reset form when modal closes/opens
-    React.useEffect(() => {
+    useEffect(() => {
         if (!isOpen) {
             setEmail('');
             setPassword('');
@@ -129,14 +142,39 @@ const AuthModal = ({ isOpen, onClose }) => {
     };
 
     return (
-        <div className="modal-overlay" onClick={onClose} style={{ zIndex: 500000 }}>
-            <div className="modal-content" onClick={e => e.stopPropagation()} style={{ 
-                maxWidth: '500px', 
-                padding: '0',
-                borderRadius: '16px',
-                overflow: 'hidden',
-                boxShadow: '0 20px 60px rgba(0,0,0,0.15)'
-            }}>
+        <div 
+            className="modal-overlay" 
+            onClick={onClose} 
+            style={{ 
+                zIndex: 500000,
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                background: 'rgba(0, 0, 0, 0.6)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '1rem',
+                overflowY: 'auto'
+            }}
+        >
+            <div 
+                className="modal-content" 
+                onClick={e => e.stopPropagation()} 
+                style={{ 
+                    maxWidth: '500px',
+                    width: '100%',
+                    padding: '0',
+                    borderRadius: '16px',
+                    overflow: 'hidden',
+                    boxShadow: '0 20px 60px rgba(0,0,0,0.15)',
+                    maxHeight: '90vh',
+                    overflowY: 'auto',
+                    position: 'relative'
+                }}
+            >
                 {/* Header Section */}
                 <div style={{ 
                     background: 'linear-gradient(135deg, var(--campus-blue) 0%, #1a5490 100%)',
@@ -650,55 +688,126 @@ const AuthModal = ({ isOpen, onClose }) => {
                     )}
 
                     {/* Action Buttons */}
-                    <div style={{ display: 'flex', gap: '12px', marginTop: '1rem' }}>
+                    <div style={{ display: 'flex', gap: '12px', marginTop: '1.5rem' }}>
                         {!isLogin && signupStep === 2 && !isForgot && (
                             <button 
                                 type="button" 
                                 onClick={() => setSignupStep(1)}
                                 className="btn"
-                                style={{ flex: 1, padding: '1rem', fontSize: '1.05rem', backgroundColor: '#f0f0f0', color: '#333' }}
+                                style={{ 
+                                    flex: 1, 
+                                    padding: '1rem 1.5rem', 
+                                    fontSize: '1rem', 
+                                    fontWeight: 700,
+                                    backgroundColor: '#f0f0f0', 
+                                    color: '#333',
+                                    border: '2px solid #e0e0e0',
+                                    borderRadius: '10px',
+                                    cursor: 'pointer',
+                                    transition: 'all 0.2s',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    gap: '0.5rem'
+                                }}
+                                onMouseEnter={e => e.currentTarget.style.backgroundColor = '#e0e0e0'}
+                                onMouseLeave={e => e.currentTarget.style.backgroundColor = '#f0f0f0'}
                             >
-                                Back
+                                <ArrowLeft size={18} /> Back
                             </button>
                         )}
                         
                         <button 
                             type="submit" 
                             className="btn btn-primary" 
-                            style={{ flex: 1, padding: '1rem', fontSize: '1.05rem' }} 
+                            style={{ 
+                                flex: 1, 
+                                padding: '1rem 1.5rem', 
+                                fontSize: '1rem',
+                                fontWeight: 700,
+                                background: loading ? '#94a3b8' : 'linear-gradient(135deg, var(--campus-blue) 0%, #1a5490 100%)',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '10px',
+                                cursor: loading ? 'not-allowed' : 'pointer',
+                                transition: 'all 0.2s',
+                                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '0.5rem'
+                            }} 
                             disabled={loading}
+                            onMouseEnter={e => !loading && (e.currentTarget.style.transform = 'translateY(-2px)')}
+                            onMouseLeave={e => !loading && (e.currentTarget.style.transform = 'translateY(0)')}
                         >
-                            {loading ? 'Processing...' : (
-                                isForgot ? 'Send Reset Link' : 
-                                isLogin ? 'Login' : 
-                                signupStep === 1 ? 'Next' : 
-                                'Create Account'
+                            {loading ? (
+                                <>
+                                    <div className="spinner" style={{ width: '18px', height: '18px', borderWidth: '2px' }} />
+                                    Processing...
+                                </>
+                            ) : (
+                                <>
+                                    {isForgot ? 'Send Reset Link' : 
+                                     isLogin ? 'Sign In' : 
+                                     signupStep === 1 ? (
+                                        <>Next <ArrowRight size={18} /></>
+                                     ) : 
+                                     'Create Account'}
+                                </>
                             )}
                         </button>
                     </div>
                 </form>
 
                 {/* Footer Section */}
-                <p style={{ textAlign: 'center', fontSize: '0.9rem', marginTop: '2rem', borderTop: '1px solid #f0f0f0', paddingTop: '1.5rem' }}>
+                <div style={{ 
+                    textAlign: 'center', 
+                    fontSize: '0.9rem', 
+                    marginTop: '2rem', 
+                    borderTop: '1px solid #f0f0f0', 
+                    paddingTop: '1.5rem',
+                    paddingBottom: '0.5rem'
+                }}>
                     {isForgot ? (
                         <button
+                            type="button"
                             onClick={() => { setIsForgot(false); setIsLogin(true); }}
-                            style={{ background: 'none', border: 'none', color: 'var(--jiji-green)', fontWeight: 700, cursor: 'pointer', fontSize: '0.9rem' }}
+                            style={{ 
+                                background: 'none', 
+                                border: 'none', 
+                                color: 'var(--campus-blue)', 
+                                fontWeight: 700, 
+                                cursor: 'pointer', 
+                                fontSize: '0.9rem',
+                                textDecoration: 'underline',
+                                padding: '0.5rem 1rem'
+                            }}
                         >
-                            Back to Sign in
+                            ← Back to Sign in
                         </button>
                     ) : (
-                        <>
+                        <p style={{ margin: 0 }}>
                             {isLogin ? "New to CampusMart? " : "Already have an account? "}
                             <button
+                                type="button"
                                 onClick={() => { setIsLogin(!isLogin); setSignupStep(1); }}
-                                style={{ background: 'none', border: 'none', color: 'var(--jiji-green)', fontWeight: 700, cursor: 'pointer', fontSize: '0.9rem' }}
+                                style={{ 
+                                    background: 'none', 
+                                    border: 'none', 
+                                    color: 'var(--campus-blue)', 
+                                    fontWeight: 700, 
+                                    cursor: 'pointer', 
+                                    fontSize: '0.9rem',
+                                    textDecoration: 'underline',
+                                    padding: '0.25rem'
+                                }}
                             >
                                 {isLogin ? 'Register now' : 'Sign in'}
                             </button>
-                        </>
+                        </p>
                     )}
-                </p>
+                </div>
                 </div>
             </div>
         </div>
