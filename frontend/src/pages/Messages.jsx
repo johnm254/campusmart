@@ -1,16 +1,19 @@
 ﻿import React, { useState, useEffect, useRef } from 'react';
 import { useApp } from '../AppContext';
 import { api } from '../lib/api';
-import { Send, Search, MessageSquare, Phone, MoreVertical, CheckCheck, Check, Star } from 'lucide-react';
+import { Send, Search, MessageSquare, Phone, MoreVertical, CheckCheck, Check, Star, ArrowLeft, Loader } from 'lucide-react';
 import UserReviewModal from '../components/modals/UserReviewModal';
+import { useMediaQuery } from '../hooks/useMediaQuery';
 
 const Messages = () => {
     const { user, addNotification } = useApp();
+    const isMobile = useMediaQuery('(max-width: 768px)');
     const [conversations, setConversations] = useState([]);
     const [selectedConv, setSelectedConv] = useState(null);
     const [messages, setMessages] = useState([]);
     const [messageInput, setMessageInput] = useState('');
     const [loading, setLoading] = useState(true);
+    const [messagesLoading, setMessagesLoading] = useState(false);
     const [sending, setSending] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const messagesContainerRef = useRef(null);
@@ -52,6 +55,7 @@ const Messages = () => {
     // Load messages for selected conversation
     const loadMessages = async (otherUserId, isNewFetch = false) => {
         try {
+            if (isNewFetch) setMessagesLoading(true);
             const data = await api.getMessages(otherUserId);
             if (Array.isArray(data)) {
                 const hasNewMessages = data.length > messages.length;
@@ -66,6 +70,9 @@ const Messages = () => {
             }
         } catch (err) {
             console.error('Error loading messages:', err);
+            addNotification('Error', 'Failed to load messages', 'warning');
+        } finally {
+            if (isNewFetch) setMessagesLoading(false);
         }
     };
 
@@ -98,8 +105,6 @@ const Messages = () => {
 
     const handleSelectConv = (conv) => {
         setSelectedConv(conv);
-        // Clear messages briefly to show loading state if preferred, 
-        // but user might want it to feel faster. 
         setMessages([]);
     };
 
@@ -174,30 +179,51 @@ const Messages = () => {
     };
 
     return (
-        <div className="container" style={{ height: 'calc(100vh - 120px)', marginTop: '20px', display: 'flex', gap: '1px', background: '#eee', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}>
+        <div className="container" style={{ 
+            height: isMobile ? 'calc(100vh - 80px)' : 'calc(100vh - 120px)', 
+            marginTop: isMobile ? '10px' : '20px', 
+            display: 'flex', 
+            gap: '1px', 
+            background: '#eee', 
+            borderRadius: isMobile ? '12px' : '16px', 
+            overflow: 'hidden', 
+            boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
+            maxWidth: isMobile ? '100%' : '1400px',
+            margin: isMobile ? '10px auto' : '20px auto'
+        }}>
             {/* Sidebar */}
-            <div style={{ width: '350px', background: 'white', display: 'flex', flexDirection: 'column', flexShrink: 0 }}>
-                <div style={{ padding: '1.5rem', borderBottom: '1px solid #eee' }}>
-                    <h2 style={{ marginBottom: '1rem', color: 'var(--campus-blue)' }}>Messages</h2>
+            <div style={{ 
+                width: isMobile ? (selectedConv ? '0' : '100%') : '350px', 
+                background: 'white', 
+                display: isMobile && selectedConv ? 'none' : 'flex', 
+                flexDirection: 'column', 
+                flexShrink: 0,
+                transition: 'all 0.3s'
+            }}>
+                <div style={{ padding: isMobile ? '1rem' : '1.5rem', borderBottom: '1px solid #eee' }}>
+                    <h2 style={{ marginBottom: isMobile ? '0.75rem' : '1rem', color: 'var(--campus-blue)', fontSize: isMobile ? '1.5rem' : '1.75rem' }}>Messages</h2>
                     <div style={{ position: 'relative' }}>
-                        <Search size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#888' }} />
+                        <Search size={isMobile ? 16 : 18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#888' }} />
                         <input
                             type="text"
                             placeholder="Search chats..."
                             value={searchTerm}
                             onChange={e => setSearchTerm(e.target.value)}
-                            style={{ width: '100%', padding: '0.75rem 0.75rem 0.75rem 40px', borderRadius: '12px', border: '1px solid #eee', background: '#f9f9f9', outline: 'none' }}
+                            style={{ width: '100%', padding: isMobile ? '0.65rem 0.65rem 0.65rem 36px' : '0.75rem 0.75rem 0.75rem 40px', borderRadius: '12px', border: '1px solid #eee', background: '#f9f9f9', outline: 'none', fontSize: isMobile ? '0.9rem' : '1rem' }}
                         />
                     </div>
                 </div>
 
                 <div style={{ flex: 1, overflowY: 'auto' }}>
                     {loading ? (
-                        <div style={{ padding: '2rem', textAlign: 'center', color: '#999' }}>Loading chats...</div>
+                        <div style={{ padding: '2rem', textAlign: 'center', color: '#999' }}>
+                            <Loader size={32} className="spinner" style={{ margin: '0 auto 1rem' }} />
+                            <p style={{ fontSize: isMobile ? '0.85rem' : '0.9rem' }}>Loading chats...</p>
+                        </div>
                     ) : filteredConvs.length === 0 ? (
                         <div style={{ padding: '2rem', textAlign: 'center', color: '#bbb' }}>
-                            <MessageSquare size={40} style={{ opacity: 0.3, marginBottom: '0.5rem' }} />
-                            <p style={{ fontSize: '0.9rem' }}>No conversations yet.<br />Start one from a product listing!</p>
+                            <MessageSquare size={isMobile ? 36 : 40} style={{ opacity: 0.3, marginBottom: '0.5rem' }} />
+                            <p style={{ fontSize: isMobile ? '0.85rem' : '0.9rem' }}>No conversations yet.<br />Start one from a product listing!</p>
                         </div>
                     ) : (
                         filteredConvs.map(conv => (
@@ -259,78 +285,112 @@ const Messages = () => {
             </div>
 
             {/* Chat Area */}
-            <div style={{ flex: 1, background: '#f5f7f9', display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+            <div style={{ 
+                flex: 1, 
+                background: '#f5f7f9', 
+                display: isMobile && !selectedConv ? 'none' : 'flex', 
+                flexDirection: 'column', 
+                minWidth: 0,
+                width: isMobile ? '100%' : 'auto'
+            }}>
                 {selectedConv ? (
                     <>
                         {/* Chat Header */}
-                        <div style={{ padding: '1rem 2rem', background: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #eee' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                                <div style={{ position: 'relative' }}>
+                        <div style={{ padding: isMobile ? '0.85rem 1rem' : '1rem 2rem', background: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #eee' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '0.75rem' : '1rem', flex: 1, minWidth: 0 }}>
+                                {isMobile && (
+                                    <button
+                                        onClick={() => setSelectedConv(null)}
+                                        style={{
+                                            background: 'none',
+                                            border: 'none',
+                                            color: 'var(--campus-blue)',
+                                            cursor: 'pointer',
+                                            padding: '0.25rem',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            flexShrink: 0
+                                        }}
+                                    >
+                                        <ArrowLeft size={22} />
+                                    </button>
+                                )}
+                                <div style={{ position: 'relative', flexShrink: 0 }}>
                                     <img
                                         src={selectedConv.other_user_avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(selectedConv.other_user_name || 'User')}&background=random`}
-                                        style={{ width: '42px', height: '42px', borderRadius: '50%', objectFit: 'cover' }}
+                                        style={{ width: isMobile ? '36px' : '42px', height: isMobile ? '36px' : '42px', borderRadius: '50%', objectFit: 'cover' }}
                                         alt={selectedConv.other_user_name}
                                     />
                                     <div style={{
                                         position: 'absolute',
                                         bottom: '0px',
                                         right: '0px',
-                                        width: '10px',
-                                        height: '10px',
+                                        width: isMobile ? '8px' : '10px',
+                                        height: isMobile ? '8px' : '10px',
                                         borderRadius: '50%',
                                         background: isUserOnline(selectedConv.other_user_last_seen) ? 'var(--jiji-green)' : '#ccc',
                                         border: '2px solid white'
                                     }}></div>
                                 </div>
-                                <div>
-                                    <h4 style={{ margin: 0, fontSize: '1rem' }}>{selectedConv.other_user_name}</h4>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                                <div style={{ flex: 1, minWidth: 0 }}>
+                                    <h4 style={{ margin: 0, fontSize: isMobile ? '0.9rem' : '1rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{selectedConv.other_user_name}</h4>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexWrap: 'wrap' }}>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '1px' }}>
                                             {[1, 2, 3, 4, 5].map(star => (
                                                 <Star
                                                     key={star}
-                                                    size={10}
+                                                    size={isMobile ? 9 : 10}
                                                     fill={otherUserRating.average_rating >= star ? "#FFD700" : "none"}
                                                     color={otherUserRating.average_rating >= star ? "#FFD700" : "#cbd5e0"}
                                                 />
                                             ))}
                                         </div>
-                                        <span style={{ fontSize: '0.65rem', color: '#888', fontWeight: 700 }}>({otherUserRating.review_count})</span>
-                                        <span style={{ margin: '0 0.25rem', color: '#ddd' }}>|</span>
-                                        <span style={{ fontSize: '0.75rem', color: isUserOnline(selectedConv.other_user_last_seen) ? 'var(--jiji-green)' : '#999' }}>
-                                            {isUserOnline(selectedConv.other_user_last_seen) ? 'Active now' : 'Inactive'}
-                                        </span>
+                                        <span style={{ fontSize: isMobile ? '0.6rem' : '0.65rem', color: '#888', fontWeight: 700 }}>({otherUserRating.review_count})</span>
+                                        {!isMobile && (
+                                            <>
+                                                <span style={{ margin: '0 0.25rem', color: '#ddd' }}>|</span>
+                                                <span style={{ fontSize: '0.75rem', color: isUserOnline(selectedConv.other_user_last_seen) ? 'var(--jiji-green)' : '#999' }}>
+                                                    {isUserOnline(selectedConv.other_user_last_seen) ? 'Active now' : 'Inactive'}
+                                                </span>
+                                            </>
+                                        )}
                                     </div>
                                 </div>
                             </div>
-                            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                            <div style={{ display: 'flex', gap: isMobile ? '0.5rem' : '1rem', alignItems: 'center', flexShrink: 0 }}>
                                 <button
                                     onClick={() => setShowReviewModal(true)}
                                     style={{
                                         background: '#eef2ff',
                                         color: 'var(--campus-blue)',
                                         border: 'none',
-                                        padding: '0.4rem 0.8rem',
+                                        padding: isMobile ? '0.35rem 0.6rem' : '0.4rem 0.8rem',
                                         borderRadius: '8px',
-                                        fontSize: '0.75rem',
+                                        fontSize: isMobile ? '0.7rem' : '0.75rem',
                                         fontWeight: 800,
                                         cursor: 'pointer',
                                         display: 'flex',
                                         alignItems: 'center',
-                                        gap: '0.4rem'
+                                        gap: '0.4rem',
+                                        whiteSpace: 'nowrap'
                                     }}
                                 >
-                                    <Star size={14} fill="currentColor" /> Rate User
+                                    <Star size={isMobile ? 12 : 14} fill="currentColor" /> {!isMobile && 'Rate'}
                                 </button>
-                                <MoreVertical size={20} style={{ cursor: 'pointer', color: '#666' }} />
+                                {!isMobile && <MoreVertical size={20} style={{ cursor: 'pointer', color: '#666' }} />}
                             </div>
                         </div>
 
                         {/* Messages */}
-                        <div ref={messagesContainerRef} style={{ flex: 1, padding: '1.5rem', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                            {messages.length === 0 ? (
+                        <div ref={messagesContainerRef} style={{ flex: 1, padding: isMobile ? '1rem' : '1.5rem', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: isMobile ? '0.6rem' : '0.75rem' }}>
+                            {messagesLoading ? (
                                 <div style={{ textAlign: 'center', color: '#bbb', marginTop: '3rem' }}>
-                                    <p>No messages yet. Say hello! 👋</p>
+                                    <Loader size={32} className="spinner" style={{ margin: '0 auto 1rem' }} />
+                                    <p style={{ fontSize: isMobile ? '0.85rem' : '0.9rem' }}>Loading messages...</p>
+                                </div>
+                            ) : messages.length === 0 ? (
+                                <div style={{ textAlign: 'center', color: '#bbb', marginTop: '3rem' }}>
+                                    <p style={{ fontSize: isMobile ? '0.9rem' : '1rem' }}>No messages yet. Say hello! 👋</p>
                                 </div>
                             ) : (
                                 messages.map(msg => {
@@ -340,16 +400,17 @@ const Messages = () => {
                                             <div style={{
                                                 background: isMine ? 'var(--campus-blue)' : 'white',
                                                 color: isMine ? 'white' : '#333',
-                                                padding: '0.65rem 1rem',
+                                                padding: isMobile ? '0.6rem 0.85rem' : '0.65rem 1rem',
                                                 borderRadius: isMine ? '16px 16px 2px 16px' : '16px 16px 16px 2px',
-                                                maxWidth: '70%',
+                                                maxWidth: isMobile ? '85%' : '70%',
                                                 boxShadow: '0 2px 6px rgba(0,0,0,0.07)',
-                                                fontSize: '0.92rem',
-                                                lineHeight: 1.5
+                                                fontSize: isMobile ? '0.88rem' : '0.92rem',
+                                                lineHeight: 1.5,
+                                                wordBreak: 'break-word'
                                             }}>
                                                 {msg.content}
                                             </div>
-                                            <span style={{ fontSize: '0.68rem', color: '#aaa', marginTop: '0.2rem', display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
+                                            <span style={{ fontSize: isMobile ? '0.65rem' : '0.68rem', color: '#aaa', marginTop: '0.2rem', display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
                                                 {formatTime(msg.created_at)}
                                                 {isMine && getMessageStatusIcon(msg)}
                                             </span>
@@ -360,21 +421,21 @@ const Messages = () => {
                         </div>
 
                         {/* Message Input */}
-                        <form onSubmit={handleSendMessage} style={{ padding: '1rem 1.5rem', background: 'white', display: 'flex', gap: '0.75rem', borderTop: '1px solid #eee' }}>
+                        <form onSubmit={handleSendMessage} style={{ padding: isMobile ? '0.85rem 1rem' : '1rem 1.5rem', background: 'white', display: 'flex', gap: isMobile ? '0.5rem' : '0.75rem', borderTop: '1px solid #eee' }}>
                             <input
                                 type="text"
                                 placeholder="Type your message..."
                                 value={messageInput}
                                 onChange={e => setMessageInput(e.target.value)}
                                 disabled={sending}
-                                style={{ flex: 1, padding: '0.75rem 1.25rem', borderRadius: '25px', border: '1px solid #eee', background: '#f9f9f9', outline: 'none', fontSize: '0.95rem' }}
+                                style={{ flex: 1, padding: isMobile ? '0.65rem 1rem' : '0.75rem 1.25rem', borderRadius: '25px', border: '1px solid #eee', background: '#f9f9f9', outline: 'none', fontSize: isMobile ? '0.9rem' : '0.95rem' }}
                             />
                             <button
                                 type="submit"
                                 disabled={!messageInput.trim() || sending}
-                                style={{ background: messageInput.trim() ? 'var(--jiji-green)' : '#ccc', color: 'white', border: 'none', width: '46px', height: '46px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: messageInput.trim() ? 'pointer' : 'not-allowed', transition: 'background 0.2s', flexShrink: 0 }}
+                                style={{ background: messageInput.trim() ? 'var(--jiji-green)' : '#ccc', color: 'white', border: 'none', width: isMobile ? '40px' : '46px', height: isMobile ? '40px' : '46px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: messageInput.trim() ? 'pointer' : 'not-allowed', transition: 'background 0.2s', flexShrink: 0 }}
                             >
-                                <Send size={20} />
+                                <Send size={isMobile ? 18 : 20} />
                             </button>
                         </form>
                     </>

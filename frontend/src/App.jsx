@@ -58,12 +58,26 @@ const AppContent = () => {
             );
         }
 
-        // Protected routes check
+        // Protected routes check with better UX
         const protectedPages = ['wishlist', 'dashboard', 'settings', 'messages'];
         if (!user && protectedPages.includes(currentPage)) {
-            // Automatically open auth and show home
+            // Show a friendly message and redirect
             setTimeout(() => setIsAuthModalOpen(true), 100);
-            return <Home />;
+            return (
+                <div style={{ textAlign: 'center', padding: '100px 20px' }}>
+                    <h2 style={{ fontSize: '2rem', color: '#1d3d6e', marginBottom: '1rem' }}>Sign In Required</h2>
+                    <p style={{ fontSize: '1.1rem', color: '#64748b', maxWidth: '500px', margin: '0 auto 2rem' }}>
+                        Please sign in to access this feature
+                    </p>
+                    <button 
+                        onClick={() => setIsAuthModalOpen(true)}
+                        className="btn btn-primary"
+                        style={{ padding: '0.75rem 2rem', fontSize: '1rem' }}
+                    >
+                        Sign In / Register
+                    </button>
+                </div>
+            );
         }
 
         switch (currentPage) {

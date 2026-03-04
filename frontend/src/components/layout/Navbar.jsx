@@ -63,11 +63,43 @@ const Navbar = ({ onOpenAuth, onOpenSell }) => {
 
                 {/* Desktop nav links - Moved next to right side actions */}
                 {!isMobile && (
-                    <div style={{ display: 'flex', gap: '2rem', alignItems: 'center', marginLeft: 'auto' }}>
+                    <div style={{ display: 'flex', gap: '2.5rem', alignItems: 'center', marginLeft: 'auto' }}>
                         {navLink('home', 'Discover')}
                         {navLink('marketplace', 'Marketplace')}
                         {navLink('accommodation', 'Accommodation')}
                         {navLink('community', 'Community')}
+                        {user && (
+                            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginLeft: '0.5rem' }}>
+                                <a
+                                    href="#"
+                                    onClick={(e) => { e.preventDefault(); setCurrentPage('wishlist'); }}
+                                    style={{ position: 'relative', color: currentPage === 'wishlist' ? 'var(--jiji-green)' : '#666', transition: 'color 0.2s' }}
+                                    onMouseOver={e => e.currentTarget.style.color = 'var(--jiji-green)'}
+                                    onMouseOut={e => e.currentTarget.style.color = currentPage === 'wishlist' ? 'var(--jiji-green)' : '#666'}
+                                >
+                                    <Heart size={22} fill={currentPage === 'wishlist' ? 'var(--jiji-green)' : 'none'} />
+                                    {wishlist.length > 0 && (
+                                        <span style={{ position: 'absolute', top: '-6px', right: '-8px', background: 'var(--jiji-orange)', color: 'white', fontSize: '0.65rem', fontWeight: 900, width: '16px', height: '16px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                            {wishlist.length > 9 ? '9+' : wishlist.length}
+                                        </span>
+                                    )}
+                                </a>
+                                <a
+                                    href="#"
+                                    onClick={(e) => { e.preventDefault(); setCurrentPage('messages'); }}
+                                    style={{ position: 'relative', color: currentPage === 'messages' ? 'var(--jiji-green)' : '#666', transition: 'color 0.2s' }}
+                                    onMouseOver={e => e.currentTarget.style.color = 'var(--jiji-green)'}
+                                    onMouseOut={e => e.currentTarget.style.color = currentPage === 'messages' ? 'var(--jiji-green)' : '#666'}
+                                >
+                                    <MessageSquare size={22} fill={currentPage === 'messages' ? 'var(--jiji-green)' : 'none'} />
+                                    {unreadCount > 0 && (
+                                        <span style={{ position: 'absolute', top: '-6px', right: '-8px', background: 'var(--jiji-orange)', color: 'white', fontSize: '0.65rem', fontWeight: 900, width: '16px', height: '16px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                            {unreadCount > 9 ? '9+' : unreadCount}
+                                        </span>
+                                    )}
+                                </a>
+                            </div>
+                        )}
                     </div>
                 )}
 
@@ -188,9 +220,15 @@ const Navbar = ({ onOpenAuth, onOpenSell }) => {
                     padding: '1rem 1.5rem 1.5rem',
                     zIndex: 998,
                     animation: 'slideUp 0.2s ease-out',
-                    borderTop: '1px solid #f0f0f0'
+                    borderTop: '1px solid #f0f0f0',
+                    maxHeight: 'calc(100vh - 80px)',
+                    overflowY: 'auto'
                 }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
+                        {/* Main Navigation Section */}
+                        <div style={{ fontSize: '0.7rem', fontWeight: 800, color: '#999', textTransform: 'uppercase', letterSpacing: '0.5px', padding: '0.5rem 0', marginTop: '0.25rem' }}>
+                            Explore
+                        </div>
                         {navLink('home', 'Discover', <Home size={20} />)}
                         {navLink('marketplace', 'Marketplace', <Store size={20} />)}
                         {navLink('accommodation', 'Accommodation', <Building2 size={20} />)}
@@ -198,31 +236,46 @@ const Navbar = ({ onOpenAuth, onOpenSell }) => {
 
                         {user ? (
                             <>
+                                {/* User Section */}
+                                <div style={{ fontSize: '0.7rem', fontWeight: 800, color: '#999', textTransform: 'uppercase', letterSpacing: '0.5px', padding: '0.5rem 0', marginTop: '0.75rem', borderTop: '1px solid #f5f5f5' }}>
+                                    My Account
+                                </div>
                                 {navLink('dashboard', 'My Dashboard', <LayoutDashboard size={20} />)}
                                 {navLink('messages', `Messages${unreadCount > 0 ? ` (${unreadCount})` : ''}`, <MessageSquare size={20} />)}
                                 {navLink('wishlist', `Wishlist${wishlist.length > 0 ? ` (${wishlist.length})` : ''}`, <Heart size={20} />)}
                                 {navLink('settings', 'Settings', <SettingsIcon size={20} />)}
-                                <button
-                                    onClick={() => { setIsAdminLockModalOpen(true); setShowMobileMenu(false); }}
-                                    style={{ width: '100%', padding: '0.75rem', background: '#ebf2f7', border: 'none', borderRadius: '10px', color: '#1d3d6e', fontWeight: 800, fontSize: '1rem', cursor: 'pointer', textAlign: 'left', display: 'flex', alignItems: 'center', gap: '0.75rem', marginTop: '0.25rem' }}
-                                >
-                                    <ShieldCheck size={20} /> Admin Console
-                                </button>
-                                <button
-                                    onClick={handleLogout}
-                                    style={{ marginTop: '0.5rem', width: '100%', padding: '0.75rem', background: '#fff5f5', border: 'none', borderRadius: '10px', color: 'var(--jiji-orange)', fontWeight: 800, fontSize: '1rem', cursor: 'pointer', textAlign: 'left', display: 'flex', alignItems: 'center', gap: '0.75rem' }}
-                                >
-                                    <DoorOpen size={20} /> Sign Out
-                                </button>
+                                
+                                {/* Admin & Actions Section */}
+                                <div style={{ marginTop: '0.75rem', paddingTop: '0.75rem', borderTop: '1px solid #f5f5f5' }}>
+                                    <button
+                                        onClick={() => { setIsAdminLockModalOpen(true); setShowMobileMenu(false); }}
+                                        style={{ width: '100%', padding: '0.75rem', background: '#ebf2f7', border: 'none', borderRadius: '10px', color: '#1d3d6e', fontWeight: 800, fontSize: '1rem', cursor: 'pointer', textAlign: 'left', display: 'flex', alignItems: 'center', gap: '0.75rem' }}
+                                    >
+                                        <ShieldCheck size={20} /> Admin Console
+                                    </button>
+                                    <button
+                                        onClick={handleLogout}
+                                        style={{ marginTop: '0.5rem', width: '100%', padding: '0.75rem', background: '#fff5f5', border: 'none', borderRadius: '10px', color: 'var(--jiji-orange)', fontWeight: 800, fontSize: '1rem', cursor: 'pointer', textAlign: 'left', display: 'flex', alignItems: 'center', gap: '0.75rem' }}
+                                    >
+                                        <DoorOpen size={20} /> Sign Out
+                                    </button>
+                                </div>
                             </>
                         ) : (
-                            <button
-                                onClick={() => { onOpenAuth(); setShowMobileMenu(false); }}
-                                className="btn btn-primary"
-                                style={{ width: '100%', marginTop: '0.75rem' }}
-                            >
-                                Sign In / Register
-                            </button>
+                            <>
+                                <div style={{ marginTop: '0.75rem', paddingTop: '0.75rem', borderTop: '1px solid #f5f5f5' }}>
+                                    <button
+                                        onClick={() => { onOpenAuth(); setShowMobileMenu(false); }}
+                                        className="btn btn-primary"
+                                        style={{ width: '100%' }}
+                                    >
+                                        Sign In / Register
+                                    </button>
+                                    <p style={{ fontSize: '0.75rem', color: '#888', textAlign: 'center', marginTop: '0.75rem', lineHeight: 1.5 }}>
+                                        Sign in to access messages, wishlist, and sell items
+                                    </p>
+                                </div>
+                            </>
                         )}
                     </div>
                 </div>
