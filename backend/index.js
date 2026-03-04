@@ -91,6 +91,17 @@ const transporter = nodemailer.createTransport({
     }
 });
 
+// Verify email configuration on startup
+transporter.verify(function(error, success) {
+    if (error) {
+        console.error('❌ Email configuration error:', error);
+        console.error('Please check EMAIL_USER and EMAIL_PASS in .env file');
+    } else {
+        console.log('✅ Email server is ready to send messages');
+        console.log('Email configured for:', process.env.EMAIL_USER);
+    }
+});
+
 // Health check / Home route
 app.get('/', (req, res) => {
     res.json({
