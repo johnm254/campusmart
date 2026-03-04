@@ -203,7 +203,7 @@ async function initializeSupabase() {
         // Initialize default settings if they don't exist
         await client.query(`
             INSERT INTO site_settings (key, value) 
-            VALUES ('site_name', 'CampusMart'), ('maintenance_mode', 'false'), ('announcement', 'Welcome to CampusMart!')
+            VALUES ('site_name', 'CampusMart'), ('maintenance_mode', 'false'), ('contact_email', 'campusmart.care@gmail.com'), ('announcement', 'Welcome to CampusMart!')
             ON CONFLICT (key) DO NOTHING
         `);
 

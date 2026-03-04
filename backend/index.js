@@ -35,7 +35,7 @@ const initSchema = async () => {
         await db.query(`CREATE TABLE IF NOT EXISTS activity_logs (id SERIAL PRIMARY KEY, user_id INTEGER REFERENCES users(id) ON DELETE SET NULL, action VARCHAR(100) NOT NULL, metadata JSONB, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)`);
         await db.query(`CREATE TABLE IF NOT EXISTS password_resets (id SERIAL PRIMARY KEY, email VARCHAR(255) NOT NULL, token TEXT NOT NULL, expires_at TIMESTAMP NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)`);
         await db.query(`CREATE TABLE IF NOT EXISTS site_settings (key VARCHAR(100) PRIMARY KEY, value TEXT, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)`);
-        await db.query(`INSERT INTO site_settings (key, value) VALUES ('site_name', 'CampusMart'), ('maintenance_mode', 'false'), ('announcement', 'Welcome to CampusMart!') ON CONFLICT (key) DO NOTHING`);
+        await db.query(`INSERT INTO site_settings (key, value) VALUES ('site_name', 'CampusMart'), ('maintenance_mode', 'false'), ('contact_email', 'campusmart.care@gmail.com'), ('announcement', 'Welcome to CampusMart!') ON CONFLICT (key) DO NOTHING`);
         await db.query(`ALTER TABLE products ADD COLUMN IF NOT EXISTS metadata JSONB`);
         await db.query(`ALTER TABLE products ADD COLUMN IF NOT EXISTS contact_phone VARCHAR(20)`);
         await db.query(`ALTER TABLE products ADD COLUMN IF NOT EXISTS security_features TEXT`);

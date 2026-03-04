@@ -176,6 +176,7 @@ const initMySQL = async () => {
         await db.query(`INSERT IGNORE INTO site_settings (\`key\`, value) VALUES 
             ('site_name', 'CampusMart'),
             ('maintenance_mode', 'false'),
+            ('contact_email', 'campusmart.care@gmail.com'),
             ('announcement', 'Welcome to CampusMart!')
         `);
         console.log('✅ Default settings inserted');
