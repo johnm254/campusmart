@@ -560,6 +560,7 @@ const Messages = () => {
                     onReviewSubmitted={() => fetchOtherUserRating(selectedConv.other_user_id)}
                 />
             )}
+            </div>
         </div>
     );
 };
