@@ -452,6 +452,25 @@ export const api = {
         return this.handleResponse(res);
     },
 
+    async getAdminChat() {
+        const res = await fetch(`${API_URL}/admin/chat`, {
+            headers: this.getAdminHeaders()
+        });
+        return this.handleResponse(res);
+    },
+
+    async sendAdminChatMessage(content) {
+        const res = await fetch(`${API_URL}/admin/chat`, {
+            method: 'POST',
+            headers: {
+                ...this.getAdminHeaders(),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ content })
+        });
+        return this.handleResponse(res);
+    },
+
     async submitReview(data) {
         const token = localStorage.getItem('token');
         const res = await fetch(`${API_URL}/reviews`, {

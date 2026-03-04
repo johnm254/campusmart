@@ -1651,6 +1651,70 @@ app.post('/api/admin/announcements', verifyAdminToken, async (req, res) => {
     }
 });
 
+// ═══ Admin Chat Room Routes ═══════════════════════════════════════════════════════════════════════
+
+// Get admin chat messages
+app.get('/api/admin/chat', verifyAdminToken, async (req, res) => {
+    try {
+        const messages = await db.query(`
+            SELECT 
+                cp.id,
+                cp.content,
+                cp.created_at,
+                cp.author_id,
+                u.full_name as author_name,
+                u.avatar_url as author_avatar
+            FROM community_posts cp
+            JOIN users u ON cp.author_id = u.id
+            WHERE cp.type = 'admin-chat'
+            ORDER BY cp.created_at ASC
+        `);
+        
+        res.json(messages.rows);
+    } catch (error) {
+        console.error('Error fetching admin chat:', error);
+        res.status(500).json({ message: 'Error fetching admin chat messages' });
+    }
+});
+
+// Send admin chat message
+app.post('/api/admin/chat', verifyAdminToken, async (req, res) => {
+    try {
+        const { content } = req.body;
+        const userId = req.user.id;
+
+        if (!content || content.trim().length === 0) {
+            return res.status(400).json({ message: 'Message content is required' });
+        }
+
+        const result = await db.query(
+            `INSERT INTO community_posts (author_id, content, type, image_url)
+             VALUES ($1, $2, 'admin-chat', NULL) RETURNING *`,
+            [userId, content.trim()]
+        );
+
+        // Get the full message with user info
+        const fullMessage = await db.query(`
+            SELECT 
+                cp.id,
+                cp.content,
+                cp.created_at,
+                cp.author_id,
+                u.full_name as author_name,
+                u.avatar_url as author_avatar
+            FROM community_posts cp
+            JOIN users u ON cp.author_id = u.id
+            WHERE cp.id = $1
+        `, [result.rows[0].id]);
+
+        logActivity(userId, 'admin_chat_message', { messageId: result.rows[0].id });
+        res.status(201).json({ message: 'Message sent successfully', data: fullMessage.rows[0] });
+    } catch (error) {
+        console.error('Error sending admin chat message:', error);
+        res.status(500).json({ message: 'Error sending message: ' + error.message });
+    }
+});
+
 // ΓöÇΓöÇΓöÇ Crawler & SEO Routes ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 
 // Robots.txt

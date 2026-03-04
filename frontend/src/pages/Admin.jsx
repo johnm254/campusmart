@@ -1129,12 +1129,8 @@ const AdminChatRoom = ({ user, addNotification }) => {
 
     const loadMessages = async () => {
         try {
-            const posts = await api.getAdminCommunityPosts();
-            // Filter for admin chat messages (we'll use a special tag)
-            const chatMessages = posts.filter(post => 
-                post.type === 'admin-chat' || post.content?.includes('[ADMIN-CHAT]')
-            );
-            setMessages(chatMessages);
+            const chatMessages = await api.getAdminChat();
+            setMessages(chatMessages || []);
         } catch (error) {
             console.error('Error loading admin chat:', error);
         } finally {
@@ -1148,8 +1144,7 @@ const AdminChatRoom = ({ user, addNotification }) => {
 
         setSending(true);
         try {
-            const content = `[ADMIN-CHAT] ${messageInput}`;
-            await api.createCommunityPost({ content, type: 'admin-chat' });
+            await api.sendAdminChatMessage(messageInput);
             setMessageInput('');
             await loadMessages();
             addNotification('Sent', 'Message sent to admin chat', 'success');
@@ -1210,7 +1205,6 @@ const AdminChatRoom = ({ user, addNotification }) => {
                 ) : (
                     messages.map((msg) => {
                         const isMyMessage = msg.author_id === user?.id;
-                        const cleanContent = msg.content.replace('[ADMIN-CHAT]', '').trim();
                         
                         return (
                             <div key={msg.id} style={{
@@ -1249,7 +1243,7 @@ const AdminChatRoom = ({ user, addNotification }) => {
                                             lineHeight: 1.5,
                                             wordBreak: 'break-word'
                                         }}>
-                                            {cleanContent}
+                                            {msg.content}
                                         </div>
                                         <div style={{
                                             fontSize: '0.7rem',
