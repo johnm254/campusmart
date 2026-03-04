@@ -14,15 +14,28 @@ const ResetPassword = () => {
     const [success, setSuccess] = useState(false);
 
     useEffect(() => {
+        // Check URL parameters first
         const urlParams = new URLSearchParams(window.location.search);
-        const t = urlParams.get('token');
-        const e = urlParams.get('email');
+        let t = urlParams.get('token');
+        let e = urlParams.get('email');
+        
+        // If not in URL params, check hash
+        if (!t || !e) {
+            const hash = window.location.hash;
+            if (hash.includes('reset-password')) {
+                const hashParams = new URLSearchParams(window.location.search);
+                t = hashParams.get('token');
+                e = hashParams.get('email');
+            }
+        }
+        
         if (t && e) {
             setToken(t);
             setEmail(e);
+            console.log('Reset password initialized for:', e);
         } else {
-            addNotification('Error', 'Invalid or missing reset link.', 'warning');
-            setCurrentPage('home');
+            addNotification('Error', 'Invalid or missing reset link. Please request a new password reset.', 'warning');
+            setTimeout(() => setCurrentPage('home'), 2000);
         }
     }, []);
 
