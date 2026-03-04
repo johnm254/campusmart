@@ -1,7 +1,7 @@
 ﻿import React, { useState, useEffect, useRef } from 'react';
 import { useApp } from '../AppContext';
 import { api } from '../lib/api';
-import { Send, Search, MessageSquare, Phone, MoreVertical, CheckCheck, Check, Star, ArrowLeft, Loader } from 'lucide-react';
+import { Send, Search, MessageSquare, Phone, MoreVertical, CheckCheck, Check, Star, ArrowLeft, Loader, Reply, X } from 'lucide-react';
 import UserReviewModal from '../components/modals/UserReviewModal';
 import { useMediaQuery } from '../hooks/useMediaQuery';
 
@@ -16,6 +16,7 @@ const Messages = () => {
     const [messagesLoading, setMessagesLoading] = useState(false);
     const [sending, setSending] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
+    const [replyingTo, setReplyingTo] = useState(null);
     const messagesContainerRef = useRef(null);
     const pollRef = useRef(null);
     const [showReviewModal, setShowReviewModal] = useState(false);
@@ -113,8 +114,16 @@ const Messages = () => {
         if (!messageInput.trim() || !selectedConv) return;
 
         setSending(true);
-        const content = messageInput.trim();
+        let content = messageInput.trim();
+        
+        // Add reply prefix if replying to a message
+        if (replyingTo) {
+            const replyPrefix = `↩️ Replying to: "${replyingTo.content.substring(0, 50)}${replyingTo.content.length > 50 ? '...' : ''}"\n\n`;
+            content = replyPrefix + content;
+        }
+        
         setMessageInput('');
+        setReplyingTo(null);
 
         // Optimistic UI update
         const tempMsg = {
@@ -397,18 +406,58 @@ const Messages = () => {
                                     const isMine = msg.sender_id === user?.id;
                                     return (
                                         <div key={msg.id} style={{ display: 'flex', flexDirection: 'column', alignItems: isMine ? 'flex-end' : 'flex-start' }}>
-                                            <div style={{
-                                                background: isMine ? 'var(--campus-blue)' : 'white',
-                                                color: isMine ? 'white' : '#333',
-                                                padding: isMobile ? '0.6rem 0.85rem' : '0.65rem 1rem',
-                                                borderRadius: isMine ? '16px 16px 2px 16px' : '16px 16px 16px 2px',
-                                                maxWidth: isMobile ? '85%' : '70%',
-                                                boxShadow: '0 2px 6px rgba(0,0,0,0.07)',
-                                                fontSize: isMobile ? '0.88rem' : '0.92rem',
-                                                lineHeight: 1.5,
-                                                wordBreak: 'break-word'
-                                            }}>
-                                                {msg.content}
+                                            <div style={{ display: 'flex', alignItems: 'flex-end', gap: '0.5rem', maxWidth: isMobile ? '85%' : '70%' }}>
+                                                {!isMine && !isMobile && (
+                                                    <button
+                                                        onClick={() => setReplyingTo(msg)}
+                                                        style={{
+                                                            background: 'none',
+                                                            border: 'none',
+                                                            color: '#999',
+                                                            cursor: 'pointer',
+                                                            padding: '0.25rem',
+                                                            opacity: 0.6,
+                                                            transition: 'opacity 0.2s'
+                                                        }}
+                                                        onMouseOver={e => e.currentTarget.style.opacity = '1'}
+                                                        onMouseOut={e => e.currentTarget.style.opacity = '0.6'}
+                                                        title="Reply to this message"
+                                                    >
+                                                        <Reply size={16} />
+                                                    </button>
+                                                )}
+                                                <div style={{
+                                                    background: isMine ? 'var(--campus-blue)' : 'white',
+                                                    color: isMine ? 'white' : '#333',
+                                                    padding: isMobile ? '0.6rem 0.85rem' : '0.65rem 1rem',
+                                                    borderRadius: isMine ? '16px 16px 2px 16px' : '16px 16px 16px 2px',
+                                                    boxShadow: '0 2px 6px rgba(0,0,0,0.07)',
+                                                    fontSize: isMobile ? '0.88rem' : '0.92rem',
+                                                    lineHeight: 1.5,
+                                                    wordBreak: 'break-word',
+                                                    flex: 1
+                                                }}>
+                                                    {msg.content}
+                                                </div>
+                                                {isMine && !isMobile && (
+                                                    <button
+                                                        onClick={() => setReplyingTo(msg)}
+                                                        style={{
+                                                            background: 'none',
+                                                            border: 'none',
+                                                            color: '#999',
+                                                            cursor: 'pointer',
+                                                            padding: '0.25rem',
+                                                            opacity: 0.6,
+                                                            transition: 'opacity 0.2s'
+                                                        }}
+                                                        onMouseOver={e => e.currentTarget.style.opacity = '1'}
+                                                        onMouseOut={e => e.currentTarget.style.opacity = '0.6'}
+                                                        title="Reply to this message"
+                                                    >
+                                                        <Reply size={16} />
+                                                    </button>
+                                                )}
                                             </div>
                                             <span style={{ fontSize: isMobile ? '0.65rem' : '0.68rem', color: '#aaa', marginTop: '0.2rem', display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
                                                 {formatTime(msg.created_at)}
@@ -421,23 +470,70 @@ const Messages = () => {
                         </div>
 
                         {/* Message Input */}
-                        <form onSubmit={handleSendMessage} style={{ padding: isMobile ? '0.85rem 1rem' : '1rem 1.5rem', background: 'white', display: 'flex', gap: isMobile ? '0.5rem' : '0.75rem', borderTop: '1px solid #eee' }}>
-                            <input
-                                type="text"
-                                placeholder="Type your message..."
-                                value={messageInput}
-                                onChange={e => setMessageInput(e.target.value)}
-                                disabled={sending}
-                                style={{ flex: 1, padding: isMobile ? '0.65rem 1rem' : '0.75rem 1.25rem', borderRadius: '25px', border: '1px solid #eee', background: '#f9f9f9', outline: 'none', fontSize: isMobile ? '0.9rem' : '0.95rem' }}
-                            />
-                            <button
-                                type="submit"
-                                disabled={!messageInput.trim() || sending}
-                                style={{ background: messageInput.trim() ? 'var(--jiji-green)' : '#ccc', color: 'white', border: 'none', width: isMobile ? '40px' : '46px', height: isMobile ? '40px' : '46px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: messageInput.trim() ? 'pointer' : 'not-allowed', transition: 'background 0.2s', flexShrink: 0 }}
-                            >
-                                <Send size={isMobile ? 18 : 20} />
-                            </button>
-                        </form>
+                        <div style={{ background: 'white', borderTop: '1px solid #eee' }}>
+                            {replyingTo && (
+                                <div style={{ 
+                                    padding: isMobile ? '0.5rem 1rem' : '0.75rem 1.5rem', 
+                                    background: '#f8fafc', 
+                                    borderBottom: '1px solid #eee',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    gap: '0.5rem'
+                                }}>
+                                    <div style={{ flex: 1, minWidth: 0 }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+                                            <Reply size={14} color="var(--campus-blue)" />
+                                            <span style={{ fontSize: isMobile ? '0.7rem' : '0.75rem', fontWeight: 700, color: 'var(--campus-blue)' }}>
+                                                Replying to {replyingTo.sender_id === user?.id ? 'yourself' : selectedConv.other_user_name}
+                                            </span>
+                                        </div>
+                                        <p style={{ 
+                                            fontSize: isMobile ? '0.75rem' : '0.8rem', 
+                                            color: '#666', 
+                                            margin: 0,
+                                            whiteSpace: 'nowrap',
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis'
+                                        }}>
+                                            {replyingTo.content}
+                                        </p>
+                                    </div>
+                                    <button
+                                        onClick={() => setReplyingTo(null)}
+                                        style={{
+                                            background: 'none',
+                                            border: 'none',
+                                            color: '#999',
+                                            cursor: 'pointer',
+                                            padding: '0.25rem',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            flexShrink: 0
+                                        }}
+                                    >
+                                        <X size={18} />
+                                    </button>
+                                </div>
+                            )}
+                            <form onSubmit={handleSendMessage} style={{ padding: isMobile ? '0.85rem 1rem' : '1rem 1.5rem', display: 'flex', gap: isMobile ? '0.5rem' : '0.75rem' }}>
+                                <input
+                                    type="text"
+                                    placeholder={replyingTo ? "Type your reply..." : "Type your message..."}
+                                    value={messageInput}
+                                    onChange={e => setMessageInput(e.target.value)}
+                                    disabled={sending}
+                                    style={{ flex: 1, padding: isMobile ? '0.65rem 1rem' : '0.75rem 1.25rem', borderRadius: '25px', border: '1px solid #eee', background: '#f9f9f9', outline: 'none', fontSize: isMobile ? '0.9rem' : '0.95rem' }}
+                                />
+                                <button
+                                    type="submit"
+                                    disabled={!messageInput.trim() || sending}
+                                    style={{ background: messageInput.trim() ? 'var(--jiji-green)' : '#ccc', color: 'white', border: 'none', width: isMobile ? '40px' : '46px', height: isMobile ? '40px' : '46px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: messageInput.trim() ? 'pointer' : 'not-allowed', transition: 'background 0.2s', flexShrink: 0 }}
+                                >
+                                    <Send size={isMobile ? 18 : 20} />
+                                </button>
+                            </form>
+                        </div>
                     </>
                 ) : (
                     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#bbb' }}>
