@@ -3,6 +3,7 @@ import { useApp } from '../AppContext';
 import { api } from '../lib/api';
 import { Package, Eye, Heart, MessageCircle, ArrowUpRight, Clock, Plus, Check, Star, Zap, Shield } from 'lucide-react';
 import { useMediaQuery } from '../hooks/useMediaQuery';
+import BackButton from '../components/ui/BackButton';
 
 const Dashboard = () => {
     const { user, wishlist, setCurrentPage, setIsSellModalOpen, addNotification, setIsAuthModalOpen } = useApp();
@@ -126,6 +127,7 @@ const Dashboard = () => {
                 padding: isMobile ? '1rem 0' : '2rem 0'
             }}>
                 <div className="container" style={{ maxWidth: '1300px', padding: isMobile ? '0 1rem' : '0 2rem' }}>
+                    <BackButton />
 
                     {/* TOP HEADER SECTION */}
                     <div style={{ marginBottom: isMobile ? '2rem' : '3rem', display: 'flex', flexDirection: isMobile ? 'column' : 'row', justifyContent: 'space-between', alignItems: isMobile ? 'flex-start' : 'center', gap: isMobile ? '1.5rem' : '0' }}>

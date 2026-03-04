@@ -3,6 +3,7 @@ import { useApp } from '../AppContext';
 import { api } from '../lib/api';
 import ImageCropperModal from '../components/ui/ImageCropperModal';
 import { Camera, Save, User, Phone, Mail, ShieldCheck, Star } from 'lucide-react';
+import BackButton from '../components/ui/BackButton';
 
 const Settings = () => {
     const { user, setUser, addNotification } = useApp();
@@ -72,6 +73,7 @@ const Settings = () => {
 
     return (
         <div className="container" style={{ maxWidth: '800px', padding: '2rem 1rem' }}>
+            <BackButton />
             <h2 style={{ marginBottom: '2rem', fontSize: '2rem', color: 'var(--campus-blue)' }}>Account Settings</h2>
 
             <div style={{ background: 'white', padding: '2.5rem', borderRadius: '24px', boxShadow: '0 10px 40px rgba(0,0,0,0.05)' }}>

@@ -4,6 +4,7 @@ import { api } from '../lib/api';
 import { Send, Search, MessageSquare, Phone, MoreVertical, CheckCheck, Check, Star, ArrowLeft, Loader, Reply, X } from 'lucide-react';
 import UserReviewModal from '../components/modals/UserReviewModal';
 import { useMediaQuery } from '../hooks/useMediaQuery';
+import BackButton from '../components/ui/BackButton';
 
 const Messages = () => {
     const { user, addNotification } = useApp();
@@ -188,7 +189,13 @@ const Messages = () => {
     };
 
     return (
-        <div className="container" style={{ 
+        <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+            {!isMobile && !selectedConv && (
+                <div className="container" style={{ padding: '1rem 2rem 0' }}>
+                    <BackButton />
+                </div>
+            )}
+            <div className="container" style={{ 
             height: isMobile ? 'calc(100vh - 80px)' : 'calc(100vh - 120px)', 
             marginTop: isMobile ? '10px' : '20px', 
             display: 'flex', 

@@ -3,6 +3,7 @@ import { useApp } from '../AppContext';
 import FilterSidebar from '../components/marketplace/FilterSidebar';
 import ProductGrid from '../components/marketplace/ProductGrid';
 import { api } from '../lib/api';
+import BackButton from '../components/ui/BackButton';
 
 const Accommodation = () => {
     const { activeCategory, setActiveCategory } = useApp();
@@ -84,6 +85,7 @@ const Accommodation = () => {
 
     return (
         <div className="container" style={{ paddingTop: '2rem' }}>
+            <BackButton />
             <div style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', marginBottom: '2rem', gap: '2rem', flexWrap: 'wrap' }}>
                 <h2 style={{ fontSize: '2.5rem', fontWeight: 900, color: 'var(--campus-blue)', margin: 0 }}>Student <span style={{ color: 'var(--jiji-green)' }}>Accommodation</span></h2>
                 <div style={{ flex: 1, minWidth: '300px', maxWidth: '400px' }}>

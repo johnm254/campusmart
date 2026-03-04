@@ -3,6 +3,7 @@ import { useApp } from '../AppContext';
 import ProductCard from '../components/marketplace/ProductCard';
 import { Heart, ShoppingBag } from 'lucide-react';
 import { useMediaQuery } from '../hooks/useMediaQuery';
+import BackButton from '../components/ui/BackButton';
 
 const Wishlist = () => {
     const { wishlist, setCurrentPage } = useApp();
@@ -10,6 +11,7 @@ const Wishlist = () => {
 
     return (
         <div className="container" style={{ padding: isMobile ? '1rem' : '2rem 0' }}>
+            <BackButton />
             <div style={{ marginBottom: isMobile ? '1.5rem' : '2rem' }}>
                 <h2 style={{ 
                     fontSize: isMobile ? '1.75rem' : '2.5rem', 

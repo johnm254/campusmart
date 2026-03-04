@@ -3,6 +3,7 @@ import { useApp } from '../AppContext';
 import { api } from '../lib/api';
 import { MessageSquare, Plus, Heart, MessageCircle, Share2, MoreVertical, ShieldCheck, X, Send, Tag, ImagePlus, Trash2, Star } from 'lucide-react';
 import { useMediaQuery } from '../hooks/useMediaQuery';
+import BackButton from '../components/ui/BackButton';
 
 const Community = () => {
     const { user, addNotification, setIsAuthModalOpen } = useApp();
@@ -163,6 +164,7 @@ const Community = () => {
 
     return (
         <div className="container" style={{ maxWidth: isMobile ? '100%' : '1000px', padding: isMobile ? '0 1rem' : '0 2rem' }}>
+            <BackButton />
             <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', justifyContent: 'space-between', alignItems: isMobile ? 'flex-start' : 'center', marginBottom: isMobile ? '1.5rem' : '2.5rem', gap: isMobile ? '1rem' : '0' }}>
                 <div>
                     <h1 style={{ fontSize: isMobile ? '1.75rem' : '2.5rem', color: 'var(--campus-blue)', marginBottom: '0.5rem' }}>Campus Community</h1>

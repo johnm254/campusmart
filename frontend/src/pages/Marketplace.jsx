@@ -5,6 +5,7 @@ import ProductGrid from '../components/marketplace/ProductGrid';
 import { api } from '../lib/api';
 import { useMediaQuery } from '../hooks/useMediaQuery';
 import { SlidersHorizontal, X, Search } from 'lucide-react';
+import BackButton from '../components/ui/BackButton';
 
 const Marketplace = () => {
     const { activeCategory, setActiveCategory } = useApp();
@@ -99,6 +100,7 @@ const Marketplace = () => {
 
     return (
         <div className="container" style={{ paddingTop: isMobile ? '1.5rem' : '2.5rem', flex: 1, display: 'flex', flexDirection: 'column', paddingBottom: '5rem', minHeight: '100%' }}>
+            <BackButton />
             {/* Header Section */}
             <div style={{
                 display: 'flex',
