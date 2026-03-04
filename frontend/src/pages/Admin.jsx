@@ -5,7 +5,7 @@ import {
     Users, ShoppingBag, Settings, MessageSquare,
     Search, Activity, LayoutDashboard, Megaphone, 
     Trash2, RefreshCw, LogOut, X, Moon, Sun, ShieldAlert,
-    AlertTriangle, CheckCircle
+    AlertTriangle, CheckCircle, MessageCircle, Send
 } from 'lucide-react';
 
 // Memoized Icon Wrapper to prevent unnecessary re-renders
@@ -19,6 +19,8 @@ const NAV_ITEMS = [
     { id: 'users', label: 'User Management', icon: Users },
     { id: 'products', label: 'Products', icon: ShoppingBag },
     { id: 'community', label: 'Community Posts', icon: MessageSquare },
+    { id: 'feedback', label: 'User Feedback', icon: AlertTriangle },
+    { id: 'admin-chat', label: 'Admin Chat Room', icon: MessageCircle },
     { id: 'announcements', label: 'Announcements', icon: Megaphone },
     { id: 'logs', label: 'Activity Logs', icon: Activity },
     { id: 'settings', label: 'Site Settings', icon: Settings },
@@ -450,6 +452,8 @@ const AdminDashboard = () => {
                             {activeTab === 'users' && <UserManagement users={filteredUsers} onBan={handleToggleBan} onRoleUpdate={handleRoleUpdate} onVerify={handleToggleVerification} onDelete={handleDeleteUser} />}
                             {activeTab === 'products' && <ProductControl products={filteredProducts} onToggle={handleToggleProduct} onDelete={handleDeleteProduct} />}
                             {activeTab === 'community' && <CommunityPosts posts={filteredPosts} onDelete={handleDeletePost} products={products} setProducts={setProducts} loadData={loadData} addNotification={addNotification} />}
+                            {activeTab === 'feedback' && <FeedbackSection />}
+                            {activeTab === 'admin-chat' && <AdminChatRoom user={user} addNotification={addNotification} />}
                             {activeTab === 'announcements' && <Announcements adminPosts={adminPosts} announcementText={announcementText} setAnnouncementText={setAnnouncementText} onPost={handlePostAnnouncement} isPosting={isPosting} onDelete={handleDeletePost} />}
                             {activeTab === 'logs' && <ActivityLogs logs={filteredLogs} />}
                             {activeTab === 'settings' && <SiteSettings settings={settings} setSettings={setSettings} onSave={handleSaveSettings} isSaving={isSaving} />}
@@ -1024,6 +1028,293 @@ const SiteSettings = ({ settings, setSettings, onSave, isSaving }) => (
         </button>
     </form>
 );
+
+// Feedback Section - View user feedback
+const FeedbackSection = () => {
+    const [feedbackMessages, setFeedbackMessages] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        loadFeedback();
+    }, []);
+
+    const loadFeedback = async () => {
+        try {
+            setLoading(true);
+            const conversations = await api.getConversations();
+            // Filter for feedback messages (messages sent to admins with feedback format)
+            const feedback = conversations.filter(conv => 
+                conv.last_message && conv.last_message.includes('OFFICIAL FEEDBACK')
+            );
+            setFeedbackMessages(feedback);
+        } catch (error) {
+            console.error('Error loading feedback:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    if (loading) {
+        return <div style={{ textAlign: 'center', padding: '3rem', color: '#94a3b8' }}>Loading feedback...</div>;
+    }
+
+    if (feedbackMessages.length === 0) {
+        return <EmptyState text="No feedback received yet." />;
+    }
+
+    return (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            {feedbackMessages.map((msg, idx) => (
+                <div key={idx} style={{
+                    background: 'white',
+                    padding: '1.5rem',
+                    borderRadius: '16px',
+                    boxShadow: '0 4px 20px rgba(0,0,0,0.04)',
+                    border: '1px solid #e2e8f0'
+                }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                            <img 
+                                src={msg.other_user_avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(msg.other_user_name || 'User')}&background=random`}
+                                style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover' }}
+                                alt={msg.other_user_name}
+                            />
+                            <div>
+                                <div style={{ fontWeight: 700, color: '#1d3d6e' }}>{msg.other_user_name}</div>
+                                <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>
+                                    {new Date(msg.created_at).toLocaleString()}
+                                </div>
+                            </div>
+                        </div>
+                        <AlertTriangle size={20} color="#f59e0b" />
+                    </div>
+                    <div style={{
+                        background: '#f8fafc',
+                        padding: '1rem',
+                        borderRadius: '12px',
+                        whiteSpace: 'pre-wrap',
+                        fontSize: '0.9rem',
+                        lineHeight: 1.6,
+                        color: '#334155'
+                    }}>
+                        {msg.last_message}
+                    </div>
+                </div>
+            ))}
+        </div>
+    );
+};
+
+// Admin Chat Room - For admins to discuss website welfare
+const AdminChatRoom = ({ user, addNotification }) => {
+    const [messages, setMessages] = useState([]);
+    const [messageInput, setMessageInput] = useState('');
+    const [loading, setLoading] = useState(true);
+    const [sending, setSending] = useState(false);
+    const messagesEndRef = React.useRef(null);
+
+    useEffect(() => {
+        loadMessages();
+        const interval = setInterval(loadMessages, 5000); // Poll every 5 seconds
+        return () => clearInterval(interval);
+    }, []);
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [messages]);
+
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    const loadMessages = async () => {
+        try {
+            const posts = await api.getAdminCommunityPosts();
+            // Filter for admin chat messages (we'll use a special tag)
+            const chatMessages = posts.filter(post => 
+                post.type === 'admin-chat' || post.content?.includes('[ADMIN-CHAT]')
+            );
+            setMessages(chatMessages);
+        } catch (error) {
+            console.error('Error loading admin chat:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleSendMessage = async (e) => {
+        e.preventDefault();
+        if (!messageInput.trim()) return;
+
+        setSending(true);
+        try {
+            const content = `[ADMIN-CHAT] ${messageInput}`;
+            await api.createCommunityPost({ content, type: 'admin-chat' });
+            setMessageInput('');
+            await loadMessages();
+            addNotification('Sent', 'Message sent to admin chat', 'success');
+        } catch (error) {
+            addNotification('Error', 'Failed to send message', 'error');
+        } finally {
+            setSending(false);
+        }
+    };
+
+    if (loading) {
+        return <div style={{ textAlign: 'center', padding: '3rem', color: '#94a3b8' }}>Loading chat...</div>;
+    }
+
+    return (
+        <div style={{
+            background: 'white',
+            borderRadius: '20px',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.04)',
+            border: '1px solid #e2e8f0',
+            display: 'flex',
+            flexDirection: 'column',
+            height: '600px'
+        }}>
+            {/* Chat Header */}
+            <div style={{
+                padding: '1.5rem',
+                borderBottom: '1px solid #e2e8f0',
+                background: 'linear-gradient(135deg, #1d3d6e, #2d5fa0)',
+                color: 'white',
+                borderRadius: '20px 20px 0 0'
+            }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                    <MessageCircle size={24} />
+                    <div>
+                        <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800 }}>Admin Chat Room</h3>
+                        <p style={{ margin: '0.25rem 0 0', fontSize: '0.75rem', opacity: 0.8 }}>
+                            Discuss website welfare and administration
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            {/* Messages */}
+            <div style={{
+                flex: 1,
+                overflowY: 'auto',
+                padding: '1.5rem',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '1rem'
+            }}>
+                {messages.length === 0 ? (
+                    <div style={{ textAlign: 'center', padding: '3rem', color: '#94a3b8' }}>
+                        <MessageCircle size={48} style={{ opacity: 0.3, marginBottom: '1rem' }} />
+                        <p>No messages yet. Start the conversation!</p>
+                    </div>
+                ) : (
+                    messages.map((msg) => {
+                        const isMyMessage = msg.author_id === user?.id;
+                        const cleanContent = msg.content.replace('[ADMIN-CHAT]', '').trim();
+                        
+                        return (
+                            <div key={msg.id} style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: isMyMessage ? 'flex-end' : 'flex-start'
+                            }}>
+                                <div style={{
+                                    display: 'flex',
+                                    alignItems: 'flex-start',
+                                    gap: '0.75rem',
+                                    maxWidth: '70%',
+                                    flexDirection: isMyMessage ? 'row-reverse' : 'row'
+                                }}>
+                                    <img
+                                        src={msg.author_avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(msg.author_name || 'Admin')}&background=1d3d6e&color=fff`}
+                                        style={{ width: '36px', height: '36px', borderRadius: '50%', objectFit: 'cover' }}
+                                        alt={msg.author_name}
+                                    />
+                                    <div>
+                                        <div style={{
+                                            fontSize: '0.75rem',
+                                            fontWeight: 700,
+                                            color: '#64748b',
+                                            marginBottom: '0.25rem',
+                                            textAlign: isMyMessage ? 'right' : 'left'
+                                        }}>
+                                            {msg.author_name}
+                                        </div>
+                                        <div style={{
+                                            background: isMyMessage ? '#1d3d6e' : '#f1f5f9',
+                                            color: isMyMessage ? 'white' : '#334155',
+                                            padding: '0.75rem 1rem',
+                                            borderRadius: isMyMessage ? '16px 16px 2px 16px' : '16px 16px 16px 2px',
+                                            fontSize: '0.9rem',
+                                            lineHeight: 1.5,
+                                            wordBreak: 'break-word'
+                                        }}>
+                                            {cleanContent}
+                                        </div>
+                                        <div style={{
+                                            fontSize: '0.7rem',
+                                            color: '#94a3b8',
+                                            marginTop: '0.25rem',
+                                            textAlign: isMyMessage ? 'right' : 'left'
+                                        }}>
+                                            {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })
+                )}
+                <div ref={messagesEndRef} />
+            </div>
+
+            {/* Input */}
+            <form onSubmit={handleSendMessage} style={{
+                padding: '1rem 1.5rem',
+                borderTop: '1px solid #e2e8f0',
+                display: 'flex',
+                gap: '0.75rem'
+            }}>
+                <input
+                    type="text"
+                    value={messageInput}
+                    onChange={(e) => setMessageInput(e.target.value)}
+                    placeholder="Type your message..."
+                    disabled={sending}
+                    style={{
+                        flex: 1,
+                        padding: '0.75rem 1rem',
+                        borderRadius: '12px',
+                        border: '1px solid #e2e8f0',
+                        background: '#f8fafc',
+                        outline: 'none',
+                        fontSize: '0.9rem'
+                    }}
+                />
+                <button
+                    type="submit"
+                    disabled={!messageInput.trim() || sending}
+                    style={{
+                        background: messageInput.trim() ? '#1d3d6e' : '#cbd5e1',
+                        color: 'white',
+                        border: 'none',
+                        padding: '0.75rem 1.5rem',
+                        borderRadius: '12px',
+                        cursor: messageInput.trim() ? 'pointer' : 'not-allowed',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem',
+                        fontWeight: 700,
+                        fontSize: '0.9rem'
+                    }}
+                >
+                    <Send size={18} />
+                    Send
+                </button>
+            </form>
+        </div>
+    );
+};
 
 // ΓöÇΓöÇΓöÇ Shared Helper ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 const EmptyState = ({ text }) => (
