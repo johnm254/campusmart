@@ -274,9 +274,12 @@ app.post('/api/auth/forgot-password', async (req, res) => {
     try {
         const { email } = req.body;
 
+        console.log('Password reset requested for:', email);
+
         // Check if user exists
         const userResult = await db.query('SELECT id, full_name FROM users WHERE email = $1', [email]);
         if (userResult.rows.length === 0) {
+            console.log('User not found:', email);
             return res.json({ message: 'If an account exists with that email, a reset link has been sent.' });
         }
 
@@ -293,7 +296,9 @@ app.post('/api/auth/forgot-password', async (req, res) => {
         );
 
         const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
-        const resetLink = `${frontendUrl}/reset-password?token=${token}&email=${encodeURIComponent(email)}`;
+        const resetLink = `${frontendUrl}?token=${token}&email=${encodeURIComponent(email)}#reset-password`;
+
+        console.log('Generated reset link:', resetLink);
 
         // Send Email
         const mailOptions = {
@@ -301,35 +306,46 @@ app.post('/api/auth/forgot-password', async (req, res) => {
             to: email,
             subject: 'Reset Your CampusMart Password',
             html: `
-                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; borderRadius: '12px'">
-                    <h2 style="color: #003366;">CampusMart Password Reset</h2>
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 12px;">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <h1 style="color: #1d3d6e; margin: 0;">CampusMart</h1>
+                    </div>
+                    <h2 style="color: #1d3d6e;">Password Reset Request</h2>
                     <p>Hello ${user.full_name},</p>
                     <p>You requested to reset your password. Click the button below to set a new one:</p>
                     <div style="text-align: center; margin: 30px 0;">
-                        <a href="${resetLink}" style="background-color: #28a745; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;">Reset Password</a>
+                        <a href="${resetLink}" style="background-color: #28a745; color: white; padding: 14px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">Reset Password</a>
                     </div>
-                    <p>This link will expire in 1 hour.</p>
-                    <p>If you didn't request this, please ignore this email.</p>
+                    <p style="color: #666; font-size: 14px;">Or copy and paste this link into your browser:</p>
+                    <p style="background: #f5f5f5; padding: 10px; border-radius: 5px; word-break: break-all; font-size: 12px;">${resetLink}</p>
+                    <p style="color: #e74c3c; font-weight: bold;">This link will expire in 1 hour.</p>
+                    <p>If you didn't request this, please ignore this email and your password will remain unchanged.</p>
                     <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
-                    <p style="font-size: 0.8rem; color: #888;">┬⌐ ${new Date().getFullYear()} CampusMart. Student Marketplace.</p>
+                    <p style="font-size: 0.8rem; color: #888; text-align: center;">© ${new Date().getFullYear()} CampusMart. Student Marketplace.</p>
                 </div>
             `
         };
 
-        // Send Email asynchronously (don't await) 
-        transporter.sendMail(mailOptions).then(() => {
-            console.log('Reset email sent to:', email);
-        }).catch(mailError => {
-            console.error('Nodemailer Error:', mailError.message);
-            console.log('Fell back to reset link (background):', resetLink);
-        });
-
-        res.json({
-            message: 'A reset link is being sent to your email.'
-        });
+        // Send Email with proper error handling
+        try {
+            const info = await transporter.sendMail(mailOptions);
+            console.log('✓ Reset email sent successfully to:', email);
+            console.log('Message ID:', info.messageId);
+            res.json({
+                message: 'A password reset link has been sent to your email address. Please check your inbox and spam folder.'
+            });
+        } catch (mailError) {
+            console.error('✗ Email sending failed:', mailError);
+            console.error('Error details:', mailError.message);
+            // Return the link in response as fallback
+            res.json({
+                message: 'Email service temporarily unavailable. Please use this link to reset your password:',
+                resetLink: resetLink
+            });
+        }
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Error during forgot password process' });
+        console.error('Forgot password error:', error);
+        res.status(500).json({ message: 'Error during forgot password process: ' + error.message });
     }
 });
 
