@@ -54,8 +54,8 @@ const ImageCropperModal = ({ image, onCrop, onClose, aspectRatio = 1 }) => {
                     <Cropper
                         src={image}
                         style={{ height: 420, width: "100%" }}
-                        initialAspectRatio={aspectRatio}
-                        aspectRatio={aspectRatio}
+                        initialAspectRatio={aspectRatio || NaN}
+                        aspectRatio={aspectRatio || NaN}
                         guides={true}
                         ref={cropperRef}
                         viewMode={1}

@@ -1,7 +1,7 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { useApp } from '../AppContext';
 import { api } from '../lib/api';
-import { Package, Eye, Heart, MessageCircle, ArrowUpRight, Clock, Plus, Check, Star, Zap } from 'lucide-react';
+import { Package, Eye, Heart, MessageCircle, ArrowUpRight, Clock, Plus, Check, Star, Zap, Shield } from 'lucide-react';
 
 const Dashboard = () => {
     const { user, wishlist, setCurrentPage, setIsSellModalOpen, addNotification } = useApp();
@@ -86,6 +86,27 @@ const Dashboard = () => {
         { label: 'Saved Items', value: (realStats?.saved_items || 0).toString(), icon: Heart, color: 'var(--jiji-orange)' },
         { label: 'Sales Done', value: (realStats?.successful_sales || 0).toString(), icon: Check, color: '#16a34a' },
     ];
+
+    if (!user) {
+        return (
+            <div className="container" style={{ maxWidth: '800px', textAlign: 'center', padding: '4rem 2rem' }}>
+                <Package size={80} color="#cbd5e1" style={{ marginBottom: '2rem' }} />
+                <h2 style={{ fontSize: '2rem', fontWeight: 900, color: '#111827', marginBottom: '1rem' }}>
+                    Welcome to Your Dashboard
+                </h2>
+                <p style={{ color: '#64748b', fontSize: '1.1rem', marginBottom: '2rem' }}>
+                    Please sign in to view your trading activity and manage your listings.
+                </p>
+                <button
+                    onClick={() => setIsAuthModalOpen(true)}
+                    className="btn btn-primary"
+                    style={{ borderRadius: '12px', padding: '1rem 2rem', fontSize: '1rem' }}
+                >
+                    Sign In
+                </button>
+            </div>
+        );
+    }
 
     return (
         <div style={{

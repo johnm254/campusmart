@@ -550,7 +550,7 @@ const Community = () => {
                     image={tempImage}
                     onCrop={handleCrop}
                     onClose={() => { setShowCropper(false); setTempImage(null); }}
-                    aspectRatio={NaN}
+                    aspectRatio={0}
                 />
             )}
         </div>
