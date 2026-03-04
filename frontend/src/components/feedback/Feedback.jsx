@@ -32,6 +32,7 @@ const Feedback = () => {
 
         if (!user) {
             setIsAuthModalOpen(true);
+            addNotification('Sign In Required', 'Please sign in to send feedback.', 'warning');
             return;
         }
 
@@ -47,17 +48,19 @@ const Feedback = () => {
 
         setIsSubmitting(true);
         try {
-            const feedbackText = `[${type.toUpperCase()}] Rating: ${rating}/5\n${Array(rating).fill('Γÿà').join('')}\n\nMessage: ${content}`;
+            const feedbackText = `[${type.toUpperCase()}] Rating: ${rating}/5\n${Array(rating).fill('★').join('')}\n\nMessage: ${content}`;
             const res = await api.sendFeedback(feedbackText);
 
-            if (res.message === 'Feedback submitted successfully') {
+            if (res && res.message === 'Feedback submitted successfully') {
                 setStep('success');
                 addNotification('Sent!', 'Feedback delivered to admin.', 'success');
             } else {
-                addNotification('Error', res.message || 'Failed to send feedback', 'error');
+                addNotification('Error', res?.message || 'Failed to send feedback', 'error');
             }
         } catch (error) {
-            addNotification('Error', 'Connection failed. Try again.', 'error');
+            console.error('Feedback error:', error);
+            const errorMessage = error.message || 'Connection failed. Please check your internet and try again.';
+            addNotification('Error', errorMessage, 'error');
         } finally {
             setIsSubmitting(false);
         }
