@@ -20,7 +20,8 @@ import Chatbot from './components/support/Chatbot'
 import DownloadPrompt from './components/ui/DownloadPrompt'
 import Footer from './components/layout/Footer'
 import InfoModal from './components/modals/InfoModal'
-import { Analytics } from "@vercel/analytics/next"
+import { Analytics } from "@vercel/analytics/react"
+
 const AppContent = () => {
     const {
         siteSettings,
@@ -134,6 +135,7 @@ function App() {
     return (
         <AppProvider>
             <AppContent />
+            <Analytics />
         </AppProvider>
     )
 }
