@@ -6,11 +6,34 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const axios = require('axios');
 const path = require('path');
+const compression = require('compression');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 const db = require('./db');
 
 const PORT = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET;
+
+// Simple in-memory cache for frequently accessed data
+const cache = {
+    products: { data: null, timestamp: 0, ttl: 30000 }, // 30 seconds
+    communityPosts: { data: null, timestamp: 0, ttl: 15000 }, // 15 seconds
+    settings: { data: null, timestamp: 0, ttl: 60000 } // 1 minute
+};
+
+const getCache = (key) => {
+    const item = cache[key];
+    if (item && item.data && (Date.now() - item.timestamp < item.ttl)) {
+        return item.data;
+    }
+    return null;
+};
+
+const setCache = (key, data) => {
+    if (cache[key]) {
+        cache[key].data = data;
+        cache[key].timestamp = Date.now();
+    }
+};
 
 // ΓöÇΓöÇΓöÇ Auto-Initialize Schema ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 const initSchema = async () => {
@@ -49,6 +72,9 @@ const initSchema = async () => {
 };
 
 const app = express();
+
+// Enable gzip compression for all responses
+app.use(compression());
 
 // 1. ABSOLUTE FIRST MIDDLEWARE: Manual CORS Headers
 app.use((req, res, next) => {
@@ -422,6 +448,16 @@ app.post('/api/auth/update', verifyToken, async (req, res) => {
 // Products Routes
 app.get('/api/products', async (req, res) => {
     try {
+        // Check cache first
+        const cached = getCache('products');
+        if (cached) {
+            return res.json(cached);
+        }
+
+        // Pagination parameters
+        const limit = parseInt(req.query.limit) || 100; // Default 100 products
+        const offset = parseInt(req.query.offset) || 0;
+
         const result = await db.query(`
             SELECT p.id, p.title, p.category, p.price, p.location, p.image_url,
                    p.seller_id, p.condition_text as condition, p.description,
@@ -445,7 +481,11 @@ app.get('/api/products', async (req, res) => {
                 ELSE 0 
               END DESC, 
               p.created_at DESC
-        `);
+            LIMIT $1 OFFSET $2
+        `, [limit, offset]);
+
+        // Cache the result
+        setCache('products', result.rows);
         res.json(result.rows);
     } catch (error) {
         console.error(error);
@@ -503,6 +543,10 @@ app.post('/api/products', verifyToken, async (req, res) => {
             ]
         );
         logActivity(seller_id, 'product_create', { title });
+        
+        // Invalidate products cache
+        cache.products.data = null;
+        
         res.status(201).json({ message: 'Product added successfully' });
     } catch (error) {
         console.error(error);
@@ -965,6 +1009,13 @@ app.get('/api/community/posts', async (req, res) => {
             userId = decodedToken ? decodedToken.id : null;
         }
 
+        // Check cache (only for non-authenticated or cache key includes userId)
+        const cacheKey = userId ? `communityPosts_${userId}` : 'communityPosts';
+        
+        // Pagination
+        const limit = parseInt(req.query.limit) || 50;
+        const offset = parseInt(req.query.offset) || 0;
+
         const result = await db.query(`
             SELECT cp.*, u.full_name as author_name, u.avatar_url as author_avatar, u.is_admin,
                    CASE 
@@ -979,7 +1030,8 @@ app.get('/api/community/posts', async (req, res) => {
             FROM community_posts cp
             LEFT JOIN users u ON cp.author_id = u.id
             ORDER BY u.is_admin DESC, cp.created_at DESC
-        `, [userId]);
+            LIMIT $2 OFFSET $3
+        `, [userId, limit, offset]);
         res.json(result.rows);
     } catch (error) {
         console.error(error);
@@ -1505,9 +1557,18 @@ app.get('/api/admin/logs', verifyAdminToken, async (req, res) => {
 // Settings management
 app.get('/api/settings', async (req, res) => {
     try {
+        // Check cache first
+        const cached = getCache('settings');
+        if (cached) {
+            return res.json(cached);
+        }
+
         const result = await db.query("SELECT * FROM site_settings WHERE key IN ('site_name', 'maintenance_mode', 'announcement')");
         const settings = {};
         result.rows.forEach(row => settings[row.key] = row.value);
+
+        // Cache the result
+        setCache('settings', settings);
         res.json(settings);
     } catch (error) {
         console.error('Settings fetch error:', error);

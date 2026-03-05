@@ -15,6 +15,7 @@
   "dependencies": {
     "axios": "^1.13.5",
     "bcryptjs": "^3.0.3",
+    "compression": "^1.7.4",
     "cors": "^2.8.6",
     "datetime-moment": "^1.0.0",
     "dotenv": "^17.3.1",
