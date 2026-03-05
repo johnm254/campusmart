@@ -23,6 +23,10 @@ const Marketplace = () => {
         condition: []
     });
 
+    // Cache products in sessionStorage for faster subsequent loads
+    const CACHE_KEY = 'marketplace_products_cache';
+    const CACHE_DURATION = 30000; // 30 seconds
+
     // Synchronize local filter with context category if it changes
     useEffect(() => {
         if (activeCategory) {
@@ -34,10 +38,28 @@ const Marketplace = () => {
         const fetchProducts = async () => {
             setLoading(true);
             try {
-                const data = await api.getProducts();
+                // Check cache first
+                const cached = sessionStorage.getItem(CACHE_KEY);
+                if (cached) {
+                    const { data, timestamp } = JSON.parse(cached);
+                    if (Date.now() - timestamp < CACHE_DURATION) {
+                        setProducts(data);
+                        setFilteredProducts(data);
+                        setLoading(false);
+                        return;
+                    }
+                }
+
+                // Fetch from API
+                const data = await api.getProducts(100, 0);
                 if (data) {
                     setProducts(data);
                     setFilteredProducts(data);
+                    // Cache the result
+                    sessionStorage.setItem(CACHE_KEY, JSON.stringify({
+                        data,
+                        timestamp: Date.now()
+                    }));
                 }
             } catch (error) {
                 console.error("Error fetching products:", error);
@@ -211,9 +233,35 @@ const Marketplace = () => {
 
                 <main style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
                     {loading ? (
-                        <div style={{ textAlign: 'center', padding: '8rem 0', color: '#64748b', flex: 1 }}>
-                            <div className="spinner" style={{ margin: '0 auto 1.5rem' }}></div>
-                            <p style={{ fontWeight: 500 }}>Loading amazing deals...</p>
+                        <div style={{ flex: 1 }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', background: '#f8fafc', padding: '0.75rem 1.25rem', borderRadius: '12px', border: '1px solid #f1f5f9' }}>
+                                <div style={{ height: '20px', width: '150px', background: '#e2e8f0', borderRadius: '4px', animation: 'pulse 1.5s ease-in-out infinite' }}></div>
+                            </div>
+                            <div style={{ 
+                                display: 'grid', 
+                                gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fill, minmax(280px, 1fr))', 
+                                gap: isMobile ? '1.25rem' : '1.75rem' 
+                            }}>
+                                {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
+                                    <div key={i} style={{ 
+                                        background: 'white', 
+                                        borderRadius: '16px', 
+                                        overflow: 'hidden',
+                                        border: '1px solid #f1f5f9'
+                                    }}>
+                                        <div style={{ 
+                                            height: '200px', 
+                                            background: 'linear-gradient(90deg, #f1f5f9 0%, #e2e8f0 50%, #f1f5f9 100%)',
+                                            backgroundSize: '200% 100%',
+                                            animation: 'shimmer 1.5s ease-in-out infinite'
+                                        }}></div>
+                                        <div style={{ padding: '1rem' }}>
+                                            <div style={{ height: '20px', background: '#e2e8f0', borderRadius: '4px', marginBottom: '0.5rem', animation: 'pulse 1.5s ease-in-out infinite' }}></div>
+                                            <div style={{ height: '16px', background: '#f1f5f9', borderRadius: '4px', width: '60%', animation: 'pulse 1.5s ease-in-out infinite' }}></div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     ) : (
                         <div className="fadeIn" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>

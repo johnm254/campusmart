@@ -50,8 +50,8 @@ export const api = {
         return this.handleResponse(res);
     },
 
-    async getProducts() {
-        const res = await fetch(`${API_URL}/products`);
+    async getProducts(limit = 100, offset = 0) {
+        const res = await fetch(`${API_URL}/products?limit=${limit}&offset=${offset}`);
         return this.handleResponse(res);
     },
 
