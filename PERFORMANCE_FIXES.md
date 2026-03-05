@@ -49,7 +49,13 @@ Large JSON responses were not compressed, increasing transfer time.
    npm install
    ```
 
-2. **Add database indexes:**
+2. **Add database indexes (EASY METHOD):**
+   ```bash
+   cd backend
+   npm run apply-indexes
+   ```
+   
+   Or manually run the SQL file:
    ```bash
    # For PostgreSQL (Supabase/Railway)
    psql $DATABASE_URL -f performance-indexes.sql
