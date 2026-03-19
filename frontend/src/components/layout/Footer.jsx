@@ -172,10 +172,10 @@ const Footer = () => {
                         </p>
 
                         <div style={{ display: 'flex', gap: '0.8rem', alignItems: 'center' }}>
-                            <a href="#" style={{ color: '#1877F2', background: 'white', width: '32px', height: '32px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Facebook size={18} /></a>
-                            <a href="#" style={{ color: '#E4405F', background: 'white', width: '32px', height: '32px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Instagram size={18} /></a>
-                            <a href="#" style={{ color: '#000000', background: 'white', width: '32px', height: '32px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Twitter size={18} /></a>
-                            <a href="#" style={{ color: '#25D366', background: 'white', width: '32px', height: '32px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><MessageCircle size={18} /></a>
+                            <a href="#" aria-label="Follow us on Facebook" style={{ color: '#1877F2', background: 'white', width: '32px', height: '32px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Facebook size={18} /></a>
+                            <a href="#" aria-label="Follow us on Instagram" style={{ color: '#E4405F', background: 'white', width: '32px', height: '32px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Instagram size={18} /></a>
+                            <a href="#" aria-label="Follow us on Twitter" style={{ color: '#000000', background: 'white', width: '32px', height: '32px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Twitter size={18} /></a>
+                            <a href="#" aria-label="Contact us on WhatsApp" style={{ color: '#25D366', background: 'white', width: '32px', height: '32px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><MessageCircle size={18} /></a>
                         </div>
                     </div>
                 </div>

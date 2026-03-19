@@ -149,7 +149,7 @@ const ProductDetailModal = ({ product, onClose }) => {
                                 <span style={{ fontSize: '0.85rem', fontWeight: 600, color: '#333' }}>{user.full_name || user.name}</span>
                             </div>
                         )}
-                        <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0.5rem', display: 'flex' }}><X size={isMobile ? 20 : 24} color="#333" /></button>
+                        <button onClick={onClose} aria-label="Close product details" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0.5rem', display: 'flex' }}><X size={isMobile ? 20 : 24} color="#333" /></button>
                     </div>
                 </div>
 

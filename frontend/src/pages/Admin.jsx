@@ -42,7 +42,11 @@ const AdminHeader = ({ activeTab, search, setSearch, onLogout, onRefresh, isLoad
             transition: 'all 0.3s ease'
         }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                {isMobile && <button onClick={toggleMobileMenu} style={{ background: 'transparent', border: 'none', color: isDarkMode ? '#60a5fa' : '#1d3d6e', display: 'flex', alignItems: 'center' }}><LayoutDashboard size={24} /></button>}
+                {isMobile && <button 
+                    onClick={toggleMobileMenu} 
+                    aria-label="Toggle mobile menu"
+                    style={{ background: 'transparent', border: 'none', color: isDarkMode ? '#60a5fa' : '#1d3d6e', display: 'flex', alignItems: 'center' }}
+                ><LayoutDashboard size={24} /></button>}
                 {!isMobile && (
                     <div style={{ width: 45, height: 45, borderRadius: 12, background: isDarkMode ? 'linear-gradient(135deg, #3b82f6, #60a5fa)' : 'linear-gradient(135deg, #1d3d6e, #2d5fa0)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
                         {HeaderIcon && <IconWrapper Icon={HeaderIcon} size={24} />}

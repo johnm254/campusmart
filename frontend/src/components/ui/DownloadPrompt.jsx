@@ -147,7 +147,7 @@ const DownloadPrompt = () => {
                     >
                         <Download size={15} /> Install
                     </button>
-                    <button style={dismissBtn} onClick={handleDismiss}><X size={16} /></button>
+                    <button style={dismissBtn} onClick={handleDismiss} aria-label="Dismiss install prompt"><X size={16} /></button>
                 </div>
             )}
 
@@ -162,7 +162,7 @@ const DownloadPrompt = () => {
                                 <div style={{ fontSize: '0.8rem', color: '#64748b' }}>Install CampusMart on iOS</div>
                             </div>
                         </div>
-                        <button style={dismissBtn} onClick={handleDismiss}><X size={16} /></button>
+                        <button style={dismissBtn} onClick={handleDismiss} aria-label="Dismiss iOS install prompt"><X size={16} /></button>
                     </div>
                     <div style={{ background: '#f8fafc', borderRadius: '14px', padding: '0.85rem 1rem', width: '100%', fontSize: '0.85rem', color: '#475569', lineHeight: 1.6 }}>
                         Tap the <strong style={{ color: '#1d3d6e' }}>Share</strong> icon <span style={{ fontSize: '1.2rem' }}>⬆️</span> at the bottom of your browser, then select <strong style={{ color: '#1d3d6e' }}>"Add to Home Screen"</strong>.

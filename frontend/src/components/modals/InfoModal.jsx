@@ -9,7 +9,7 @@ const InfoModal = ({ isOpen, onClose, title, content }) => {
             <div className="modal-content" style={{ maxWidth: '800px', width: '90%', maxHeight: '85vh', overflowY: 'auto' }}>
                 <div className="modal-header" style={{ marginBottom: '1.5rem', borderBottom: '1px solid #eee', paddingBottom: '1rem' }}>
                     <h2 style={{ margin: 0, color: 'var(--campus-blue)' }}>{title}</h2>
-                    <button className="close-btn" onClick={onClose}><X /></button>
+                    <button className="close-btn" onClick={onClose} aria-label="Close info modal"><X /></button>
                 </div>
 
                 <div className="info-content" style={{ fontSize: '1.05rem', lineHeight: '1.7', color: 'var(--text-primary)' }}>

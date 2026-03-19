@@ -13,6 +13,7 @@ import Community from './pages/Community'
 import Accommodation from './pages/Accommodation'
 import AuthModal from './components/modals/AuthModal'
 import SellModal from './components/modals/SellModal'
+import { SkipToContent } from './components/ui/AccessibilityEnhancements'
 import AdminLockModal from './components/modals/AdminLockModal'
 import NotificationContainer from './components/ui/NotificationContainer'
 import Feedback from './components/feedback/Feedback'
@@ -98,6 +99,7 @@ const AppContent = () => {
 
     return (
         <div className="app" style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+            <SkipToContent />
             {siteSettings.announcement && (
                 <div style={{ background: '#1d3d6e', color: 'white', padding: '0.75rem', textAlign: 'center', fontSize: '0.9rem', fontWeight: 700, letterSpacing: '0.02em', flexShrink: 0 }}>
                     {siteSettings.announcement}
@@ -105,7 +107,7 @@ const AppContent = () => {
             )}
             <Navbar onOpenAuth={() => setIsAuthModalOpen(true)} onOpenSell={() => setIsSellModalOpen(true)} />
 
-            <main style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+            <main id="main-content" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                 {renderPage()}
             </main>
 

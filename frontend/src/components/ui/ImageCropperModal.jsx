@@ -47,7 +47,7 @@ const ImageCropperModal = ({ image, onCrop, onClose, aspectRatio = 1 }) => {
                     <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--campus-blue)' }}>
                         <Crop size={22} /> Crop Image
                     </h2>
-                    <button className="close-btn" onClick={onClose}><X /></button>
+                    <button className="close-btn" onClick={onClose} aria-label="Close modal"><X /></button>
                 </div>
 
                 <div style={{ margin: "1.5rem 0", background: "#f0f0f0", borderRadius: "12px", overflow: "hidden" }}>

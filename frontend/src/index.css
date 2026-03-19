@@ -92,22 +92,22 @@ h6 {
 }
 
 .btn-primary {
-  background: var(--orange);
-  color: var(--white);
+  background: #1d4ed8; /* Darker blue for better contrast */
+  color: #ffffff;
 }
 
 .btn-primary:hover {
-  background: var(--orange-dark);
+  background: #1e40af; /* Even darker on hover */
   transform: translateY(-1px);
 }
 
 .btn-secondary {
-  background: var(--green);
-  color: var(--white);
+  background: #dc2626; /* Darker red for better contrast */
+  color: #ffffff;
 }
 
 .btn-secondary:hover {
-  background: var(--green-dark);
+  background: #b91c1c; /* Even darker on hover */
   transform: translateY(-1px);
 }
 
@@ -691,5 +691,82 @@ main {
   .dashboard-fixed-layout {
     height: auto !important;
     overflow: visible !important;
+  }
+}
+/* ═══ ACCESSIBILITY ENHANCEMENTS ═══ */
+
+/* Screen reader only content */
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* Focus indicators */
+*:focus {
+  outline: 2px solid #2563EB !important;
+  outline-offset: 2px !important;
+}
+
+/* Skip to content link */
+.skip-to-content:focus {
+  position: absolute !important;
+  top: 6px !important;
+  left: 6px !important;
+  background: #1d4ed8 !important;
+  color: white !important;
+  padding: 8px !important;
+  text-decoration: none !important;
+  border-radius: 4px !important;
+  z-index: 9999 !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+}
+
+/* Ensure minimum touch target sizes */
+button, a, input, select, textarea {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .btn-primary {
+    background: #000000 !important;
+    color: #ffffff !important;
+    border: 2px solid #ffffff !important;
+  }
+  
+  .btn-secondary {
+    background: #ffffff !important;
+    color: #000000 !important;
+    border: 2px solid #000000 !important;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Dark mode support for accessibility */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text-primary: #ffffff;
+    --text-secondary: #e5e7eb;
+    --bg-primary: #111827;
+    --bg-secondary: #1f2937;
+    --border-light: #374151;
   }
 }
