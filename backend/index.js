@@ -16,23 +16,20 @@ const { queryLogger } = require('./src/middleware/queryLogger');
 const PORT = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET;
 
-const PORT = process.env.PORT || 5000;
-const JWT_SECRET = process.env.JWT_SECRET;
-
 // Keep-alive status tracking
 let isWarm = false;
 let lastActivity = Date.now();
 let healthCheckCount = 0;
 
-// Simple in-memory cache for frequently accessed data
-const cache = {
+// Legacy in-memory cache (kept for backward compatibility)
+const legacyCache = {
     products: { data: null, timestamp: 0, ttl: 30000 }, // 30 seconds
     communityPosts: { data: null, timestamp: 0, ttl: 15000 }, // 15 seconds
     settings: { data: null, timestamp: 0, ttl: 60000 } // 1 minute
 };
 
 const getCache = (key) => {
-    const item = cache[key];
+    const item = legacyCache[key];
     if (item && item.data && (Date.now() - item.timestamp < item.ttl)) {
         return item.data;
     }
@@ -40,9 +37,9 @@ const getCache = (key) => {
 };
 
 const setCache = (key, data) => {
-    if (cache[key]) {
-        cache[key].data = data;
-        cache[key].timestamp = Date.now();
+    if (legacyCache[key]) {
+        legacyCache[key].data = data;
+        legacyCache[key].timestamp = Date.now();
     }
 };
 
@@ -688,7 +685,7 @@ app.post('/api/products', verifyToken, async (req, res) => {
         logActivity(seller_id, 'product_create', { title });
         
         // Invalidate products cache
-        cache.products.data = null;
+        legacyCache.products.data = null;
         
         res.status(201).json({ message: 'Product added successfully' });
     } catch (error) {
