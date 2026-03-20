@@ -7,11 +7,22 @@ const jwt = require('jsonwebtoken');
 const axios = require('axios');
 const path = require('path');
 const compression = require('compression');
+const cron = require('node-cron');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 const db = require('./db');
+const { cache } = require('./src/utils/cache');
+const { queryLogger } = require('./src/middleware/queryLogger');
 
 const PORT = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET;
+
+const PORT = process.env.PORT || 5000;
+const JWT_SECRET = process.env.JWT_SECRET;
+
+// Keep-alive status tracking
+let isWarm = false;
+let lastActivity = Date.now();
+let healthCheckCount = 0;
 
 // Simple in-memory cache for frequently accessed data
 const cache = {
@@ -137,6 +148,74 @@ app.get('/', (req, res) => {
         database: 'Connected'
     });
 });
+
+/**
+ * Health check endpoint for uptime monitoring
+ * Used by external services to keep Railway container warm
+ */
+app.get('/health', async (req, res) => {
+    const now = Date.now();
+    const uptime = process.uptime();
+    healthCheckCount++;
+    
+    try {
+        // Quick database connectivity check
+        const dbCheck = await db.query('SELECT 1 as health_check');
+        const dbHealthy = dbCheck.rows && dbCheck.rows.length > 0;
+        
+        // Update warm status
+        const timeSinceLastActivity = now - lastActivity;
+        isWarm = timeSinceLastActivity < 300000; // 5 minutes
+        lastActivity = now;
+        
+        const healthStatus = {
+            status: 'healthy',
+            timestamp: new Date().toISOString(),
+            uptime: Math.floor(uptime),
+            isWarm,
+            timeSinceLastActivity,
+            healthCheckCount,
+            database: dbHealthy ? 'connected' : 'disconnected',
+            memory: {
+                used: Math.round(process.memoryUsage().heapUsed / 1024 / 1024),
+                total: Math.round(process.memoryUsage().heapTotal / 1024 / 1024)
+            },
+            environment: process.env.NODE_ENV || 'development'
+        };
+        
+        console.log(`🏥 Health check #${healthCheckCount} - Status: ${isWarm ? 'WARM' : 'COLD'} - Uptime: ${Math.floor(uptime)}s`);
+        
+        res.status(200).json(healthStatus);
+    } catch (error) {
+        console.error('❌ Health check failed:', error.message);
+        res.status(503).json({
+            status: 'unhealthy',
+            timestamp: new Date().toISOString(),
+            error: error.message,
+            uptime: Math.floor(uptime)
+        });
+    }
+});
+
+/**
+ * Keep-alive middleware to track activity and maintain warm status
+ */
+const keepAliveMiddleware = (req, res, next) => {
+    lastActivity = Date.now();
+    isWarm = true;
+    
+    // Add warm status header for debugging
+    res.setHeader('X-Server-Status', isWarm ? 'warm' : 'cold');
+    res.setHeader('X-Uptime', Math.floor(process.uptime()));
+    
+    next();
+};
+
+// Apply keep-alive middleware to all routes
+app.use(keepAliveMiddleware);
+
+// Add query performance logging middleware
+app.use(queryLogger.middleware());
 
 // Database optimization endpoint (temporary - for performance fixes)
 app.post('/api/optimize-database', async (req, res) => {
@@ -493,50 +572,61 @@ app.post('/api/auth/update', verifyToken, async (req, res) => {
     }
 });
 
-// Products Routes
+// Products Routes - Optimized with Redis caching
 app.get('/api/products', async (req, res) => {
     try {
-        // Check cache first
-        const cached = getCache('products');
-        if (cached) {
-            return res.json(cached);
-        }
-
         // Pagination parameters
-        const limit = parseInt(req.query.limit) || 100; // Default 100 products
+        const limit = parseInt(req.query.limit) || 100;
         const offset = parseInt(req.query.offset) || 0;
-
-        const result = await db.query(`
-            SELECT p.id, p.title, p.category, p.price, p.location, p.image_url,
-                   p.seller_id, p.condition_text as condition, p.description,
-                   p.created_at, p.views, p.slug, p.status,
-                   u.full_name as seller_name, u.whatsapp, u.avatar_url as seller_avatar,
-                   u.last_seen as seller_last_seen, 
-                   u.boost_type,
-                   CASE 
-                     WHEN u.is_verified = TRUE AND (u.verified_until IS NULL OR u.verified_until >= NOW()) THEN TRUE 
-                     ELSE FALSE 
-                   END as seller_is_verified,
-                   p.latitude, p.longitude, p.metadata, p.contact_phone, p.security_features
-            FROM products p 
-            LEFT JOIN users u ON p.seller_id = u.id 
-            WHERE (p.status = 'available' OR p.status IS NULL OR p.status = '')
-            AND p.is_approved = TRUE
-            ORDER BY 
+        const category = req.query.category;
+        
+        // Generate cache key based on query parameters
+        const cacheKey = `products:${limit}:${offset}:${category || 'all'}`;
+        
+        const products = await cache.getOrSet(cacheKey, async () => {
+            let query = `
+                SELECT p.id, p.title, p.category, p.price, p.location, p.image_url,
+                       p.seller_id, p.condition_text as condition, p.description,
+                       p.created_at, p.views, p.slug, p.status,
+                       u.full_name as seller_name, u.whatsapp, u.avatar_url as seller_avatar,
+                       u.last_seen as seller_last_seen, 
+                       u.boost_type,
+                       CASE 
+                         WHEN u.is_verified = TRUE AND (u.verified_until IS NULL OR u.verified_until >= NOW()) THEN TRUE 
+                         ELSE FALSE 
+                       END as seller_is_verified,
+                       p.latitude, p.longitude, p.metadata, p.contact_phone, p.security_features
+                FROM products p 
+                LEFT JOIN users u ON p.seller_id = u.id 
+                WHERE (p.status = 'available' OR p.status IS NULL OR p.status = '')
+                AND p.is_approved = TRUE`;
+            
+            const params = [limit, offset];
+            
+            if (category && category !== 'all') {
+                query += ` AND p.category = $3`;
+                params.push(category);
+            }
+            
+            query += ` ORDER BY 
               CASE 
                 WHEN u.is_verified = TRUE AND (u.verified_until IS NULL OR u.verified_until >= NOW()) AND u.boost_type = 'power' THEN 2
                 WHEN u.is_verified = TRUE AND (u.verified_until IS NULL OR u.verified_until >= NOW()) AND u.boost_type = 'starter' THEN 1
                 ELSE 0 
               END DESC, 
               p.created_at DESC
-            LIMIT $1 OFFSET $2
-        `, [limit, offset]);
+            LIMIT $1 OFFSET $2`;
 
-        // Cache the result
-        setCache('products', result.rows);
-        res.json(result.rows);
+            const result = await db.query(query, params);
+            return result.rows;
+        }, 60); // Cache for 60 seconds
+
+        // Add cache headers
+        res.setHeader('X-Cache', 'HIT');
+        res.setHeader('Cache-Control', 'public, max-age=60');
+        res.json(products);
     } catch (error) {
-        console.error(error);
+        console.error('💥 Products fetch error:', error);
         res.status(500).json({ message: 'Error fetching products' });
     }
 });
@@ -590,6 +680,11 @@ app.post('/api/products', verifyToken, async (req, res) => {
                 'available'
             ]
         );
+        
+        // Invalidate products cache after creating new product
+        await cache.invalidatePattern('products:*');
+        console.log('🗑️  Invalidated products cache after creation');
+        
         logActivity(seller_id, 'product_create', { title });
         
         // Invalidate products cache
@@ -1896,15 +1991,46 @@ app.get('/api/seo/sitemap', async (req, res) => {
     }
 });
 
+/**
+ * Self-ping functionality to keep Railway container warm
+ * Pings the health endpoint every 4 minutes when in production
+ */
+const setupSelfPing = () => {
+    if (process.env.NODE_ENV === 'production' && process.env.RAILWAY_ENVIRONMENT) {
+        const selfPingUrl = process.env.SELF_PING_URL || `https://${process.env.RAILWAY_STATIC_URL}/health`;
+        
+        console.log('🔄 Setting up self-ping to keep container warm...');
+        
+        // Ping every 4 minutes (240 seconds)
+        cron.schedule('*/4 * * * *', async () => {
+            try {
+                const response = await axios.get(selfPingUrl, {
+                    timeout: 10000,
+                    headers: { 'User-Agent': 'CampusMart-SelfPing/1.0' }
+                });
+                console.log(`🏓 Self-ping successful - Status: ${response.data.status} - Warm: ${response.data.isWarm}`);
+            } catch (error) {
+                console.warn(`⚠️  Self-ping failed: ${error.message}`);
+            }
+        });
+        
+        console.log(`✅ Self-ping scheduled for ${selfPingUrl}`);
+    }
+};
+
 const startServer = async () => {
     const listenTarget = process.env.PORT || 5000;
 
     app.listen(listenTarget, () => {
-        console.log(`Γ£à CampusMart Server Live on ${listenTarget}`);
+        console.log(`🚀 CampusMart Server Live on ${listenTarget}`);
+        console.log(`🏥 Health endpoint: http://localhost:${listenTarget}/health`);
+
+        // Setup self-ping for production
+        setupSelfPing();
 
         // Run database init in background so it doesn't block the site from opening
         initSchema().catch(err => {
-            console.error('Γ¥î Background Schema Init Error:', err);
+            console.error('💥 Background Schema Init Error:', err);
         });
     });
 };

@@ -1,16 +1,6 @@
-﻿import React from 'react'
+﻿import React, { Suspense, lazy } from 'react'
 import { AppProvider, useApp } from './AppContext'
 import Navbar from './components/layout/Navbar'
-import Home from './pages/Home'
-import Marketplace from './pages/Marketplace'
-import Wishlist from './pages/Wishlist'
-import Admin from './pages/Admin'
-import Dashboard from './pages/Dashboard'
-import Settings from './pages/Settings'
-import Messages from './pages/Messages'
-import ResetPassword from './pages/ResetPassword'
-import Community from './pages/Community'
-import Accommodation from './pages/Accommodation'
 import AuthModal from './components/modals/AuthModal'
 import SellModal from './components/modals/SellModal'
 import { SkipToContent } from './components/ui/AccessibilityEnhancements'
@@ -22,6 +12,28 @@ import DownloadPrompt from './components/ui/DownloadPrompt'
 import Footer from './components/layout/Footer'
 import InfoModal from './components/modals/InfoModal'
 import { Analytics } from "@vercel/analytics/react"
+
+// Lazy load page components for better performance
+const Home = lazy(() => import('./pages/Home'))
+const Marketplace = lazy(() => import('./pages/Marketplace'))
+const Wishlist = lazy(() => import('./pages/Wishlist'))
+const Admin = lazy(() => import('./pages/Admin'))
+const Dashboard = lazy(() => import('./pages/Dashboard'))
+const Settings = lazy(() => import('./pages/Settings'))
+const Messages = lazy(() => import('./pages/Messages'))
+const ResetPassword = lazy(() => import('./pages/ResetPassword'))
+const Community = lazy(() => import('./pages/Community'))
+const Accommodation = lazy(() => import('./pages/Accommodation'))
+
+// Loading component for Suspense fallback
+const PageLoader = () => (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading...</p>
+        </div>
+    </div>
+)
 
 const AppContent = () => {
     const {
@@ -108,7 +120,9 @@ const AppContent = () => {
             <Navbar onOpenAuth={() => setIsAuthModalOpen(true)} onOpenSell={() => setIsSellModalOpen(true)} />
 
             <main id="main-content" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                {renderPage()}
+                <Suspense fallback={<PageLoader />}>
+                    {renderPage()}
+                </Suspense>
             </main>
 
             <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />

@@ -5,3 +5,13 @@ builder = "NIXPACKS"
 startCommand = "npm start"
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 10
+
+[env]
+NODE_ENV = "production"
+
+# Keep container always running to prevent cold starts
+[healthcheck]
+path = "/health"
+interval = "30s"
+timeout = "10s"
+retries = 3

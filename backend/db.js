@@ -1,6 +1,7 @@
 const { Pool } = require('pg');
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
+const { queryLogger } = require('./src/middleware/queryLogger');
 
 // FIX for 'self-signed certificate' error on some networks when connecting to Supabase
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
@@ -49,7 +50,13 @@ if (dbType === 'mysql') {
             ssl: sslConfig,
             connectionTimeoutMillis: 5000, // 5 seconds to give up if can't connect
             idleTimeoutMillis: 30000,
-            max: 10 // Max connections for shared hosting environment
+            max: 20, // Increased connection pool for better performance
+            min: 2,  // Keep minimum connections alive
+            acquireTimeoutMillis: 60000,
+            createTimeoutMillis: 30000,
+            destroyTimeoutMillis: 5000,
+            reapIntervalMillis: 1000,
+            createRetryIntervalMillis: 200
         });
         console.log('📦 Database: Initialized PostgreSQL connection pool with SSL [v2.0-FIXED]');
     } else {
@@ -101,34 +108,49 @@ const translateQuery = (text) => {
 const query = async (text, params) => {
     const isReturning = / RETURNING /i.test(text);
     const translatedText = translateQuery(text, params);
+    const startTime = Date.now();
 
     try {
+        let result;
+        
         if (dbType === 'mysql') {
-            const [result] = await pool.execute(translatedText, params);
+            const [mysqlResult] = await pool.execute(translatedText, params);
 
             // For INSERT with RETURNING, MySQL needs a second query
             if (isReturning && text.trim().toUpperCase().startsWith('INSERT')) {
                 // Better table name extraction
                 const tableMatch = text.match(/INSERT INTO\s+([^\s\()]+)/i);
-                if (tableMatch && result.insertId) {
+                if (tableMatch && mysqlResult.insertId) {
                     const tableName = tableMatch[1].replace(/["']/g, ''); // Clean quotes
-                    const [rows] = await pool.execute(`SELECT * FROM ${tableName} WHERE id = ?`, [result.insertId]);
-                    return { rows, count: rows.length };
+                    const [rows] = await pool.execute(`SELECT * FROM ${tableName} WHERE id = ?`, [mysqlResult.insertId]);
+                    result = { rows, count: rows.length };
+                } else {
+                    result = { rows: Array.isArray(mysqlResult) ? mysqlResult : [mysqlResult], count: mysqlResult.length || 1, insertId: mysqlResult.insertId };
                 }
+            } else {
+                // Wrap standard result
+                const rows = Array.isArray(mysqlResult) ? mysqlResult : [mysqlResult];
+                result = { rows, count: rows.length, insertId: mysqlResult.insertId };
             }
-
-            // Wrap standard result
-            const rows = Array.isArray(result) ? result : [result];
-            return { rows, count: rows.length, insertId: result.insertId };
         } else {
-            return await pool.query(translatedText, params);
+            result = await pool.query(translatedText, params);
         }
+
+        // Log query performance
+        const executionTime = Date.now() - startTime;
+        queryLogger.logQuery(translatedText, params, executionTime);
+
+        return result;
     } catch (err) {
+        const executionTime = Date.now() - startTime;
+        
         // Suppress "Column already exists" errors during MySQL init migrations
         if (dbType === 'mysql' && err.code === 'ER_DUP_FIELDNAME' && /ALTER TABLE/i.test(text)) {
             return { rows: [], count: 0, message: 'Column already exists (ignored)' };
         }
 
+        // Log failed query
+        queryLogger.logQuery(translatedText, params, executionTime);
         console.error('🔥 DB Query Error:', err.message);
         console.error('Statement:', translatedText);
         throw err;
@@ -138,5 +160,6 @@ const query = async (text, params) => {
 module.exports = {
     query,
     pool,
-    dbType
+    dbType,
+    queryLogger
 };
