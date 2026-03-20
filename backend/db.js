@@ -58,6 +58,20 @@ if (dbType === 'mysql') {
             reapIntervalMillis: 1000,
             createRetryIntervalMillis: 200
         });
+
+        // Add error handling for pool events
+        pool.on('error', (err) => {
+            console.error('💥 Database pool error:', err);
+            // Don't exit, just log the error
+        });
+
+        pool.on('connect', () => {
+            console.log('✅ Database connection established');
+        });
+
+        pool.on('remove', () => {
+            console.log('🔌 Database connection removed from pool');
+        });
         console.log('📦 Database: Initialized PostgreSQL connection pool with SSL [v2.0-FIXED]');
     } else {
         // Local development without DATABASE_URL
@@ -149,10 +163,17 @@ const query = async (text, params) => {
             return { rows: [], count: 0, message: 'Column already exists (ignored)' };
         }
 
-        // Log failed query
-        queryLogger.logQuery(translatedText, params, executionTime);
-        console.error('🔥 DB Query Error:', err.message);
-        console.error('Statement:', translatedText);
+        // Handle connection errors gracefully
+        if (err.code === 'ECONNREFUSED' || err.code === 'ENOTFOUND' || err.code === 'ETIMEDOUT') {
+            console.error('🔌 Database connection error:', err.message);
+            console.error('💡 Suggestion: Check DATABASE_URL and network connectivity');
+        } else {
+            // Log failed query
+            queryLogger.logQuery(translatedText, params, executionTime);
+            console.error('🔥 DB Query Error:', err.message);
+            console.error('Statement:', translatedText);
+        }
+        
         throw err;
     }
 };

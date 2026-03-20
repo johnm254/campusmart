@@ -117,24 +117,37 @@ app.use((req, res, next) => {
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-    }
-});
+// Email configuration with better error handling
+let transporter = null;
 
-// Verify email configuration on startup
-transporter.verify(function(error, success) {
-    if (error) {
-        console.error('❌ Email configuration error:', error);
-        console.error('Please check EMAIL_USER and EMAIL_PASS in .env file');
+try {
+    if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+        transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS
+            }
+        });
+
+        // Verify email configuration on startup (non-blocking)
+        transporter.verify(function(error, success) {
+            if (error) {
+                console.error('❌ Email configuration error:', error.message);
+                console.error('Please check EMAIL_USER and EMAIL_PASS in .env file');
+                transporter = null; // Disable email if verification fails
+            } else {
+                console.log('✅ Email server is ready to send messages');
+                console.log('Email configured for:', process.env.EMAIL_USER);
+            }
+        });
     } else {
-        console.log('✅ Email server is ready to send messages');
-        console.log('Email configured for:', process.env.EMAIL_USER);
+        console.warn('⚠️  Email credentials not configured - email features will be disabled');
     }
-});
+} catch (error) {
+    console.error('❌ Email setup error:', error.message);
+    transporter = null;
+}
 
 // Health check / Home route
 app.get('/', (req, res) => {
@@ -213,6 +226,24 @@ app.use(keepAliveMiddleware);
 
 // Add query performance logging middleware
 app.use(queryLogger.middleware());
+
+// Async error handler middleware to prevent crashes
+const asyncHandler = (fn) => (req, res, next) => {
+    Promise.resolve(fn(req, res, next)).catch(next);
+};
+
+// Global error handler
+app.use((err, req, res, next) => {
+    console.error('💥 Express Error Handler:', err);
+    
+    // Don't leak error details in production
+    const isDev = process.env.NODE_ENV !== 'production';
+    
+    res.status(err.status || 500).json({
+        message: err.message || 'Internal Server Error',
+        ...(isDev && { stack: err.stack })
+    });
+});
 
 // Database optimization endpoint (temporary - for performance fixes)
 app.post('/api/optimize-database', async (req, res) => {
@@ -491,16 +522,21 @@ app.post('/api/auth/forgot-password', async (req, res) => {
         // Note: Email may not work in all hosting environments due to SMTP port restrictions
         let emailSent = false;
         try {
-            // Set a timeout for email sending (5 seconds)
-            const emailPromise = transporter.sendMail(mailOptions);
-            const timeoutPromise = new Promise((_, reject) => 
-                setTimeout(() => reject(new Error('Email timeout')), 5000)
-            );
-            
-            const info = await Promise.race([emailPromise, timeoutPromise]);
-            console.log('✓ Reset email sent successfully to:', email);
-            console.log('Message ID:', info.messageId);
-            emailSent = true;
+            if (transporter) {
+                // Set a timeout for email sending (5 seconds)
+                const emailPromise = transporter.sendMail(mailOptions);
+                const timeoutPromise = new Promise((_, reject) => 
+                    setTimeout(() => reject(new Error('Email timeout')), 5000)
+                );
+                
+                const info = await Promise.race([emailPromise, timeoutPromise]);
+                console.log('✓ Reset email sent successfully to:', email);
+                console.log('Message ID:', info.messageId);
+                emailSent = true;
+            } else {
+                console.warn('⚠️  Email service not available - transporter not configured');
+                emailSent = false;
+            }
         } catch (mailError) {
             console.error('✗ Email sending failed:', mailError.message);
             emailSent = false;
@@ -2017,6 +2053,24 @@ const setupSelfPing = () => {
 
 const startServer = async () => {
     const listenTarget = process.env.PORT || 5000;
+
+    // Add global error handlers to prevent crashes
+    process.on('uncaughtException', (error) => {
+        console.error('💥 Uncaught Exception:', error);
+        console.error('Stack:', error.stack);
+        // Don't exit in production, just log the error
+        if (process.env.NODE_ENV !== 'production') {
+            process.exit(1);
+        }
+    });
+
+    process.on('unhandledRejection', (reason, promise) => {
+        console.error('💥 Unhandled Rejection at:', promise, 'reason:', reason);
+        // Don't exit in production, just log the error
+        if (process.env.NODE_ENV !== 'production') {
+            process.exit(1);
+        }
+    });
 
     app.listen(listenTarget, () => {
         console.log(`🚀 CampusMart Server Live on ${listenTarget}`);
